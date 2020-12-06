@@ -1,0 +1,12 @@
+{
+  "name": "hdb",
+  "displayName": "hdb",
+  "expo": {
+    "name": "hdb",
+    "slug": "hdb",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
