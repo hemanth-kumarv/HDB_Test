@@ -6,5 +6,6 @@
   "MongoDBCredentials": {
     "UserName": "hdbTestUser01",
     "Password": "Hdb_MongoDB_2021"
-  }
+  },
+  "defaultTimeout": 1000
 }

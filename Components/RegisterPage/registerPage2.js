@@ -27,8 +27,8 @@ const RegisterPage2 = ({ navigation }) => {
             {
               tintColor: "white",
               bottom: 15,
-              top: 50,
-            },
+              top: 50
+            }
           ]}
           // onPress={() => navigation.navigate("RegisterPage1")}
         />
@@ -45,8 +45,8 @@ const RegisterPage2 = ({ navigation }) => {
         style={{
           ...styles.icon,
           ...{
-            left: 15,
-          },
+            left: 15
+          }
         }}
         onPress={() => navigation.navigate("RegisterPage1")}
       />
@@ -56,8 +56,8 @@ const RegisterPage2 = ({ navigation }) => {
         style={[
           styles.icon,
           {
-            right: 15,
-          },
+            right: 15
+          }
         ]}
         onPress={() => navigation.navigate("RegisterPage3")}
       />

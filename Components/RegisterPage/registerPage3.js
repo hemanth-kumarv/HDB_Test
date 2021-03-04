@@ -13,9 +13,9 @@ const RegisterPage3 = ({ navigation }) => {
   const [photo, setPhoto] = useState(null);
   const handleChoosePhoto = () => {
     const options = {
-      noData: true,
+      noData: true
     };
-    ImagePicker.launchImageLibrary(options, (response) => {
+    ImagePicker.launchImageLibrary(options, response => {
       if (response.uri) {
         setPhoto(response);
       }
@@ -64,8 +64,8 @@ const RegisterPage3 = ({ navigation }) => {
         style={[
           styles.icon,
           {
-            left: 15,
-          },
+            left: 15
+          }
         ]}
         onPress={() => navigation.navigate("RegisterPage2")}
       />
@@ -75,8 +75,8 @@ const RegisterPage3 = ({ navigation }) => {
         style={[
           styles.icon,
           {
-            right: 15,
-          },
+            right: 15
+          }
         ]}
         onPress={() => navigation.navigate("WelcomePage")}
       />

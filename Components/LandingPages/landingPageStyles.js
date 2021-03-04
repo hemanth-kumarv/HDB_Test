@@ -16,7 +16,7 @@ export const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 4,
     top: 0,
-    left: 0,
+    left: 0
   },
   table: {
     top: vh * 0.12,
@@ -26,21 +26,45 @@ export const styles = StyleSheet.create({
     alignSelf: "stretch",
     flexDirection: "row",
     borderColor: "gray",
-    borderWidth: 1,
+    borderWidth: 1
   },
   tableData: {
     color: "#fff",
     fontSize: 20,
     textAlign: "center",
     borderLeftWidth: 2,
-    borderColor: "gray",
+    borderColor: "gray"
   },
+  errorTextContainer: {
+    alignItems: "center",
+    flexDirection: "column",
+    justifyContent: "center",
+    top: "30%",
+    height: vh*0.8,
+  },
+  errorText: {
+    color: "red",
+    width: 0.7 * vw,
+    top: 20,
+    flex: 3,
+    textAlign: "center",
+    fontSize: 30
+  },
+  retryButton: {
+    top: 10,
+    color: "blue",
+    fontSize: 40,
+    flex: 2
+    // borderColor: 'red',
+    // borderWidth: 2,
+    // zIndex: 5
+  }
 });
 
 export const tdWidth = {
   prop: {},
   get no() {
-    return { ...this.prop, width: vw * 0.1, };
+    return { ...this.prop, width: vw * 0.1 };
   },
   get date() {
     return { ...this.prop, width: vw * 0.17 };
@@ -62,5 +86,5 @@ export const tdWidth = {
   },
   get totalDuration() {
     return { ...this.prop, width: vw * 0.23 };
-  },
+  }
 };

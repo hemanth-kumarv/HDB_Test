@@ -1,20 +1,21 @@
 import React, { useState } from "react";
 import { Text, View, Button } from "react-native";
 import styles from "./sideDrawerStyles";
+
+import { useSelector, useDispatch } from "react-redux";
+import { changeDrawerStyle } from "../Redux/dispatchers";
 // import globalStyles from "../../globalStyles";
 // import Drawer from "react-native-drawer";
 import RightLeft from "../../assets/chevron-left.svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const SideDrawerContents = (props) => {
+const SideDrawerContents = ({ navigation }) => {
   // const navigation = useNavigation();
+  // const open = useSelector(state => state.drawerOpen);
+  const dispatch = useDispatch();
+
   const Menu = () => (
-    <View
-      style={[
-        styles.drawer,
-        props.open ? { display: "flex" } : { display: "none" },
-      ]}
-    >
+    <View style={styles.drawer}>
       <RightLeft
         width="40"
         height="40"
@@ -27,52 +28,49 @@ const SideDrawerContents = (props) => {
           //   // right: 5,
           // },
         }
-        onPress={() => {
-          props.drawerOpen(false);
-          props.setOpen(false);
-        }}
+        onPress={() => dispatch(changeDrawerStyle(false))}
       />
       <Text
         style={styles.drawerButtons}
         onPress={() => {
-          props.navigation.navigate("WelcomePage");
+          navigation.navigate("WelcomePage");
         }}
       >
         Profile
       </Text>
       <Text
         style={styles.drawerButtons}
-        onPress={() => props.navigation.navigate("")}
+        onPress={() => navigation.navigate("")}
       >
         Bank Details
       </Text>
       <Text
         style={styles.drawerButtons}
-        onPress={() => props.navigation.navigate("")}
+        onPress={() => navigation.navigate("")}
       >
         Wallet
       </Text>
       <Text
         style={styles.drawerButtons}
-        onPress={() => props.navigation.navigate("")}
+        onPress={() => navigation.navigate("")}
       >
         Refer and Earn
       </Text>
       <Text
         style={styles.drawerButtons}
-        onPress={() => props.navigation.navigate("")}
+        onPress={() => navigation.navigate("")}
       >
         Settings
       </Text>
       <Text
         style={styles.drawerButtons}
-        onPress={() => props.navigation.navigate("")}
+        onPress={() => navigation.navigate("")}
       >
         Legal
       </Text>
       <Text
         style={styles.drawerButtons}
-        onPress={() => props.navigation.navigate("")}
+        onPress={() => navigation.navigate("")}
       >
         Terms and Conditions
       </Text>
@@ -80,7 +78,7 @@ const SideDrawerContents = (props) => {
         style={styles.drawerButtons}
         onPress={async () => {
           await AsyncStorage.removeItem("UserId");
-          props.navigation.navigate("WelcomePage");
+          navigation.navigate("WelcomePage");
         }}
       >
         Logout

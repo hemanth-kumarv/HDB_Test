@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Text, View, TextInput, ScrollView, Keyboard } from "react-native";
 import styles from "./welcomePageStyles";
 import globalStyles from "../../globalStyles";
@@ -6,44 +6,73 @@ import axios from "axios";
 import sha256 from "crypto-js/sha256";
 import config from "../config.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ErrorSVG from "../../assets/exclamation-triangle.svg";
 
 const WelcomePage = ({ navigation }) => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setloginError] = useState("");
+  const passwordBox = useRef();
+
   const login = (userName, password) => {
+    setloginError("");
     const serverIP =
       config.ExpressServer.ServerIP + ":" + String(config.ExpressServer.Port);
     axios
       .post(
         serverIP + "/login",
         {},
-        { params: { name: userName, pass: password } }
+        {
+          params: { name: userName, pass: password },
+          timeout: config.defaultTimeout
+        }
       )
-      .then(async (res) => {
+      .then(async res => {
         // console.log(res.data);
         if (res.data) setloginError(res.data);
         else {
-          setloginError("");
           await AsyncStorage.setItem("UserId", userName);
           navigation.navigate("CustomerLandingPage");
         }
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
-        setloginError(err);
+        setloginError("Error connecting to server.");
       });
+  };
+
+  const validateAndLogin = (userName, password) => {
+    if (userName.length === 0) setloginError("Please enter valid username.");
+    else if (password.length === 0)
+      setloginError("Please enter valid password.");
+    else {
+      let pass = sha256(password).toString();
+      login(userName, pass);
+    }
   };
   return (
     <ScrollView
       style={globalStyles.container}
       contentContainerStyle={[
         globalStyles.containerContent,
-        { justifyContent: "space-evenly" },
+        { justifyContent: "space-evenly" }
       ]}
+      keyboardShouldPersistTaps="handled"
       // onPress={Keyboard.dismiss}
     >
-      <Text style={{ color: "red", fontSize: 20 }}>{loginError}</Text>
+      {loginError.length > 0 ? (
+        <Text style={{ color: "red", fontSize: 20 }}>
+          <ErrorSVG
+            width="35"
+            height="20"
+            style={{
+              top: 25,
+              tintColor: "yellow"
+            }}
+          />
+          {loginError}
+        </Text>
+      ) : null}
       <Text style={styles.logo}>XXX</Text>
       <View style={styles.inputContainer}>
         <Text style={styles.loginText}>Login</Text>
@@ -52,21 +81,29 @@ const WelcomePage = ({ navigation }) => {
           placeholder="User Name"
           placeholderTextColor="#aaaa"
           textContentType="username"
-          onChangeText={(text) => setUserName(text)}
+          onChangeText={text => setUserName(text)}
+          onSubmitEditing={() => {
+            passwordBox.current.focus();
+          }}
+          blurOnSubmit={false}
         />
         <TextInput
           style={styles.textInput}
+          ref={passwordBox}
           placeholder="Password"
           placeholderTextColor="#aaaa"
           textContentType="password"
           secureTextEntry={true}
-          onChangeText={(text) => setPassword(text)}
+          onChangeText={text => setPassword(text)}
         />
         <Text style={styles.forgotPassword}>Forgot Password</Text>
       </View>
       <Text
         style={styles.button}
-        onPress={() => login(userName, sha256(password).toString())}
+        onPress={() => {
+          Keyboard.dismiss();
+          validateAndLogin(userName, password);
+        }}
       >
         Submit
       </Text>

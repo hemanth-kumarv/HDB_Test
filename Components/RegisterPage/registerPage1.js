@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Text, View, ScrollView, Button, TextInput, Keyboard } from "react-native";
+import {
+  Text,
+  View,
+  ScrollView,
+  Button,
+  TextInput,
+  Keyboard
+} from "react-native";
 import styles from "./registerPageStyles";
 import globalStyles from "../../globalStyles";
 // import DateTimePicker from "@react-native-community/datetimepicker";
@@ -13,7 +20,11 @@ const RegisterPage1 = ({ navigation }) => {
   return (
     <ScrollView
       style={globalStyles.container}
-      contentContainerStyle={[globalStyles.containerContent, , {justifyContent: "space-evenly"}]}
+      contentContainerStyle={[
+        globalStyles.containerContent,
+        ,
+        { justifyContent: "space-evenly" }
+      ]}
     >
       <Text style={styles.heading}>Register</Text>
       <View style={styles.inputContainer}>
@@ -42,17 +53,17 @@ const RegisterPage1 = ({ navigation }) => {
               position: "absolute",
               right: 0,
               top: 4,
-              marginRight: 0,
+              marginRight: 0
             },
             dateInput: {
               position: "absolute",
               left: 0,
-              borderWidth: 0,
+              borderWidth: 0
             },
             placeholderText: { color: "#aaaa" },
-            dateText: { color: "#ffff" },
+            dateText: { color: "#ffff" }
           }}
-          onDateChange={(date) => {
+          onDateChange={date => {
             setDate(date);
           }}
         />
@@ -92,8 +103,8 @@ const RegisterPage1 = ({ navigation }) => {
         style={[
           styles.icon,
           {
-            right: 15,
-          },
+            right: 15
+          }
         ]}
         onPress={() => navigation.navigate("RegisterPage2")}
       />

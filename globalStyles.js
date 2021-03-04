@@ -9,23 +9,15 @@ const globalStyles = StyleSheet.create({
     backgroundColor: "#000",
     // position: "absolute",
     top: 0,
-    left: 0,
+    left: 0
     // flex: 1,
   },
   containerContent: {
     alignItems: "center",
     justifyContent: "flex-start",
     color: "#fff",
-    flex: 1,
-  },
-  displayNone: {
-    height: 0,
-    width: 0,
-  },
-  displayAuto: {
-    height: vh,
-    width: vw,
-  },
+    flex: 1
+  }
 });
 
 export default globalStyles;

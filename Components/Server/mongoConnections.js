@@ -27,7 +27,6 @@ const getCustomerDb = (name) => {
     mongoUrl + "CustomerDBTest",
     connectionOptions
   );
-  console.log(name);
   const CustomerDBTest = CustomerDBTestConn.model(
     "CustomerDBTest",
     schemas.CustomerDBTest,

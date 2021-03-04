@@ -5,24 +5,29 @@ const conn = require("./mongoConnections");
 const CompanyListDBTest = conn.CompanyListDBTest;
 const CustomerLoginDBTest = conn.CustomerLoginDBTest;
 
-app.post("/getRewards", function (req, res) {
+app.post("/getRewards", function(req, res) {
   if (req.query.name) {
     const CustomerDBTest = conn.getCustomerDb(req.query.name);
-    CustomerDBTest.find({}, function (err, docs) {
-      if (err) console.log(err);
-      else {
-        console.log(docs);
+    CustomerDBTest.find({}, function(err, docs) {
+      if (err) {
+        console.log(err);
+        res.send("Error connecting to database.");
+      } else {
         res.send(docs);
       }
     });
   }
 });
 
-app.post("/login", function (req, res) {
+app.post("/login", function(req, res) {
   // console.log("Searching...");
-  CustomerLoginDBTest.findOne({ UserID: req.query.name }, function (err, docs) {
-    if (err) console.log(err);
-    else {
+  CustomerLoginDBTest.findOne({ UserID: req.query.name }, function(err, docs) {
+    if (err) {
+      console.log(err);
+      res.send("Error connecting to database.");
+    } else if (docs === null) {
+      res.send("Username or Password incorrect.");
+    } else {
       if (docs.PasswordHash === req.query.pass) res.send(false);
       else res.send("Username or Password incorrect.");
       // res.send(docs);
@@ -30,7 +35,7 @@ app.post("/login", function (req, res) {
   });
 });
 
-app.post("/", function (req, res) {
+app.post("/", function(req, res) {
   res.send("Hello world!");
 });
 console.log("App running on port 3000!");
