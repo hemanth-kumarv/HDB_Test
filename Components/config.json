@@ -1,0 +1,10 @@
+{
+  "ExpressServer": {
+    "ServerIP": "http://192.168.0.107",
+    "Port": 3000
+  },
+  "MongoDBCredentials": {
+    "UserName": "hdbTestUser01",
+    "Password": "Hdb_MongoDB_2021"
+  }
+}
