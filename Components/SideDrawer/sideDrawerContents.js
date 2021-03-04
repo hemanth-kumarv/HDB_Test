@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Text, View, Button } from "react-native";
 import styles from "./sideDrawerStyles";
-import globalStyles from "../globalStyles";
+// import globalStyles from "../../globalStyles";
 // import Drawer from "react-native-drawer";
 import RightLeft from "../../assets/chevron-left.svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";

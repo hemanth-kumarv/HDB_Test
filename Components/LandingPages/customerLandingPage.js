@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import globalStyles from "../../globalStyles";
 import SideDrawer from "../../Components/SideDrawer/sideDrawer";
-import { styles, tdWidth } from "./LandingPageStyles";
+import { styles, tdWidth } from "./landingPageStyles";
 import config from "../config.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 

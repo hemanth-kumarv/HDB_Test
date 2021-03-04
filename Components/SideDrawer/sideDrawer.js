@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Text, View, Button } from "react-native";
 import styles from "./sideDrawerStyles";
-import globalStyles from "../globalStyles";
+import globalStyles from "../../globalStyles";
 import Drawer from "react-native-drawer";
 import SideDrawerContents from "./sideDrawerContents";
 import HamIcon from "../../assets/hamburger.svg";
