@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Text, View, Button } from "react-native";
 import styles from "./sideDrawerStyles";
 import globalStyles from "../../globalStyles";
-// import Drawer from "react-native-drawer";
 import { useSelector, useDispatch } from "react-redux";
 import { changeDrawerStyle } from "../Redux/dispatchers";
 import SideDrawerContents from "./sideDrawerContents";

@@ -54,10 +54,9 @@ export const styles = StyleSheet.create({
     top: 10,
     color: "blue",
     fontSize: 40,
-    flex: 2
+    flex: 2,
     // borderColor: 'red',
     // borderWidth: 2,
-    // zIndex: 5
   }
 });
 

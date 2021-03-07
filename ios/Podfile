@@ -1,14 +1,19 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
-require_relative '../node_modules/react-native-unimodules/cocoapods.rb'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
 platform :ios, '10.0'
 
 target 'hdb' do
-  use_unimodules!
   config = use_native_modules!
 
   use_react_native!(:path => config["reactNativePath"])
+
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+
+  target 'hdbTests' do
+    inherit! :complete
+    # Pods for testing
+  end
 
   # Enables Flipper.
   #
@@ -17,5 +22,14 @@ target 'hdb' do
   use_flipper!
   post_install do |installer|
     flipper_post_install(installer)
+  end
+end
+
+target 'hdb-tvOS' do
+  # Pods for hdb-tvOS
+
+  target 'hdb-tvOSTests' do
+    inherit! :search_paths
+    # Pods for testing
   end
 end

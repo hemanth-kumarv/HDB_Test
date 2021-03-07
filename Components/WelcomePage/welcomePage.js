@@ -21,21 +21,20 @@ const WelcomePage = ({ navigation }) => {
     axios
       .post(
         serverIP + "/login",
-        {},
+        { name: userName, pass: password },
         {
-          params: { name: userName, pass: password },
-          timeout: config.defaultTimeout
+          timeout: config.defaultTimeout,
         }
       )
-      .then(async res => {
+      .then(async (res) => {
         // console.log(res.data);
         if (res.data) setloginError(res.data);
         else {
           await AsyncStorage.setItem("UserId", userName);
-          navigation.navigate("CustomerLandingPage");
+          navigation.replace("CustomerLandingPage");
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err);
         setloginError("Error connecting to server.");
       });
@@ -55,7 +54,7 @@ const WelcomePage = ({ navigation }) => {
       style={globalStyles.container}
       contentContainerStyle={[
         globalStyles.containerContent,
-        { justifyContent: "space-evenly" }
+        { justifyContent: "space-evenly" },
       ]}
       keyboardShouldPersistTaps="handled"
       // onPress={Keyboard.dismiss}
@@ -67,7 +66,7 @@ const WelcomePage = ({ navigation }) => {
             height="20"
             style={{
               top: 25,
-              tintColor: "yellow"
+              tintColor: "yellow",
             }}
           />
           {loginError}
@@ -80,8 +79,10 @@ const WelcomePage = ({ navigation }) => {
           style={styles.textInput}
           placeholder="User Name"
           placeholderTextColor="#aaaa"
-          textContentType="username"
-          onChangeText={text => setUserName(text)}
+          textContentType="emailAddress"
+          autoCompleteType="email"
+          keyboardType="email-address"
+          onChangeText={(text) => setUserName(text)}
           onSubmitEditing={() => {
             passwordBox.current.focus();
           }}
@@ -91,10 +92,14 @@ const WelcomePage = ({ navigation }) => {
           style={styles.textInput}
           ref={passwordBox}
           placeholder="Password"
+          autoCompleteType="password"
           placeholderTextColor="#aaaa"
           textContentType="password"
           secureTextEntry={true}
-          onChangeText={text => setPassword(text)}
+          onChangeText={(text) => setPassword(text)}
+          onSubmitEditing={() => {
+            validateAndLogin(userName, password);
+          }}
         />
         <Text style={styles.forgotPassword}>Forgot Password</Text>
       </View>

@@ -11,7 +11,7 @@ const connectionOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
-  useCreateIndex: true,
+  useCreateIndex: true
 };
 const CompanyListDBTestConn = mongoose.createConnection(
   mongoUrl + "CompanyListDBTest",
@@ -22,18 +22,15 @@ const CompanyListDBTest = CompanyListDBTestConn.model(
   schemas.CompanyListDBTest,
   "TestList"
 );
-const getCustomerDb = (name) => {
-  const CustomerDBTestConn = mongoose.createConnection(
-    mongoUrl + "CustomerDBTest",
-    connectionOptions
-  );
-  const CustomerDBTest = CustomerDBTestConn.model(
-    "CustomerDBTest",
-    schemas.CustomerDBTest,
-    name
-  );
-  return CustomerDBTest;
-};
+const CustomerRewardsDBTestConn = mongoose.createConnection(
+  mongoUrl + "CustomerRewardsDBTest",
+  connectionOptions
+);
+const CustomerRewardsDBTest = CustomerRewardsDBTestConn.model(
+  "CustomerRewardsDBTest",
+  schemas.CustomerRewardsDBTest,
+  "CustomerList1"
+);
 const CustomerLoginDBTestConn = mongoose.createConnection(
   mongoUrl + "CustomerLoginDBTest",
   connectionOptions
@@ -41,9 +38,9 @@ const CustomerLoginDBTestConn = mongoose.createConnection(
 const CustomerLoginDBTest = CustomerLoginDBTestConn.model(
   "CustomerLoginDBTest",
   schemas.CustomerLoginDBTest,
-  "UserList"
+  "CustomerList1"
 );
 
 exports.CompanyListDBTest = CompanyListDBTest;
 exports.CustomerLoginDBTest = CustomerLoginDBTest;
-exports.getCustomerDb = getCustomerDb;
+exports.CustomerRewardsDBTest = CustomerRewardsDBTest;

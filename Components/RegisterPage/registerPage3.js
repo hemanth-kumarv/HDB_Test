@@ -1,26 +1,29 @@
 import React, { useState } from "react";
-import { Text, View, ScrollView, Button, TextInput } from "react-native";
+import {
+  Text,
+  View,
+  ScrollView,
+  Button,
+  TextInput,
+  TouchableOpacity,
+  Image,
+} from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import styles from "./registerPageStyles";
 import globalStyles from "../../globalStyles";
-// import { WithLocalSvg } from "react-native-svg";
-import ImagePicker from "react-native-image-picker";
+import ImagePicker from "react-native-image-crop-picker";
 import LeftIcon from "../../assets/chevron-left.svg";
 import RightIcon from "../../assets/chevron-right.svg";
+import axios from "axios";
+import config from "../config.json";
 
 const RegisterPage3 = ({ navigation }) => {
   const [gender, setGender] = useState("Gender");
-  const [photo, setPhoto] = useState(null);
-  const handleChoosePhoto = () => {
-    const options = {
-      noData: true
-    };
-    ImagePicker.launchImageLibrary(options, response => {
-      if (response.uri) {
-        setPhoto(response);
-      }
-    });
-  };
+  const [showChooser, setshowChooser] = useState(false);
+  const [pickedImage, setPickedImage] = useState({});
+  const serverIP =
+    config.ExpressServer.ServerIP + ":" + String(config.ExpressServer.Port);
+
   return (
     <ScrollView
       style={globalStyles.container}
@@ -56,7 +59,54 @@ const RegisterPage3 = ({ navigation }) => {
           placeholder="Address Line 2"
           placeholderTextColor="#aaaa"
         />
-        <Text style={styles.textInput}>Profile Photo</Text>
+        <Text
+          style={styles.textInput}
+          onPress={() => {
+            ImagePicker.openPicker({
+              width: 300,
+              height: 400,
+              cropping: true,
+            }).then((image) => {
+              console.log(image);
+              setPickedImage(image);
+              axios
+                .post(
+                  serverIP + "/bla",
+                  { img: image },
+                  {
+                    timeout: config.defaultTimeout,
+                  }
+                )
+                .then(async (res) => {
+                  console.log(res.data);
+                  // if (res.data) setloginError(res.data);
+                  // else {
+                  //   await AsyncStorage.setItem("UserId", userName);
+                  //   navigation.replace("CustomerLandingPage");
+                  // }
+                })
+                .catch((err) => {
+                  console.error(err);
+                  setloginError("Error connecting to server.");
+                });
+            });
+          }}
+        >
+          Profile Photo
+        </Text>
+        {Object.keys(pickedImage).length === 0 ? null : (
+          <Image
+            style={{
+              top: 50,
+              width: 128,
+              height: 128,
+              borderColor: "white",
+              borderWidth: 2,
+            }}
+            source={{ uri: pickedImage.path }}
+            // resizeMode="contain"
+          />
+        )}
       </View>
       <LeftIcon
         width="25"
@@ -64,8 +114,8 @@ const RegisterPage3 = ({ navigation }) => {
         style={[
           styles.icon,
           {
-            left: 15
-          }
+            left: 15,
+          },
         ]}
         onPress={() => navigation.navigate("RegisterPage2")}
       />
@@ -75,8 +125,8 @@ const RegisterPage3 = ({ navigation }) => {
         style={[
           styles.icon,
           {
-            right: 15
-          }
+            right: 15,
+          },
         ]}
         onPress={() => navigation.navigate("WelcomePage")}
       />

@@ -9,8 +9,8 @@ const globalStyles = StyleSheet.create({
     backgroundColor: "#000",
     // position: "absolute",
     top: 0,
-    left: 0
-    // flex: 1,
+    left: 0,
+    flex: 1,
   },
   containerContent: {
     alignItems: "center",

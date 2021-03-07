@@ -78,7 +78,8 @@ const SideDrawerContents = ({ navigation }) => {
         style={styles.drawerButtons}
         onPress={async () => {
           await AsyncStorage.removeItem("UserId");
-          navigation.navigate("WelcomePage");
+          navigation.replace("WelcomePage");
+          dispatch(changeDrawerStyle(false));
         }}
       >
         Logout

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Text,
   View,
@@ -9,14 +9,21 @@ import {
 } from "react-native";
 import styles from "./registerPageStyles";
 import globalStyles from "../../globalStyles";
-// import DateTimePicker from "@react-native-community/datetimepicker";
 import DatePicker from "react-native-datepicker";
-// import { WithLocalSvg } from "react-native-svg";
 import RightIcon from "../../assets/chevron-right.svg";
 
 const RegisterPage1 = ({ navigation }) => {
   const [date, setDate] = useState(null);
-  const [show, setShow] = useState(false);
+  
+  // const validateField = (name, validator) => {}
+
+  const mobileNumber = useRef();
+  const emailId = useRef();
+  const password = useRef();
+  const confirmPassword = useRef();
+  const nextPage = () => {
+    navigation.navigate("RegisterPage2");
+  };
   return (
     <ScrollView
       style={globalStyles.container}
@@ -30,31 +37,71 @@ const RegisterPage1 = ({ navigation }) => {
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.textInput}
-          placeholder="Name"
+          placeholder="Full Name"
           placeholderTextColor="#aaaa"
           textContentType="username"
+          onSubmitEditing={() => {
+            mobileNumber.current.focus();
+          }}
+          // onBlur={()=>}
         />
-        {/* {show && <DateTimePicker
-          testID="dateTimePicker"
+        <TextInput
           style={styles.textInput}
-          value={date}
-          mode="date"
-          onChange={onChange}
-        />} */}
+          ref={mobileNumber}
+          placeholder="Mobile Number"
+          placeholderTextColor="#aaaa"
+          keyboardType="number-pad"
+          //   maxLength="10"
+          textContentType="telephoneNumber"
+          onSubmitEditing={() => {
+            emailId.current.focus();
+          }}
+        />
+        <TextInput
+          style={styles.textInput}
+          ref={emailId}
+          placeholder="Email ID"
+          placeholderTextColor="#aaaa"
+          textContentType="emailAddress"
+          keyboardType="email-address"
+          onSubmitEditing={() => {
+            password.current.focus();
+          }}
+        />
+        <TextInput
+          style={styles.textInput}
+          ref={password}
+          placeholder="Password"
+          placeholderTextColor="#aaaa"
+          textContentType="password"
+          secureTextEntry={true}
+          onSubmitEditing={() => {
+            confirmPassword.current.focus();
+          }}
+        />
+        <TextInput
+          style={styles.textInput}
+          ref={confirmPassword}
+          placeholder="Confirm Password"
+          placeholderTextColor="#aaaa"
+          textContentType="password"
+          secureTextEntry={true}
+        />
         <DatePicker
           style={styles.textInput}
           date={date}
           mode="date"
           placeholder="Date of Birth"
+          // maxDate=""
           format="DD-MM-YYYY"
           showIcon={false}
           customStyles={{
-            dateIcon: {
-              position: "absolute",
-              right: 0,
-              top: 4,
-              marginRight: 0
-            },
+            // dateIcon: {
+            //   position: "absolute",
+            //   right: 0,
+            //   // top: 4,
+            //   marginRight: 0
+            // },
             dateInput: {
               position: "absolute",
               left: 0,
@@ -67,35 +114,6 @@ const RegisterPage1 = ({ navigation }) => {
             setDate(date);
           }}
         />
-        <TextInput
-          style={styles.textInput}
-          placeholder="Mobile Number"
-          placeholderTextColor="#aaaa"
-          keyboardType="number-pad"
-          //   maxLength="10"
-          textContentType="telephoneNumber"
-        />
-        <TextInput
-          style={styles.textInput}
-          placeholder="Email ID"
-          placeholderTextColor="#aaaa"
-          textContentType="emailAddress"
-          keyboardType="email-address"
-        />
-        <TextInput
-          style={styles.textInput}
-          placeholder="Password"
-          placeholderTextColor="#aaaa"
-          textContentType="password"
-          secureTextEntry={true}
-        />
-        <TextInput
-          style={styles.textInput}
-          placeholder="Confirm Password"
-          placeholderTextColor="#aaaa"
-          textContentType="password"
-          secureTextEntry={true}
-        />
       </View>
       <RightIcon
         width="25"
@@ -106,7 +124,7 @@ const RegisterPage1 = ({ navigation }) => {
             right: 15
           }
         ]}
-        onPress={() => navigation.navigate("RegisterPage2")}
+        onPress={() => nextPage()}
       />
     </ScrollView>
   );

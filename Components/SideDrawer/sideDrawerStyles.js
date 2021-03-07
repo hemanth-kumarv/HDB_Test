@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
   drawerContainer: {
     // alignItems: "stretch",
     position: "absolute",
-    zIndex: 6,
+    // zIndex: 6,
     width: vw * 0.6,
     height: vh,
     top: 0,
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: vh * 0.04,
     left: vw * 0.04,
-    // zIndex: 8,
+    zIndex: 8,
     tintColor: "white",
   },
 });
