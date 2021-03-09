@@ -5,7 +5,7 @@ import {
   ScrollView,
   Button,
   TextInput,
-  Keyboard
+  Keyboard,
 } from "react-native";
 import styles from "./registerPageStyles";
 import globalStyles from "../../globalStyles";
@@ -14,39 +14,59 @@ import RightIcon from "../../assets/chevron-right.svg";
 
 const RegisterPage1 = ({ navigation }) => {
   const [date, setDate] = useState(null);
-  
-  // const validateField = (name, validator) => {}
 
   const mobileNumber = useRef();
   const emailId = useRef();
   const password = useRef();
   const confirmPassword = useRef();
+  const [fields, setFields] = useState({
+    name: { data: "", active: true },
+    mobileNumber: { data: "", active: true },
+    emailId: { data: "", active: true },
+    password: { data: "", active: true },
+    confirmPassword: { data: "", active: true },
+    // dateOfBirth: { data: "", active: true },
+  });
   const nextPage = () => {
     navigation.navigate("RegisterPage2");
   };
+
+  const validateStyle = (name) => ({
+    borderBottomColor: fields[name].active
+      ? "gray"
+      : fields[name].data
+      ? "gray"
+      : "red",
+  });
+  const updateFields = (name, data) => ({
+    ...fields,
+    ...{ [name]: { data: data, active: false } },
+  });
   return (
     <ScrollView
       style={globalStyles.container}
       contentContainerStyle={[
         globalStyles.containerContent,
         ,
-        { justifyContent: "space-evenly" }
+        { justifyContent: "space-evenly" },
       ]}
     >
       <Text style={styles.heading}>Register</Text>
       <View style={styles.inputContainer}>
         <TextInput
-          style={styles.textInput}
+          style={[styles.textInput, validateStyle("name")]}
           placeholder="Full Name"
           placeholderTextColor="#aaaa"
           textContentType="username"
           onSubmitEditing={() => {
             mobileNumber.current.focus();
           }}
-          // onBlur={()=>}
+          value={fields.name.data}
+          onChangeText={(data) => setFields(updateFields("name", data))}
+          onBlur={() => setFields(updateFields("name", fields.name.data))}
         />
         <TextInput
-          style={styles.textInput}
+          style={[styles.textInput, validateStyle("mobileNumber")]}
           ref={mobileNumber}
           placeholder="Mobile Number"
           placeholderTextColor="#aaaa"
@@ -56,9 +76,14 @@ const RegisterPage1 = ({ navigation }) => {
           onSubmitEditing={() => {
             emailId.current.focus();
           }}
+          value={fields.mobileNumber.data}
+          onChangeText={(data) => setFields(updateFields("mobileNumber", data))}
+          onBlur={() =>
+            setFields(updateFields("mobileNumber", fields.mobileNumber.data))
+          }
         />
         <TextInput
-          style={styles.textInput}
+          style={[styles.textInput, validateStyle("emailId")]}
           ref={emailId}
           placeholder="Email ID"
           placeholderTextColor="#aaaa"
@@ -67,9 +92,12 @@ const RegisterPage1 = ({ navigation }) => {
           onSubmitEditing={() => {
             password.current.focus();
           }}
+          value={fields.emailId.data}
+          onChangeText={(data) => setFields(updateFields("emailId", data))}
+          onBlur={() => setFields(updateFields("emailId", fields.emailId.data))}
         />
         <TextInput
-          style={styles.textInput}
+          style={[styles.textInput, validateStyle("password")]}
           ref={password}
           placeholder="Password"
           placeholderTextColor="#aaaa"
@@ -78,17 +106,31 @@ const RegisterPage1 = ({ navigation }) => {
           onSubmitEditing={() => {
             confirmPassword.current.focus();
           }}
+          value={fields.password.data}
+          onChangeText={(data) => setFields(updateFields("password", data))}
+          onBlur={() =>
+            setFields(updateFields("password", fields.password.data))
+          }
         />
         <TextInput
-          style={styles.textInput}
+          style={[styles.textInput, validateStyle("confirmPassword")]}
           ref={confirmPassword}
           placeholder="Confirm Password"
           placeholderTextColor="#aaaa"
           textContentType="password"
           secureTextEntry={true}
+          value={fields.confirmPassword.data}
+          onChangeText={(data) =>
+            setFields(updateFields("confirmPassword", data))
+          }
+          onBlur={() =>
+            setFields(
+              updateFields("confirmPassword", fields.confirmPassword.data)
+            )
+          }
         />
         <DatePicker
-          style={styles.textInput}
+          style={[styles.textInput]}
           date={date}
           mode="date"
           placeholder="Date of Birth"
@@ -105,12 +147,12 @@ const RegisterPage1 = ({ navigation }) => {
             dateInput: {
               position: "absolute",
               left: 0,
-              borderWidth: 0
+              borderWidth: 0,
             },
             placeholderText: { color: "#aaaa" },
-            dateText: { color: "#ffff" }
+            dateText: { color: "#ffff" },
           }}
-          onDateChange={date => {
+          onDateChange={(date) => {
             setDate(date);
           }}
         />
@@ -121,8 +163,8 @@ const RegisterPage1 = ({ navigation }) => {
         style={[
           styles.icon,
           {
-            right: 15
-          }
+            right: 15,
+          },
         ]}
         onPress={() => nextPage()}
       />

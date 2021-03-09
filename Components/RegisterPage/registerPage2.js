@@ -17,7 +17,7 @@ import Flash from "../../assets/lightning.svg";
 import X from "../../assets/x-circle.svg";
 
 const RegisterPage2 = ({ navigation }) => {
-  const [upid, setUpid] = useState("");
+  const [upid, setUpid] = useState({ data: "", active: true });
   const [flash, setFlash] = useState(0);
   const [scanner, showScanner] = useState(false);
 
@@ -63,7 +63,7 @@ const RegisterPage2 = ({ navigation }) => {
           cameraStyle={styles.cameraStyle}
           onRead={(e) => {
             showScanner(false);
-            setUpid(e.data);
+            setUpid({ data: e.data, active: false });
           }}
           flashMode={flash}
           showMarker={true}
@@ -74,11 +74,21 @@ const RegisterPage2 = ({ navigation }) => {
           <Text style={styles.heading}>Register</Text>
           <View style={styles.inputContainer}>
             <TextInput
-              style={styles.textInput}
+              style={[
+                styles.textInput,
+                {
+                  borderBottomColor: upid.active
+                    ? "gray"
+                    : upid.data
+                    ? "gray"
+                    : "red",
+                },
+              ]}
               placeholder="UPID"
               placeholderTextColor="#aaaa"
-              onChangeText={(text) => setUpid(text)}
-              value={upid}
+              onChangeText={(text) => setUpid({ data: text, active: false })}
+              onBlur={() => setUpid({ data: upid.data, active: false })}
+              value={upid.data}
             />
             <ScannerIcon
               width="75"

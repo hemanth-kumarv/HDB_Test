@@ -12,6 +12,7 @@ import { Picker } from "@react-native-picker/picker";
 import styles from "./registerPageStyles";
 import globalStyles from "../../globalStyles";
 import ImagePicker from "react-native-image-crop-picker";
+import RNFS from "react-native-fs";
 import LeftIcon from "../../assets/chevron-left.svg";
 import RightIcon from "../../assets/chevron-right.svg";
 import axios from "axios";
@@ -20,7 +21,7 @@ import config from "../config.json";
 const RegisterPage3 = ({ navigation }) => {
   const [gender, setGender] = useState("Gender");
   const [showChooser, setshowChooser] = useState(false);
-  const [pickedImage, setPickedImage] = useState({});
+  const [pickedImage, setPickedImage] = useState("");
   const serverIP =
     config.ExpressServer.ServerIP + ":" + String(config.ExpressServer.Port);
 
@@ -66,13 +67,16 @@ const RegisterPage3 = ({ navigation }) => {
               width: 300,
               height: 400,
               cropping: true,
-            }).then((image) => {
-              console.log(image);
-              setPickedImage(image);
+            }).then(async (image) => {
+              // console.log(image);
+              // setPickedImage(image);
+              var img = await RNFS.readFile(image.path, "base64");
+
+              setPickedImage(img);
               axios
                 .post(
-                  serverIP + "/bla",
-                  { img: image },
+                  serverIP + "/uploadImage",
+                  { img: img },
                   {
                     timeout: config.defaultTimeout,
                   }
@@ -94,7 +98,7 @@ const RegisterPage3 = ({ navigation }) => {
         >
           Profile Photo
         </Text>
-        {Object.keys(pickedImage).length === 0 ? null : (
+        {pickedImage.length === 0 ? null : (
           <Image
             style={{
               top: 50,
@@ -103,7 +107,7 @@ const RegisterPage3 = ({ navigation }) => {
               borderColor: "white",
               borderWidth: 2,
             }}
-            source={{ uri: pickedImage.path }}
+            source={{ uri: "data:image/jpeg;base64," + pickedImage }}
             // resizeMode="contain"
           />
         )}
@@ -128,7 +132,22 @@ const RegisterPage3 = ({ navigation }) => {
             right: 15,
           },
         ]}
-        onPress={() => navigation.navigate("WelcomePage")}
+        onPress={() => {
+          // console.log(pickedImage);
+          axios
+            .post(
+              serverIP + "/registerPage3",
+              { email: "Abc", image: pickedImage },
+              {
+                timeout: config.defaultTimeout,
+              }
+            )
+            .then((res) => {
+              console.log("Done!");
+              navigation.navigate("WelcomePage");
+            })
+            .catch((err) => console.log(err));
+        }}
       />
     </ScrollView>
   );

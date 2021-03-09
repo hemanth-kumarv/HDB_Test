@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const schemas = require("./mongoSchemas");
 const config = require("../config.json");
+
 const mongoUrl =
   "mongodb+srv://" +
   config.MongoDBCredentials.UserName +
@@ -13,6 +14,7 @@ const connectionOptions = {
   useFindAndModify: false,
   useCreateIndex: true
 };
+
 const CompanyListDBTestConn = mongoose.createConnection(
   mongoUrl + "CompanyListDBTest",
   connectionOptions
@@ -22,6 +24,7 @@ const CompanyListDBTest = CompanyListDBTestConn.model(
   schemas.CompanyListDBTest,
   "TestList"
 );
+
 const CustomerRewardsDBTestConn = mongoose.createConnection(
   mongoUrl + "CustomerRewardsDBTest",
   connectionOptions
@@ -31,6 +34,7 @@ const CustomerRewardsDBTest = CustomerRewardsDBTestConn.model(
   schemas.CustomerRewardsDBTest,
   "CustomerList1"
 );
+
 const CustomerLoginDBTestConn = mongoose.createConnection(
   mongoUrl + "CustomerLoginDBTest",
   connectionOptions
@@ -41,6 +45,17 @@ const CustomerLoginDBTest = CustomerLoginDBTestConn.model(
   "CustomerList1"
 );
 
+const CustomerDetailsDBTestConn = mongoose.createConnection(
+  mongoUrl + "CustomerDetailsDBTest",
+  connectionOptions
+);
+const CustomerDetailsDBTest = CustomerDetailsDBTestConn.model(
+  "CustomerDetailsDBTest",
+  schemas.CustomerDetailsDBTest,
+  "CustomerList1"
+);
+
 exports.CompanyListDBTest = CompanyListDBTest;
 exports.CustomerLoginDBTest = CustomerLoginDBTest;
 exports.CustomerRewardsDBTest = CustomerRewardsDBTest;
+exports.CustomerDetailsDBTest = CustomerDetailsDBTest;

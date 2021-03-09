@@ -30,6 +30,20 @@ const CustomerLoginDBTest = new Schema({
   Preferences: {}
 });
 
+const CustomerDetailsDBTest = new Schema({
+  Name: String,
+  DoB: String,
+  MobileNumber: Number,
+  UPID: String,
+  Gender: String,
+  Address1: String,
+  Address2: String,
+  Referral: String,
+  Email: String,
+  ProfilePicture: String,
+})
+
 exports.CompanyListDBTest = CompanyListDBTest;
 exports.CustomerRewardsDBTest = CustomerRewardsDBTest;
 exports.CustomerLoginDBTest = CustomerLoginDBTest;
+exports.CustomerDetailsDBTest = CustomerDetailsDBTest;

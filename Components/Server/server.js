@@ -1,8 +1,8 @@
 var express = require("express");
+var fs = require("fs");
 var app = express();
 var cors = require("cors");
-var multer = require("multer");
-app.use(express.json());
+app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
@@ -11,6 +11,7 @@ const conn = require("./mongoConnections");
 const CompanyListDBTest = conn.CompanyListDBTest;
 const CustomerLoginDBTest = conn.CustomerLoginDBTest;
 const CustomerRewardsDBTest = conn.CustomerRewardsDBTest;
+const CustomerDetailsDBTest = conn.CustomerDetailsDBTest;
 
 app.post("/getRewards", function (req, res) {
   if (req.body.name) {
@@ -42,23 +43,26 @@ app.post("/login", function (req, res) {
   });
 });
 
-var upload = multer({ dest: "uploads/" });
-
-app.post("/bla", async (req, res) => {
-  var avatar = req.body.img;
-  console.log(req.body);
-  upload.single(avatar.path)
-
+app.post("/uploadImage", async (req, res) => {
+  var image = req.body.img;
+  var buffer = Buffer.from(image, "base64");
+  fs.writeFileSync("test.jpg", buffer);
   res.send({
     status: true,
     message: "File is uploaded.",
-    data: {
-      name: avatar.path,
-      mimetype: avatar.mime,
-      size: avatar.size,
-    },
   });
 });
+
+app.post('/registerPage3', (req, res) => {
+  CustomerDetailsDBTest.updateOne({"Email": req.body.email}, {"ProfilePicture": req.body.image}, (err, result) => {
+    if(err) {
+      res.send("Error connecting to database.");
+    }
+    else {
+      res.send({status: true});
+    }
+  })
+})
 
 app.post("/", function (req, res) {
   res.send("Hello world!");
