@@ -2,9 +2,8 @@ import React, { useState, useRef } from "react";
 import { Text, View, TextInput, ScrollView, Keyboard } from "react-native";
 import styles from "./welcomePageStyles";
 import globalStyles from "../../globalStyles";
-import axios from "axios";
+import axios from "../axiosServer";
 import sha256 from "crypto-js/sha256";
-import config from "../config.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ErrorSVG from "../../assets/exclamation-triangle.svg";
 
@@ -16,22 +15,16 @@ const WelcomePage = ({ navigation }) => {
 
   const login = (userName, password) => {
     setloginError("");
-    const serverIP =
-      config.ExpressServer.ServerIP + ":" + String(config.ExpressServer.Port);
     axios
-      .post(
-        serverIP + "/login",
-        { name: userName, pass: password },
-        {
-          timeout: config.defaultTimeout,
-        }
-      )
+      .post("/login", { name: userName, pass: password })
       .then(async (res) => {
         // console.log(res.data);
-        if (res.data) setloginError(res.data);
-        else {
+        if (res.data.status) {
           await AsyncStorage.setItem("UserId", userName);
+          await AsyncStorage.setItem("UserData", JSON.stringify(res.data.data));
           navigation.replace("CustomerLandingPage");
+        } else {
+          setloginError(res.data.message);
         }
       })
       .catch((err) => {

@@ -4,7 +4,7 @@ var mongoose = require("mongoose"),
 const CompanyListDBTest = new Schema({
   Name: String,
   Location: String,
-  PayPerHour: { type: Number, default: 0.0 }
+  Reward: { type: Number, default: 0.0 },
 });
 
 const CustomerRewardsDBTest = new Schema({
@@ -18,16 +18,21 @@ const CustomerRewardsDBTest = new Schema({
         Date: Number,
         Month: Number,
         Year: Number,
-        Time: Number
-      }
-    }
-  ]
+        Time: Number,
+      },
+    },
+  ],
+  Total: {
+    Count: Number,
+    Time: Number,
+    Amount: Number,
+  },
 });
 
 const CustomerLoginDBTest = new Schema({
   UserID: String,
   PasswordHash: String,
-  Preferences: {}
+  Preferences: {},
 });
 
 const CustomerDetailsDBTest = new Schema({
@@ -41,7 +46,7 @@ const CustomerDetailsDBTest = new Schema({
   Referral: String,
   Email: String,
   ProfilePicture: String,
-})
+});
 
 exports.CompanyListDBTest = CompanyListDBTest;
 exports.CustomerRewardsDBTest = CustomerRewardsDBTest;

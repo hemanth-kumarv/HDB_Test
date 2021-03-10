@@ -1,83 +1,61 @@
-import axios from "axios";
-import { Title } from "native-base";
+import axios from "../axiosServer";
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Text,
   View,
-  Button,
+  Image,
   ScrollView,
   ActivityIndicator,
   RefreshControl,
 } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 import globalStyles from "../../globalStyles";
 import SideDrawer from "../../Components/SideDrawer/sideDrawer";
-import { styles, tdWidth } from "./landingPageStyles";
+import ProfileIconPage from "../ProfilePage/profileIcon";
+import { styles, adsTdWidth } from "./landingPageStyles";
 import { changeDrawerStyle } from "../Redux/dispatchers";
-import config from "../config.json";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ErrorSVG from "../../assets/exclamation-triangle.svg";
 
-const timeFormatter = (time) => {
-  let timeFormat =
-    String(time.Time).slice(0, 2) + ":" + String(time.Time).slice(2);
-  let newtime =
-    time.Date + "/" + time.Month + "/" + time.Year + "\n" + timeFormat;
-  return newtime;
-};
-
-const totalFinder = (arr, name) => {
-  let total = 0;
-  arr.forEach((i) => {
-    total += i[name];
-  });
-  return total;
-};
-
-const CustomerLandingPage = ({ navigation }) => {
-  const [rewardsList, setRewardsList] = useState([]);
+const CustomerLandingPage = ({ route, navigation }) => {
+  const [adsList, setAdsList] = useState([]);
   const [searching, setSearching] = useState(false);
   const [userName, setuserName] = useState(null);
 
   const drawerOpen = useSelector((state) => state.drawerOpen);
-  const name = useSelector((state) => state.loggedIn);
-
+  // const name = useSelector((state) => state.loggedIn);
+  const isFocused = useIsFocused();
   const dispatch = useDispatch();
 
-  const serverIP =
-    config.ExpressServer.ServerIP + ":" + String(config.ExpressServer.Port);
-  const retrieveRewards = (userName) => {
+  const searchAvailableAds = (userName) => {
     // console.log("searching...");
 
     setSearching(false);
     axios
-      .post(
-        serverIP + "/getRewards",
-        { name: userName },
-        {
-          timeout: config.defaultTimeout,
-        }
-      )
+      .post("/getAvailableAds", {})
       .then(async (res) => {
         // console.log("NEW USER: ", await AsyncStorage.getItem("UserId"));
-        setRewardsList(res.data);
+        setAdsList(res.data);
         setSearching(true);
       })
       .catch((err) => {
-        // console.error("YO ERROR BRO!", err);
-        setRewardsList("Error connecting to server.");
+        setAdsList("Error connecting to server.");
         setSearching(true);
       });
   };
   useEffect(() => {
-    if (rewardsList.length === 0 && !searching) {
+    if (isFocused) {
+      if (drawerOpen) dispatch(changeDrawerStyle(false));
+    }
+    if (adsList.length === 0 && !searching) {
       (async () => {
         const name = await AsyncStorage.getItem("UserId");
         setuserName(name);
-        retrieveRewards(userName);
+        searchAvailableAds(userName);
       })();
     }
-  });
+  }, [isFocused]);
   return (
     <ScrollView
       style={globalStyles.container}
@@ -85,11 +63,11 @@ const CustomerLandingPage = ({ navigation }) => {
       refreshControl={
         <RefreshControl
           refreshing={false}
-          onRefresh={() => retrieveRewards(userName)}
+          onRefresh={() => searchAvailableAds(userName)}
         />
       }
     >
-      <SideDrawer navigation={navigation} />
+      <SideDrawer navigation={navigation} route={route} />
       <View
         style={[
           styles.container,
@@ -99,10 +77,11 @@ const CustomerLandingPage = ({ navigation }) => {
           if (drawerOpen) dispatch(changeDrawerStyle(false));
         }}
       >
+        <ProfileIconPage navigation={navigation} route={route} />
         {searching ? (
           <>
-            <Text style={styles.heading}>Reward Description</Text>
-            {typeof rewardsList === "string" ? (
+            <Text style={styles.heading}>Ads Near Me</Text>
+            {typeof adsList === "string" ? (
               <View style={styles.errorTextContainer}>
                 <ErrorSVG
                   width="50"
@@ -111,57 +90,36 @@ const CustomerLandingPage = ({ navigation }) => {
                     tintColor: "yellow",
                   }}
                 />
-                <Text style={styles.errorText}>{rewardsList}</Text>
+                <Text style={styles.errorText}>{adsList}</Text>
                 <Text
                   style={styles.retryButton}
-                  onPress={() => retrieveRewards(userName)}
+                  onPress={() => searchAvailableAds(userName)}
                 >
                   Retry
                 </Text>
               </View>
             ) : (
               <ScrollView style={styles.table}>
-                <View style={styles.tableRow}>
-                  <Text style={[styles.tableData, tdWidth.no]}>No.</Text>
-                  <Text style={[styles.tableData, tdWidth.date]}>
-                    Date/{"\n"}Time
-                  </Text>
-                  <Text style={[styles.tableData, tdWidth.ad]}>
-                    Ad{"\n"} Name
-                  </Text>
-                  <Text style={[styles.tableData, tdWidth.reward]}>
-                    Reward{"\n"}(Rs.)
-                  </Text>
-                  <Text style={[styles.tableData, tdWidth.duration]}>
-                    Duration{"\n"}(Mins)
-                  </Text>
-                </View>
-                {rewardsList.map((i, j) => (
-                  <View style={styles.tableRow} key={j}>
-                    <Text style={[styles.tableData, tdWidth.no]}>{j + 1}</Text>
-                    <Text style={[styles.tableData, tdWidth.date]}>
-                      {timeFormatter(i.DateTime)}
+                {adsList.map((i, j) => (
+                  <View style={styles.adTableRow} key={j}>
+                    {/* <Text style={[styles.adTableData, adsTdWidth.no]}>{j + 1}</Text> */}
+                    <Image
+                      style={{ width: 60, height: 60 }}
+                      source={{ uri: i.Icon }}
+                    />
+                    <Text style={[styles.adTableData, adsTdWidth.ad]}>
+                      {i.Name}
                     </Text>
-                    <Text style={[styles.tableData, tdWidth.ad]}>
-                      {i.AdName}
+                    <Text style={[styles.adTableData, adsTdWidth.reward]}>
+                      Rs. {i.Reward}
+                      {"\n"}
+                      <Text style={{ fontSize: 18 }}>For {i.Duration} s</Text>
                     </Text>
-                    <Text style={[styles.tableData, tdWidth.reward]}>
-                      {i.Reward}
-                    </Text>
-                    <Text style={[styles.tableData, tdWidth.duration]}>
-                      {i.Duration}
-                    </Text>
+                    {/* <Text style={[styles.adTableData, adsTdWidth.select, {backgroundColor: 'dodgerblue', color: 'black'}]}>
+                      Select
+                    </Text> */}
                   </View>
                 ))}
-                <View style={styles.tableRow}>
-                  <Text style={[styles.tableData, tdWidth.total]}>Total</Text>
-                  <Text style={[styles.tableData, tdWidth.totalRewards]}>
-                    {totalFinder(rewardsList, "Reward")}
-                  </Text>
-                  <Text style={[styles.tableData, tdWidth.totalDuration]}>
-                    {totalFinder(rewardsList, "Duration")}
-                  </Text>
-                </View>
               </ScrollView>
             )}
           </>

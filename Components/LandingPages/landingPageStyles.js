@@ -7,7 +7,9 @@ export const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 25,
     top: vh * 0.04,
-    right: 0.15 * vw,
+    width: vw * 0.6,
+    left: 0.2 * vw,
+    textAlign: "center",
     position: "absolute",
   },
   container: {
@@ -16,7 +18,7 @@ export const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 4,
     top: 0,
-    left: 0
+    left: 0,
   },
   table: {
     top: vh * 0.12,
@@ -26,21 +28,36 @@ export const styles = StyleSheet.create({
     alignSelf: "stretch",
     flexDirection: "row",
     borderColor: "gray",
-    borderWidth: 1
+    borderWidth: 1,
   },
   tableData: {
     color: "#fff",
     fontSize: 20,
     textAlign: "center",
     borderLeftWidth: 2,
-    borderColor: "gray"
+    borderColor: "gray",
+  },
+  adTableRow: {
+    alignSelf: "stretch",
+    flexDirection: "row",
+    borderRadius: 6,
+    backgroundColor: "#222222",
+    marginBottom: 10,
+    height: 60,
+    alignSelf: "center",
+  },
+  adTableData: {
+    color: "#fff",
+    fontSize: 23,
+    textAlign: "center",
+    textAlignVertical: "center",
   },
   errorTextContainer: {
     alignItems: "center",
     flexDirection: "column",
     justifyContent: "center",
     top: "30%",
-    height: vh*0.8,
+    height: vh * 0.8,
   },
   errorText: {
     color: "red",
@@ -48,7 +65,7 @@ export const styles = StyleSheet.create({
     top: 20,
     flex: 3,
     textAlign: "center",
-    fontSize: 30
+    fontSize: 30,
   },
   retryButton: {
     top: 10,
@@ -57,7 +74,18 @@ export const styles = StyleSheet.create({
     flex: 2,
     // borderColor: 'red',
     // borderWidth: 2,
-  }
+  },
+  newAd: {
+    backgroundColor: "dodgerblue",
+    borderRadius: 10,
+    width: "100%",
+    bottom: 0,
+    textAlign: "center",
+    position: "absolute",
+    height: 45,
+    textAlignVertical: "center",
+    fontSize: 25,
+  },
 });
 
 export const tdWidth = {
@@ -85,5 +113,18 @@ export const tdWidth = {
   },
   get totalDuration() {
     return { ...this.prop, width: vw * 0.23 };
-  }
+  },
+};
+
+export const adsTdWidth = {
+  prop: {},
+  // get no() {
+  //   return {...this.prop, width: vw * 0.1}
+  // },
+  get ad() {
+    return { ...this.prop, width: vw * 0.45 };
+  },
+  get reward() {
+    return { ...this.prop, width: vw * 0.25 };
+  },
 };

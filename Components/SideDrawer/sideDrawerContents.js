@@ -9,7 +9,7 @@ import { changeDrawerStyle } from "../Redux/dispatchers";
 import RightLeft from "../../assets/chevron-left.svg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const SideDrawerContents = ({ navigation }) => {
+const SideDrawerContents = ({ route, navigation }) => {
   // const navigation = useNavigation();
   // const open = useSelector(state => state.drawerOpen);
   const dispatch = useDispatch();
@@ -33,10 +33,22 @@ const SideDrawerContents = ({ navigation }) => {
       <Text
         style={styles.drawerButtons}
         onPress={() => {
-          navigation.navigate("WelcomePage");
+          navigation.navigate("ProfilePage");
         }}
       >
         Profile
+      </Text>
+      <Text
+        style={styles.drawerButtons}
+        onPress={() => {
+          route.name === "CustomerLandingPage"
+            ? navigation.navigate("RewardHistory")
+            : navigation.navigate("CustomerLandingPage");
+        }}
+      >
+        {route.name === "CustomerLandingPage"
+          ? "Reward History"
+          : "Reward Description"}
       </Text>
       <Text
         style={styles.drawerButtons}
@@ -78,8 +90,9 @@ const SideDrawerContents = ({ navigation }) => {
         style={styles.drawerButtons}
         onPress={async () => {
           await AsyncStorage.removeItem("UserId");
+          await AsyncStorage.removeItem("UserData");
+          await AsyncStorage.removeItem("TotalRewards");
           navigation.replace("WelcomePage");
-          dispatch(changeDrawerStyle(false));
         }}
       >
         Logout

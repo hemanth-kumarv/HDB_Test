@@ -15,15 +15,12 @@ import ImagePicker from "react-native-image-crop-picker";
 import RNFS from "react-native-fs";
 import LeftIcon from "../../assets/chevron-left.svg";
 import RightIcon from "../../assets/chevron-right.svg";
-import axios from "axios";
-import config from "../config.json";
+import axios from "../axiosServer";
 
 const RegisterPage3 = ({ navigation }) => {
   const [gender, setGender] = useState("Gender");
   const [showChooser, setshowChooser] = useState(false);
   const [pickedImage, setPickedImage] = useState("");
-  const serverIP =
-    config.ExpressServer.ServerIP + ":" + String(config.ExpressServer.Port);
 
   return (
     <ScrollView
@@ -64,35 +61,22 @@ const RegisterPage3 = ({ navigation }) => {
           style={styles.textInput}
           onPress={() => {
             ImagePicker.openPicker({
-              width: 300,
+              width: 400,
               height: 400,
               cropping: true,
             }).then(async (image) => {
-              // console.log(image);
-              // setPickedImage(image);
               var img = await RNFS.readFile(image.path, "base64");
-
-              setPickedImage(img);
-              axios
-                .post(
-                  serverIP + "/uploadImage",
-                  { img: img },
-                  {
-                    timeout: config.defaultTimeout,
-                  }
-                )
-                .then(async (res) => {
-                  console.log(res.data);
-                  // if (res.data) setloginError(res.data);
-                  // else {
-                  //   await AsyncStorage.setItem("UserId", userName);
-                  //   navigation.replace("CustomerLandingPage");
-                  // }
-                })
-                .catch((err) => {
-                  console.error(err);
-                  setloginError("Error connecting to server.");
-                });
+              setPickedImage("data:" + image.mime + ";base64," + img);
+              // axios
+              //   .post("/uploadImage",
+              //   )
+              //   .then(async (res) => {
+              //     console.log(res.data);
+              //   })
+              //   .catch((err) => {
+              //     console.error(err);
+              //     setloginError("Error connecting to server.");
+              //   });
             });
           }}
         >
@@ -107,7 +91,7 @@ const RegisterPage3 = ({ navigation }) => {
               borderColor: "white",
               borderWidth: 2,
             }}
-            source={{ uri: "data:image/jpeg;base64," + pickedImage }}
+            source={{ uri: pickedImage }}
             // resizeMode="contain"
           />
         )}
@@ -135,15 +119,8 @@ const RegisterPage3 = ({ navigation }) => {
         onPress={() => {
           // console.log(pickedImage);
           axios
-            .post(
-              serverIP + "/registerPage3",
-              { email: "Abc", image: pickedImage },
-              {
-                timeout: config.defaultTimeout,
-              }
-            )
+            .post("/registerPage3", { email: "Abc", image: pickedImage })
             .then((res) => {
-              console.log("Done!");
               navigation.navigate("WelcomePage");
             })
             .catch((err) => console.log(err));
