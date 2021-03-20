@@ -58,7 +58,7 @@ const SideDrawerContents = ({ route, navigation }) => {
       </Text>
       <Text
         style={styles.drawerButtons}
-        onPress={() => navigation.navigate("")}
+        onPress={() => navigation.navigate("WalletPage")}
       >
         Wallet
       </Text>

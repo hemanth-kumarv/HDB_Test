@@ -12,50 +12,49 @@ const connectionOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
-  useCreateIndex: true
+  useCreateIndex: true,
 };
 
-const CompanyListDBTestConn = mongoose.createConnection(
-  mongoUrl + "CompanyListDBTest",
+// Connections to Databases "Company" and "Customer"
+const CompanyConn = mongoose.createConnection(
+  mongoUrl + "Company",
   connectionOptions
 );
-const CompanyListDBTest = CompanyListDBTestConn.model(
-  "CompanyListDBTest",
+const CustomerConn = mongoose.createConnection(
+  mongoUrl + "Customer",
+  connectionOptions
+);
+
+// Model of Company Collections
+const CompanyListDBTest = CompanyConn.model(
+  "Company",
   schemas.CompanyListDBTest,
-  "TestList"
+  "CompanyListDBTest"
 );
 
-const CustomerRewardsDBTestConn = mongoose.createConnection(
-  mongoUrl + "CustomerRewardsDBTest",
-  connectionOptions
-);
-const CustomerRewardsDBTest = CustomerRewardsDBTestConn.model(
-  "CustomerRewardsDBTest",
+// Model of Customer Collections
+const CustomerRewardsDBTest = CustomerConn.model(
+  "Customer",
   schemas.CustomerRewardsDBTest,
-  "CustomerList1"
+  "CustomerRewardsDBTest"
 );
-
-const CustomerLoginDBTestConn = mongoose.createConnection(
-  mongoUrl + "CustomerLoginDBTest",
-  connectionOptions
-);
-const CustomerLoginDBTest = CustomerLoginDBTestConn.model(
-  "CustomerLoginDBTest",
+const CustomerLoginDBTest = CustomerConn.model(
+  "Customer",
   schemas.CustomerLoginDBTest,
-  "CustomerList1"
+  "CustomerLoginDBTest"
 );
-
-const CustomerDetailsDBTestConn = mongoose.createConnection(
-  mongoUrl + "CustomerDetailsDBTest",
-  connectionOptions
-);
-const CustomerDetailsDBTest = CustomerDetailsDBTestConn.model(
-  "CustomerDetailsDBTest",
+const CustomerDetailsDBTest = CustomerConn.model(
+  "Customer",
   schemas.CustomerDetailsDBTest,
-  "CustomerList1"
+  "CustomerDetailsDBTest"
+);
+const TransactionHistoryTest = CustomerConn.model("Customer",
+  schemas.TransactionHistoryTest,
+  "TransactionHistoryTest"
 );
 
 exports.CompanyListDBTest = CompanyListDBTest;
 exports.CustomerLoginDBTest = CustomerLoginDBTest;
 exports.CustomerRewardsDBTest = CustomerRewardsDBTest;
 exports.CustomerDetailsDBTest = CustomerDetailsDBTest;
+exports.TransactionHistoryTest = TransactionHistoryTest;

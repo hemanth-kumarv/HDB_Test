@@ -17,7 +17,12 @@ const globalStyles = StyleSheet.create({
     justifyContent: "flex-start",
     color: "#fff",
     flex: 1
-  }
+  },
+  verticalLine: {
+    height: "100%",
+    borderLeftColor: "white",
+    borderWidth: 2,
+  },
 });
 
 export default globalStyles;

@@ -12,6 +12,7 @@ import CustomerLandingPage from "./Components/LandingPages/customerLandingPage";
 import RewardHistory from "./Components/LandingPages/rewardHistory";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ProfilePage from "./Components/ProfilePage/profilePage";
+import WalletPage from "./Components/WalletPage/walletPage"
 
 const Stack = createStackNavigator();
 
@@ -45,6 +46,7 @@ const App = () => {
           />
           <Stack.Screen name="RewardHistory" component={RewardHistory} />
           <Stack.Screen name="ProfilePage" component={ProfilePage} />
+          <Stack.Screen name="WalletPage" component={WalletPage} />
         </Stack.Navigator>
       </NavigationContainer>) : null}
     </Provider>

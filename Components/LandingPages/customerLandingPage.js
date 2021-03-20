@@ -51,8 +51,21 @@ const CustomerLandingPage = ({ route, navigation }) => {
     if (adsList.length === 0 && !searching) {
       (async () => {
         const name = await AsyncStorage.getItem("UserId");
+        const totalRewards = await AsyncStorage.getItem("TotalRewards");
         setuserName(name);
         searchAvailableAds(userName);
+        if (totalRewards.length == 0)
+          axios
+            .post("/getRewards", { name: userDataJSON.Email })
+            .then(async (res) => {
+              await AsyncStorage.setItem(
+                "TotalRewards",
+                JSON.stringify(res.data.Total)
+              );
+            })
+            .catch((err) => {
+              console.log(err);
+            });
       })();
     }
   }, [isFocused]);

@@ -16,6 +16,11 @@ import SideDrawer from "../SideDrawer/sideDrawer";
 import { useIsFocused } from "@react-navigation/core";
 import axios from "../axiosServer";
 import ProfileIcon from "../../assets/person-circle.svg";
+import AddressIcon from "../../assets/house.svg";
+import EmailIcon from "../../assets/envelope.svg";
+import DoBIcon from "../../assets/calendar.svg";
+import PhoneIcon from "../../assets/telephone.svg";
+import EditIcon from "../../assets/pencil.svg";
 
 const ProfilePage = ({ navigation, route }) => {
   const isFocused = useIsFocused();
@@ -68,84 +73,118 @@ const ProfilePage = ({ navigation, route }) => {
       //   }
     >
       <SideDrawer navigation={navigation} route={route} />
-      <Text style={styles.heading}>Profile</Text>
-      {Object.keys(userData).length > 0 &&
-      totalRewards &&
-      Object.keys(totalRewards).length > 0 ? (
-        <View
-          style={[
-            globalStyles.container,
-            {
-              alignItems: "center",
-              justifyContent: "space-around",
-              top: "10%",
-            },
-          ]}
-        >
-          {userData["ProfilePicture"].length > 0 ? (
-            <Image
-              style={styles.profilePicture}
-              source={{ uri: userData.ProfilePicture }}
-              resizeMode="cover"
-            />
-          ) : (
-            <ProfileIcon
-              width={100}
-              height={100}
-              style={[
-                styles.profilePicture,
-                { tintColor: "white", margin: 25 },
-              ]}
-            />
-          )}
-          <ScrollView>
-            <Text style={profileDataStyles.name}>{userData.Name}</Text>
-            <Text style={profileDataStyles.email}>{userData.Email}</Text>
-            <Text style={profileDataStyles.email}>{userData.MobileNumber}</Text>
-            <View style={styles.totalRewards}>
-              <Text style={profileDataStyles.total}>
-                Total Time{"\n"}
-                {totalRewards.Time} min
-              </Text>
-              <View
-                style={{
-                  height: "100%",
-                  borderLeftColor: "white",
-                  borderWidth: 2,
-                }}
-              ></View>
-              <Text style={profileDataStyles.total}>
-                Total Rewards{"\n"}Rs. {totalRewards.Amount}
-              </Text>
-            </View>
-            <Text style={profileDataStyles.dob}>
-              Date of Birth <Text>{userData.DoB}</Text>
-            </Text>
-            <Text style={profileDataStyles.addr1}>
-              Address Line 1 <Text>{userData.Address1}</Text>
-            </Text>
-            <Text style={profileDataStyles.addr2}>
-              Address Line 2 <Text>{userData.Address2}</Text>
-            </Text>
-          </ScrollView>
-        </View>
-      ) : (
-        <View style={{ top: 250 }}>
-          <ActivityIndicator size={75} color="#fff" />
-        </View>
-      )}
-      <Text
-        style={styles.logout}
-        onPress={async () => {
-          await AsyncStorage.removeItem("UserId");
-          await AsyncStorage.removeItem("UserData");
-          await AsyncStorage.removeItem("TotalRewards");
-
-          navigation.replace("WelcomePage");
+      <View
+        style={[
+          globalStyles.container,
+          drawerOpen ? { opacity: 0.2 } : { opacity: 1 },
+        ]}
+        onStartShouldSetResponder={() => {
+          if (drawerOpen) dispatch(changeDrawerStyle(false));
         }}
       >
-        Logout
-      </Text>
+        <Text style={styles.heading}>Profile</Text>
+        <EditIcon width={30} height={30} style={styles.editIcon} />
+        {Object.keys(userData).length > 0 &&
+        totalRewards &&
+        Object.keys(totalRewards).length > 0 ? (
+          <View
+            style={[
+              globalStyles.container,
+              {
+                alignItems: "center",
+                justifyContent: "space-around",
+                top: "10%",
+              },
+            ]}
+          >
+            {userData["ProfilePicture"].length > 0 ? (
+              <Image
+                style={styles.profilePicture}
+                source={{ uri: userData.ProfilePicture }}
+                resizeMode="cover"
+              />
+            ) : (
+              <ProfileIcon
+                width={100}
+                height={100}
+                style={[
+                  styles.profilePicture,
+                  { tintColor: "white", margin: 25 },
+                ]}
+              />
+            )}
+            <ScrollView>
+              <Text style={profileDataStyles.name}>{userData.Name}</Text>
+              <Text style={profileDataStyles.email}>
+                <EmailIcon
+                  width={18}
+                  height={18}
+                  style={{ tintColor: "white" }}
+                />
+                {"\t"}
+                {userData.Email}
+              </Text>
+              <Text style={profileDataStyles.email}>
+                <PhoneIcon
+                  width={18}
+                  height={18}
+                  style={{ tintColor: "white" }}
+                />
+                {"\t"}
+                {userData.MobileNumber}
+              </Text>
+              <View style={styles.totalRewards}>
+                <Text style={profileDataStyles.total}>
+                  Total Time{"\n"}
+                  {totalRewards.Time} min
+                </Text>
+                <View style={globalStyles.verticalLine}></View>
+                <Text style={profileDataStyles.total}>
+                  Total Rewards{"\n"}Rs. {totalRewards.Amount}
+                </Text>
+              </View>
+              <Text style={profileDataStyles.dob}>
+                <DoBIcon
+                  width={22}
+                  height={22}
+                  style={{ tintColor: "white" }}
+                />
+                {"\t"}
+                <Text>{userData.DoB}</Text>
+              </Text>
+              <Text style={profileDataStyles.addr1}>
+                <AddressIcon
+                  width={22}
+                  height={22}
+                  style={{ tintColor: "white" }}
+                />
+                {"\t"}{" "}
+                <Text>
+                  {userData.Address1}
+                  {"\n"}
+                  {userData.Address2}
+                </Text>
+              </Text>
+            </ScrollView>
+          </View>
+        ) : (
+          <View style={{ top: 250 }}>
+            <ActivityIndicator size={75} color="#fff" />
+          </View>
+        )}
+        <Text
+          style={styles.logout}
+          onPress={async () => {
+            await AsyncStorage.removeItem("UserId");
+            await AsyncStorage.removeItem("UserData");
+            await AsyncStorage.removeItem("TotalRewards");
+
+            navigation.replace("WelcomePage");
+          }}
+        >
+          Logout
+        </Text>
+      </View>
     </ScrollView>
   );
 };

@@ -24,6 +24,12 @@ export const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "white",
   },
+  editIcon: {
+    tintColor: "white",
+    position: "absolute",
+    top: vh * 0.04,
+    right: vw * 0.04,
+  },
   totalRewards: {
     flexWrap: "wrap",
     flexDirection: "row",
@@ -33,6 +39,7 @@ export const styles = StyleSheet.create({
     margin: 10,
     marginTop: 25,
     marginBottom: 25,
+    width: vw * 0.85,
   },
   logout: {
     backgroundColor: "red",
@@ -49,7 +56,15 @@ export const styles = StyleSheet.create({
 
 export const profileDataStyles = {
   mainInfo: { color: "white", fontSize: 18 },
-  otherInfo: { color: "white", fontSize: 22 },
+  otherInfo: {
+    color: "white",
+    fontSize: 22,
+    textAlign: "center",
+    borderColor: "white",
+    borderWidth: 1,
+    margin: 5,
+    padding: 10,
+  },
   get name() {
     return { ...this.mainInfo, textAlign: "center", fontSize: 25 };
   },
@@ -57,7 +72,7 @@ export const profileDataStyles = {
     return { ...this.mainInfo, textAlign: "center", fontStyle: "italic" };
   },
   get total() {
-    return { ...this.otherInfo };
+    return { ...this.mainInfo, fontSize: 20 };
   },
   get dob() {
     return { ...this.otherInfo };

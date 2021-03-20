@@ -5,6 +5,8 @@ const CompanyListDBTest = new Schema({
   Name: String,
   Location: String,
   Reward: { type: Number, default: 0.0 },
+  Duration: Number,
+  Icon: String,
 });
 
 const CustomerRewardsDBTest = new Schema({
@@ -47,8 +49,21 @@ const CustomerDetailsDBTest = new Schema({
   Email: String,
   ProfilePicture: String,
 });
+const TransactionHistoryTest = new Schema({
+  Email: String,
+  TotalAmount: Number,
+  TransactionHistory: [
+    {
+      Date: String,
+      Time: String,
+      Amount: Number,
+      TxnId: String,
+    },
+  ],
+});
 
 exports.CompanyListDBTest = CompanyListDBTest;
 exports.CustomerRewardsDBTest = CustomerRewardsDBTest;
 exports.CustomerLoginDBTest = CustomerLoginDBTest;
 exports.CustomerDetailsDBTest = CustomerDetailsDBTest;
+exports.TransactionHistoryTest = TransactionHistoryTest;

@@ -16,6 +16,7 @@ import { changeDrawerStyle } from "../Redux/dispatchers";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ErrorSVG from "../../assets/exclamation-triangle.svg";
 import { useIsFocused } from "@react-navigation/core";
+import ProfileIconPage from "../ProfilePage/profileIcon";
 
 const timeFormatter = (time) => {
   let timeFormat =
@@ -43,7 +44,7 @@ const RewardHistory = ({ route, navigation }) => {
 
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
-  
+
   const retrieveRewards = (userName) => {
     // console.log("searching...", userName);
 
@@ -101,6 +102,7 @@ const RewardHistory = ({ route, navigation }) => {
         {searching ? (
           <>
             <Text style={styles.heading}>Reward History</Text>
+            <ProfileIconPage navigation={navigation} route={route} />
             {!rewardsList.status ? (
               <View style={styles.errorTextContainer}>
                 <ErrorSVG
