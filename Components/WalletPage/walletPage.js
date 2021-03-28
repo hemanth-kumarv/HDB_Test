@@ -109,7 +109,7 @@ const WalletPage = ({ navigation, route }) => {
                   Click to view Reward History
                 </Text>
               </Text>
-              <Text style={styles.depositButton}>Deposit</Text>
+              <Text style={styles.depositButton}>Transfer</Text>
             </ScrollView>
             <View style={styles.transactions}>
               <Text style={styles.prevTransactions}>Previous Transactions</Text>

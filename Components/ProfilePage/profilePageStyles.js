@@ -40,6 +40,7 @@ export const styles = StyleSheet.create({
     marginTop: 25,
     marginBottom: 25,
     width: vw * 0.85,
+    borderRadius: 10
   },
   logout: {
     backgroundColor: "red",
@@ -72,15 +73,12 @@ export const profileDataStyles = {
     return { ...this.mainInfo, textAlign: "center", fontStyle: "italic" };
   },
   get total() {
-    return { ...this.mainInfo, fontSize: 20 };
+    return { ...this.mainInfo, fontSize: 20, textAlign: 'center' };
   },
   get dob() {
-    return { ...this.otherInfo };
+    return { ...this.otherInfo, borderRadius: 8 };
   },
   get addr1() {
-    return { ...this.otherInfo };
-  },
-  get addr2() {
-    return { ...this.otherInfo };
+    return { ...this.otherInfo, borderRadius: 8 };
   },
 };

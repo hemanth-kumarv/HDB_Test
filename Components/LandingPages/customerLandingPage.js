@@ -126,7 +126,7 @@ const CustomerLandingPage = ({ route, navigation }) => {
                     <Text style={[styles.adTableData, adsTdWidth.reward]}>
                       Rs. {i.Reward}
                       {"\n"}
-                      <Text style={{ fontSize: 18 }}>For {i.Duration} s</Text>
+                      <Text style={{ fontSize: 18, color: 'white' }}>For {i.Duration} s</Text>
                     </Text>
                     {/* <Text style={[styles.adTableData, adsTdWidth.select, {backgroundColor: 'dodgerblue', color: 'black'}]}>
                       Select

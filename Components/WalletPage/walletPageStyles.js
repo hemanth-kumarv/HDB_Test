@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
     color: "white",
     fontSize: 40,
     height: vh * 0.2,
-    backgroundColor: "dodgerblue",
+    backgroundColor: "#2176FF",
     width: vw * 0.8,
     paddingLeft: "10%",
     paddingTop: "4%",
@@ -33,7 +33,7 @@ export const styles = StyleSheet.create({
   },
   depositButton: {
     color: "black",
-    backgroundColor: "lime",
+    backgroundColor: "#52b788",
     fontSize: 20,
     marginTop: 10,
     alignSelf: "flex-end",
@@ -75,7 +75,7 @@ export const txnTableStyles = {
     return { ...this.prop, fontSize: 18 };
   },
   get Amount() {
-    return { ...this.prop, fontSize: 30, right: 8, position: 'absolute', top: 10, color: 'lightgreen' };
+    return { ...this.prop, fontSize: 30, right: 8, position: 'absolute', top: 10, color: '#38b000' };
   },
   get Time() {
     return { ...this.prop, fontSize: 15 };

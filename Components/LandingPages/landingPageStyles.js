@@ -28,20 +28,23 @@ export const styles = StyleSheet.create({
     alignSelf: "stretch",
     flexDirection: "row",
     borderColor: "gray",
-    borderWidth: 1,
+    borderWidth: 2,
+    margin: 5,
+    borderRadius: 10,
+    // padding: 3,
+    paddingVertical: 8,
   },
   tableData: {
+    textAlignVertical: "center",
     color: "#fff",
-    fontSize: 20,
+    fontSize: 23,
     textAlign: "center",
-    borderLeftWidth: 2,
-    borderColor: "gray",
   },
   adTableRow: {
     alignSelf: "stretch",
     flexDirection: "row",
     borderRadius: 6,
-    backgroundColor: "#222222",
+    backgroundColor: "#2176FF",
     marginBottom: 10,
     height: 60,
     alignSelf: "center",
@@ -89,30 +92,21 @@ export const styles = StyleSheet.create({
 });
 
 export const tdWidth = {
-  prop: {},
-  get no() {
-    return { ...this.prop, width: vw * 0.1 };
+  prop: { fontSize: 23 },
+  get ad() {
+    return { ...this.prop, width: vw * 0.5, fontSize: 25 };
   },
   get date() {
-    return { ...this.prop, width: vw * 0.17 };
-  },
-  get ad() {
-    return { ...this.prop, width: vw * 0.3 };
+    return { ...this.prop, fontSize: 15 };
   },
   get reward() {
-    return { ...this.prop, width: vw * 0.2 };
+    return { ...this.prop, width: vw * 0.23, color: "lime" };
   },
   get duration() {
-    return { ...this.prop, width: vw * 0.23 };
-  },
-  get total() {
-    return { ...this.prop, width: vw * 0.57 };
-  },
-  get totalRewards() {
     return { ...this.prop, width: vw * 0.2 };
   },
-  get totalDuration() {
-    return { ...this.prop, width: vw * 0.23 };
+  get total() {
+    return { ...this.prop, fontSize: 27 };
   },
 };
 
@@ -125,6 +119,6 @@ export const adsTdWidth = {
     return { ...this.prop, width: vw * 0.45 };
   },
   get reward() {
-    return { ...this.prop, width: vw * 0.25 };
+    return { ...this.prop, width: vw * 0.25, color: "#7bfb26" };
   },
 };

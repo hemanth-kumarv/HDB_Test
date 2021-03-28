@@ -12,7 +12,8 @@ import CustomerLandingPage from "./Components/LandingPages/customerLandingPage";
 import RewardHistory from "./Components/LandingPages/rewardHistory";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ProfilePage from "./Components/ProfilePage/profilePage";
-import WalletPage from "./Components/WalletPage/walletPage"
+import WalletPage from "./Components/WalletPage/walletPage";
+import SettingsPage from "./Components/SettingsPage/settings";
 
 const Stack = createStackNavigator();
 
@@ -28,29 +29,34 @@ const App = () => {
     findUserId();
   });
   return (
-    <Provider store={store}>{searching ? (
-      <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false
-          }}
-          initialRouteName={userId === null ? "WelcomePage" : "CustomerLandingPage"}
-        >
-          <Stack.Screen name="WelcomePage" component={WelcomePage} />
-          <Stack.Screen name="RegisterPage1" component={RegisterPage1} />
-          <Stack.Screen name="RegisterPage2" component={RegisterPage2} />
-          <Stack.Screen name="RegisterPage3" component={RegisterPage3} />
-          <Stack.Screen
-            name="CustomerLandingPage"
-            component={CustomerLandingPage}
-          />
-          <Stack.Screen name="RewardHistory" component={RewardHistory} />
-          <Stack.Screen name="ProfilePage" component={ProfilePage} />
-          <Stack.Screen name="WalletPage" component={WalletPage} />
-        </Stack.Navigator>
-      </NavigationContainer>) : null}
+    <Provider store={store}>
+      {searching ? (
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}
+            initialRouteName={
+              userId === null ? "WelcomePage" : "CustomerLandingPage"
+            }
+          >
+            <Stack.Screen name="WelcomePage" component={WelcomePage} />
+            <Stack.Screen name="RegisterPage1" component={RegisterPage1} />
+            <Stack.Screen name="RegisterPage2" component={RegisterPage2} />
+            <Stack.Screen name="RegisterPage3" component={RegisterPage3} />
+            <Stack.Screen
+              name="CustomerLandingPage"
+              component={CustomerLandingPage}
+            />
+            <Stack.Screen name="RewardHistory" component={RewardHistory} />
+            <Stack.Screen name="ProfilePage" component={ProfilePage} />
+            <Stack.Screen name="WalletPage" component={WalletPage} />
+            <Stack.Screen name="SettingsPage" component={SettingsPage} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      ) : null}
     </Provider>
   );
-}
+};
 
 export default App;

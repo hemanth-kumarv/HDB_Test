@@ -22,7 +22,7 @@ const timeFormatter = (time) => {
   let timeFormat =
     String(time.Time).slice(0, 2) + ":" + String(time.Time).slice(2);
   let newtime =
-    time.Date + "/" + time.Month + "/" + time.Year + "\n" + timeFormat;
+    time.Date + "/" + time.Month + "/" + time.Year + " | " + timeFormat;
   return newtime;
 };
 
@@ -121,49 +121,39 @@ const RewardHistory = ({ route, navigation }) => {
                 </Text>
               </View>
             ) : (
-              <ScrollView style={styles.table}>
-                <View style={styles.tableRow}>
-                  <Text style={[styles.tableData, tdWidth.no]}>No.</Text>
-                  <Text style={[styles.tableData, tdWidth.date]}>
-                    Date/{"\n"}Time
+              <View style={styles.table}>
+                <Text style={[styles.tableData]}>
+                  You earned {"\n"}
+                  <Text style={tdWidth.total}>
+                    Rs. {rewardsList.Total.Amount} ({rewardsList.Total.Time}{" "}
+                    min)
                   </Text>
-                  <Text style={[styles.tableData, tdWidth.ad]}>
-                    Ad{"\n"} Name
-                  </Text>
-                  <Text style={[styles.tableData, tdWidth.reward]}>
-                    Reward{"\n"}(Rs.)
-                  </Text>
-                  <Text style={[styles.tableData, tdWidth.duration]}>
-                    Duration{"\n"}(Mins)
-                  </Text>
-                </View>
-                {rewardsList.Rewards.map((i, j) => (
-                  <View style={styles.tableRow} key={j}>
-                    <Text style={[styles.tableData, tdWidth.no]}>{j + 1}</Text>
-                    <Text style={[styles.tableData, tdWidth.date]}>
-                      {timeFormatter(i.DateTime)}
-                    </Text>
-                    <Text style={[styles.tableData, tdWidth.ad]}>
-                      {i.AdName}
-                    </Text>
-                    <Text style={[styles.tableData, tdWidth.reward]}>
-                      {i.Reward}
-                    </Text>
-                    <Text style={[styles.tableData, tdWidth.duration]}>
-                      {i.Duration}
-                    </Text>
-                  </View>
-                ))}
-                <View style={styles.tableRow}>
-                  <Text style={[styles.tableData, tdWidth.total]}>Total</Text>
-                  <Text style={[styles.tableData, tdWidth.totalRewards]}>
-                    {rewardsList.Total.Amount}
-                  </Text>
-                  <Text style={[styles.tableData, tdWidth.totalDuration]}>
-                    {rewardsList.Total.Time}
-                  </Text>
-                </View>
-              </ScrollView>
+                </Text>
+                <ScrollView>
+                  {rewardsList.Rewards.map((i, j) => (
+                    <View style={styles.tableRow} key={j}>
+                      <Text style={[styles.tableData, tdWidth.ad]}>
+                        {i.AdName}
+                        {"\n"}
+                        <Text style={[styles.tableData, tdWidth.date]}>
+                          {timeFormatter(i.DateTime)}
+                        </Text>
+                      </Text>
+                      <Text style={[styles.tableData, tdWidth.reward]}>
+                        <Text style={{ fontSize: 22, color: "white" }}>
+                          Rs.
+                        </Text>{" "}
+                        {"\n"}
+                        {i.Reward}
+                      </Text>
+                      <Text style={[styles.tableData, tdWidth.duration]}>
+                        {i.Duration}
+                        {"\n"} <Text style={{ fontSize: 17 }}>minutes</Text>
+                      </Text>
+                    </View>
+                  ))}
+                </ScrollView>
+              </View>
             )}
           </>
         ) : (

@@ -52,15 +52,21 @@ const SideDrawerContents = ({ route, navigation }) => {
       </Text>
       <Text
         style={styles.drawerButtons}
-        onPress={() => navigation.navigate("")}
+        onPress={() => navigation.navigate("WalletPage")}
       >
-        Bank Details
+        Wallet
       </Text>
       <Text
         style={styles.drawerButtons}
         onPress={() => navigation.navigate("WalletPage")}
       >
-        Wallet
+        Custom Display
+      </Text>
+      <Text
+        style={styles.drawerButtons}
+        onPress={() => navigation.navigate("")}
+      >
+        Bank Details
       </Text>
       <Text
         style={styles.drawerButtons}
@@ -70,7 +76,7 @@ const SideDrawerContents = ({ route, navigation }) => {
       </Text>
       <Text
         style={styles.drawerButtons}
-        onPress={() => navigation.navigate("")}
+        onPress={() => navigation.navigate("SettingsPage")}
       >
         Settings
       </Text>

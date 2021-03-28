@@ -6,7 +6,7 @@ const globalStyles = StyleSheet.create({
   container: {
     height: vh,
     width: vw,
-    backgroundColor: "#000",
+    backgroundColor: "#11191C",
     // position: "absolute",
     top: 0,
     left: 0,
@@ -19,9 +19,10 @@ const globalStyles = StyleSheet.create({
     flex: 1
   },
   verticalLine: {
-    height: "100%",
+    height: "80%",
+    alignSelf: 'center',
     borderLeftColor: "white",
-    borderWidth: 2,
+    borderWidth: 1,
   },
 });
 

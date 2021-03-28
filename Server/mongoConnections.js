@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const schemas = require("./mongoSchemas");
-const config = require("../config.json");
+const config = require("./config.json");
 
 const mongoUrl =
   "mongodb+srv://" +
