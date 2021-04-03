@@ -118,12 +118,14 @@ const RegisterPage3 = ({ navigation }) => {
         ]}
         onPress={() => {
           // console.log(pickedImage);
-          axios
-            .post("/registerPage3", { email: "Abc", image: pickedImage })
-            .then((res) => {
-              navigation.navigate("WelcomePage");
-            })
-            .catch((err) => console.log(err));
+          axios.then((server) =>
+            server
+              .post("/registerPage3", { email: "Abc", image: pickedImage })
+              .then((res) => {
+                navigation.navigate("WelcomePage");
+              })
+              .catch((err) => console.log(err))
+          );
         }}
       />
     </ScrollView>

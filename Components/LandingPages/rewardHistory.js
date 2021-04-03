@@ -49,22 +49,24 @@ const RewardHistory = ({ route, navigation }) => {
     // console.log("searching...", userName);
 
     setSearching(false);
-    axios
-      .post("/getRewards", { name: userName })
-      .then(async (res) => {
-        // console.log("NEW USER: ", await AsyncStorage.getItem("UserId"));
-        setRewardsList(res.data);
-        await AsyncStorage.setItem(
-          "TotalRewards",
-          JSON.stringify(res.data.Total)
-        );
-        setSearching(true);
-      })
-      .catch((err) => {
-        setRewardsList("Error connecting to server.");
-        setSearching(true);
-        console.log(err);
-      });
+    axios.then((server) =>
+      server
+        .post("/getRewards", { name: userName })
+        .then(async (res) => {
+          // console.log("NEW USER: ", await AsyncStorage.getItem("UserId"));
+          setRewardsList(res.data);
+          await AsyncStorage.setItem(
+            "TotalRewards",
+            JSON.stringify(res.data.Total)
+          );
+          setSearching(true);
+        })
+        .catch((err) => {
+          setRewardsList("Error connecting to server.");
+          setSearching(true);
+          console.log(err);
+        })
+    );
   };
   useEffect(() => {
     if (isFocused) {

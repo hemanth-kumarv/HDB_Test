@@ -28,14 +28,16 @@ const WalletPage = ({ navigation, route }) => {
   const dispatch = useDispatch();
 
   const getTransactions = (email) => {
-    axios
-      .post("/getPreviousTransactions", { email: email })
-      .then((res) => {
-        setTransactions(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    axios.then((server) =>
+      server
+        .post("/getPreviousTransactions", { email: email })
+        .then((res) => {
+          setTransactions(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    );
   };
   useEffect(() => {
     if (isFocused) {
@@ -127,7 +129,7 @@ const WalletPage = ({ navigation, route }) => {
                           <View
                             style={[
                               globalStyles.verticalLine,
-                              { marginLeft: 3,marginRight: 3, borderWidth: 1 },
+                              { marginLeft: 3, marginRight: 3, borderWidth: 1 },
                             ]}
                           ></View>
                           <Text style={txnTableStyles.Time}>

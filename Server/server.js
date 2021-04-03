@@ -2,6 +2,7 @@ var express = require("express");
 var fs = require("fs");
 var app = express();
 var cors = require("cors");
+var ip = require("ip");
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
@@ -143,5 +144,5 @@ app.post("/getPreviousTransactions", (req, res) => {
 app.get("/", (req, res) => {
   res.send("Hello world!");
 });
-console.log("App running on port 3000!");
+console.log("App running on",ip.address()+":3000");
 app.listen(3000);

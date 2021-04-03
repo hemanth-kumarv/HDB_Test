@@ -42,19 +42,21 @@ const ProfilePage = ({ navigation, route }) => {
       }
       var totalRewardsJSON = await AsyncStorage.getItem("TotalRewards");
       if (totalRewardsJSON === null && userDataJSON !== null) {
-        axios
-          .post("/getRewards", { name: userDataJSON.Email })
-          .then(async (res) => {
-            await AsyncStorage.setItem(
-              "TotalRewards",
-              JSON.stringify(res.data.Total)
-            );
-            setTotalRewards(res.data.Total);
-          })
-          .catch((err) => {
-            setTotalRewards({ Error: "Error connecting to server." });
-            console.log(err);
-          });
+        axios.then((server) =>
+          server
+            .post("/getRewards", { name: userDataJSON.Email })
+            .then(async (res) => {
+              await AsyncStorage.setItem(
+                "TotalRewards",
+                JSON.stringify(res.data.Total)
+              );
+              setTotalRewards(res.data.Total);
+            })
+            .catch((err) => {
+              setTotalRewards({ Error: "Error connecting to server." });
+              console.log(err);
+            })
+        );
       } else setTotalRewards(JSON.parse(totalRewardsJSON));
     })();
   }, [isFocused]);

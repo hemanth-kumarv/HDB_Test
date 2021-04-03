@@ -15,22 +15,27 @@ const WelcomePage = ({ navigation }) => {
 
   const login = (userName, password) => {
     setloginError("");
-    axios
-      .post("/login", { name: userName, pass: password })
-      .then(async (res) => {
-        // console.log(res.data);
-        if (res.data.status) {
-          await AsyncStorage.setItem("UserId", userName);
-          await AsyncStorage.setItem("UserData", JSON.stringify(res.data.data));
-          navigation.replace("CustomerLandingPage");
-        } else {
-          setloginError(res.data.message);
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        setloginError("Error connecting to server.");
-      });
+    axios.then((server) =>
+      server
+        .post("/login", { name: userName, pass: password })
+        .then(async (res) => {
+          // console.log(res.data);
+          if (res.data.status) {
+            await AsyncStorage.setItem("UserId", userName);
+            await AsyncStorage.setItem(
+              "UserData",
+              JSON.stringify(res.data.data)
+            );
+            navigation.replace("CustomerLandingPage");
+          } else {
+            setloginError(res.data.message);
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          setloginError("Error connecting to server.");
+        })
+    );
   };
 
   const validateAndLogin = (userName, password) => {

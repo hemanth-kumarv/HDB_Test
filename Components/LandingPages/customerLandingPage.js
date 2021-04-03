@@ -32,17 +32,19 @@ const CustomerLandingPage = ({ route, navigation }) => {
     // console.log("searching...");
 
     setSearching(false);
-    axios
-      .post("/getAvailableAds", {})
-      .then(async (res) => {
-        // console.log("NEW USER: ", await AsyncStorage.getItem("UserId"));
-        setAdsList(res.data);
-        setSearching(true);
-      })
-      .catch((err) => {
-        setAdsList("Error connecting to server.");
-        setSearching(true);
-      });
+    axios.then((server) =>
+      server
+        .post("/getAvailableAds", {})
+        .then(async (res) => {
+          // console.log("NEW USER: ", await AsyncStorage.getItem("UserId"));
+          setAdsList(res.data);
+          setSearching(true);
+        })
+        .catch((err) => {
+          setAdsList("Error connecting to server.");
+          setSearching(true);
+        })
+    );
   };
   useEffect(() => {
     if (isFocused) {
@@ -55,17 +57,19 @@ const CustomerLandingPage = ({ route, navigation }) => {
         setuserName(name);
         searchAvailableAds(userName);
         if (totalRewards.length == 0)
-          axios
-            .post("/getRewards", { name: userDataJSON.Email })
-            .then(async (res) => {
-              await AsyncStorage.setItem(
-                "TotalRewards",
-                JSON.stringify(res.data.Total)
-              );
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+          axios.then((server) =>
+            server
+              .post("/getRewards", { name: userDataJSON.Email })
+              .then(async (res) => {
+                await AsyncStorage.setItem(
+                  "TotalRewards",
+                  JSON.stringify(res.data.Total)
+                );
+              })
+              .catch((err) => {
+                console.log(err);
+              })
+          );
       })();
     }
   }, [isFocused]);
@@ -126,7 +130,9 @@ const CustomerLandingPage = ({ route, navigation }) => {
                     <Text style={[styles.adTableData, adsTdWidth.reward]}>
                       Rs. {i.Reward}
                       {"\n"}
-                      <Text style={{ fontSize: 18, color: 'white' }}>For {i.Duration} s</Text>
+                      <Text style={{ fontSize: 18, color: "white" }}>
+                        For {i.Duration} s
+                      </Text>
                     </Text>
                     {/* <Text style={[styles.adTableData, adsTdWidth.select, {backgroundColor: 'dodgerblue', color: 'black'}]}>
                       Select
