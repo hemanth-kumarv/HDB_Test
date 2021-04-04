@@ -119,6 +119,17 @@ const WelcomePage = ({ navigation }) => {
           Sign Up!
         </Text>
       </Text>
+      <Text
+        style={{
+          color: "white",
+          fontSize: 18,
+          bottom: 10,
+          position: "absolute",
+        }}
+        onPress={() => navigation.navigate("SettingsPage")}
+      >
+        Settings
+      </Text>
     </ScrollView>
   );
 };
