@@ -7,6 +7,7 @@ const CompanyListDBTest = new Schema({
   Reward: { type: Number, default: 0.0 },
   Duration: Number,
   Icon: String,
+  VideoID: String,
 });
 
 const CustomerRewardsDBTest = new Schema({

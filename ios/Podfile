@@ -10,6 +10,8 @@ target 'hdb' do
 
   pod 'RNFS', :path => '../node_modules/react-native-fs'
 
+  pod 'RNThread', :path => '../node_modules/react-native-threads'
+
   target 'hdbTests' do
     inherit! :complete
     # Pods for testing

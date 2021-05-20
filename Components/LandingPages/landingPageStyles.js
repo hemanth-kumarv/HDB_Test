@@ -89,6 +89,12 @@ export const styles = StyleSheet.create({
     textAlignVertical: "center",
     fontSize: 25,
   },
+  btIcon: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    zIndex: 10
+  }
 });
 
 export const tdWidth = {

@@ -127,8 +127,9 @@ const RewardHistory = ({ route, navigation }) => {
                 <Text style={[styles.tableData]}>
                   You earned {"\n"}
                   <Text style={tdWidth.total}>
-                    Rs. {rewardsList.Total.Amount} ({rewardsList.Total.Time}{" "}
-                    min)
+                    Rs. {rewardsList.Total.Amount} (
+                    {parseInt(rewardsList.Total.Time / 60)} min{" "}
+                    {parseInt(rewardsList.Total.Time % 60)} sec)
                   </Text>
                 </Text>
                 <ScrollView>
@@ -150,7 +151,7 @@ const RewardHistory = ({ route, navigation }) => {
                       </Text>
                       <Text style={[styles.tableData, tdWidth.duration]}>
                         {i.Duration}
-                        {"\n"} <Text style={{ fontSize: 17 }}>minutes</Text>
+                        {"\n"} <Text style={{ fontSize: 17 }}>seconds</Text>
                       </Text>
                     </View>
                   ))}

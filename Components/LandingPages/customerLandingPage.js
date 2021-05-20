@@ -8,6 +8,7 @@ import {
   ScrollView,
   ActivityIndicator,
   RefreshControl,
+  TouchableOpacity,
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import globalStyles from "../../globalStyles";
@@ -17,11 +18,15 @@ import { styles, adsTdWidth } from "./landingPageStyles";
 import { changeDrawerStyle } from "../Redux/dispatchers";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ErrorSVG from "../../assets/exclamation-triangle.svg";
+import BluetoothIcon from "../../assets/bluetooth.svg";
+import { btConnection, sendData } from "../bluetoothConn";
 
 const CustomerLandingPage = ({ route, navigation }) => {
   const [adsList, setAdsList] = useState([]);
   const [searching, setSearching] = useState(false);
   const [userName, setuserName] = useState(null);
+  const [btData, setBtData] = useState({ status: 0 });
+  const [btScanning, setBtScanning] = useState(true);
 
   const drawerOpen = useSelector((state) => state.drawerOpen);
   // const name = useSelector((state) => state.loggedIn);
@@ -73,6 +78,19 @@ const CustomerLandingPage = ({ route, navigation }) => {
       })();
     }
   }, [isFocused]);
+
+  const bluetoothConnect = async () => {
+    if (btData.status !== 200) {
+      setBtScanning(true);
+      let res = await btConnection();
+      setBtData(res);
+      setBtScanning(false);
+    }
+  };
+  useEffect(() => {
+    bluetoothConnect();
+  }, []);
+
   return (
     <ScrollView
       style={globalStyles.container}
@@ -80,7 +98,11 @@ const CustomerLandingPage = ({ route, navigation }) => {
       refreshControl={
         <RefreshControl
           refreshing={false}
-          onRefresh={() => searchAvailableAds(userName)}
+          onRefresh={() => {
+            searchAvailableAds(userName);
+            bluetoothConnect();
+          }}
+          enabled={searching}
         />
       }
     >
@@ -118,7 +140,14 @@ const CustomerLandingPage = ({ route, navigation }) => {
             ) : (
               <ScrollView style={styles.table}>
                 {adsList.map((i, j) => (
-                  <View style={styles.adTableRow} key={j}>
+                  <TouchableOpacity
+                    style={styles.adTableRow}
+                    key={j}
+                    onPress={async () => {
+                      let res = await sendData(i.VideoID);
+                      setBtData(res);
+                    }}
+                  >
                     {/* <Text style={[styles.adTableData, adsTdWidth.no]}>{j + 1}</Text> */}
                     <Image
                       style={{ width: 60, height: 60 }}
@@ -137,7 +166,7 @@ const CustomerLandingPage = ({ route, navigation }) => {
                     {/* <Text style={[styles.adTableData, adsTdWidth.select, {backgroundColor: 'dodgerblue', color: 'black'}]}>
                       Select
                     </Text> */}
-                  </View>
+                  </TouchableOpacity>
                 ))}
               </ScrollView>
             )}
@@ -146,6 +175,22 @@ const CustomerLandingPage = ({ route, navigation }) => {
           <View style={{ top: 250 }}>
             <ActivityIndicator size={75} color="#fff" />
           </View>
+        )}
+      </View>
+      <View style={styles.btIcon}>
+        {btScanning ? (
+          <ActivityIndicator size={50} color="#fff" />
+        ) : (
+          <BluetoothIcon
+            width="50"
+            height="50"
+            style={
+              btData.status !== 200 ? { color: "red" } : { color: "#0A3D91" }
+            }
+            onPress={async () => {
+              await bluetoothConnect();
+            }}
+          />
         )}
       </View>
     </ScrollView>
