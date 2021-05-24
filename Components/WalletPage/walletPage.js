@@ -27,6 +27,19 @@ const WalletPage = ({ navigation, route }) => {
   const [userID, setUserID] = useState({});
   const dispatch = useDispatch();
 
+  const timeFormatter = (time) => {
+    let strArray = time.split(" ");
+    return "".concat(
+      strArray[2],
+      " ",
+      strArray[1],
+      " ",
+      strArray[4],
+      "|",
+      strArray[3]
+    );
+  };
+
   const getTransactions = (email) => {
     axios.then((server) =>
       server
@@ -44,8 +57,26 @@ const WalletPage = ({ navigation, route }) => {
       if (drawerOpen) dispatch(changeDrawerStyle(false));
     }
     (async () => {
+      var userData = await AsyncStorage.getItem("UserData");
       var totalRewardsJSON = await AsyncStorage.getItem("TotalRewards");
-      setTotalRewards(JSON.parse(totalRewardsJSON));
+      var userDataJSON = JSON.parse(userData);
+      if (totalRewardsJSON === null && userDataJSON !== null) {
+        axios.then((server) =>
+          server
+            .post("/getRewards", { name: userDataJSON.Email })
+            .then(async (res) => {
+              await AsyncStorage.setItem(
+                "TotalRewards",
+                JSON.stringify(res.data.Total)
+              );
+              setTotalRewards(res.data.Total);
+            })
+            .catch((err) => {
+              setTotalRewards({ Error: "Error connecting to server." });
+              console.log(err);
+            })
+        );
+      } else setTotalRewards(JSON.parse(totalRewardsJSON));
 
       var userId = await AsyncStorage.getItem("UserId");
       setUserID(userId);
@@ -98,7 +129,10 @@ const WalletPage = ({ navigation, route }) => {
                   Total Balance {"\n\n"}
                 </Text>
                 <Text>
-                  Rs. {totalRewards.Amount - transactions.TotalAmount}
+                  Rs.{" "}
+                  {Math.round(
+                    (totalRewards.Amount - transactions.TotalAmount) * 100
+                  ) / 100}
                 </Text>
                 <Text
                   style={{
@@ -125,17 +159,8 @@ const WalletPage = ({ navigation, route }) => {
                           Rs. {i.Amount}
                         </Text>
                         <View style={{ flexDirection: "row" }}>
-                          <Text style={txnTableStyles.Date}>{i.Date}</Text>
-                          <View
-                            style={[
-                              globalStyles.verticalLine,
-                              { marginLeft: 3, marginRight: 3, borderWidth: 1 },
-                            ]}
-                          ></View>
-                          <Text style={txnTableStyles.Time}>
-                            {[i.Time.slice(0, 2), ":", i.Time.slice(2)].join(
-                              ""
-                            )}
+                          <Text style={txnTableStyles.Date}>
+                            {timeFormatter(i.DateTime)}
                           </Text>
                         </View>
                       </View>

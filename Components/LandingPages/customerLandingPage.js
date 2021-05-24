@@ -23,33 +23,37 @@ import { btConnection, sendData } from "../bluetoothConn";
 
 const CustomerLandingPage = ({ route, navigation }) => {
   const [adsList, setAdsList] = useState([]);
-  const [searching, setSearching] = useState(false);
+  const [searching, setSearching] = useState(true);
   const [userName, setuserName] = useState(null);
-  const [btData, setBtData] = useState({ status: 0 });
+  const [btData, setBtData] = useState({ status: 0, message: "" });
   const [btScanning, setBtScanning] = useState(true);
+  const [showBtIcon, setShowBtIcon] = useState(true);
+  const [transmitterID, setTransmitterID] = useState("");
 
   const drawerOpen = useSelector((state) => state.drawerOpen);
   // const name = useSelector((state) => state.loggedIn);
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
 
-  const searchAvailableAds = (userName) => {
+  const searchAvailableAds = (TransmitterID) => {
     // console.log("searching...");
 
-    setSearching(false);
-    axios.then((server) =>
-      server
-        .post("/getAvailableAds", {})
-        .then(async (res) => {
-          // console.log("NEW USER: ", await AsyncStorage.getItem("UserId"));
-          setAdsList(res.data);
-          setSearching(true);
-        })
-        .catch((err) => {
-          setAdsList("Error connecting to server.");
-          setSearching(true);
-        })
-    );
+    if (btData.status === 200) {
+      setSearching(false);
+      axios.then((server) =>
+        server
+          .post("/getAvailableAds", { tID: TransmitterID })
+          .then(async (res) => {
+            // console.log("NEW USER: ", await AsyncStorage.getItem("UserId"));
+            setAdsList(res.data);
+            setSearching(true);
+          })
+          .catch((err) => {
+            setAdsList("Error connecting to server.");
+            setSearching(true);
+          })
+      );
+    } else bluetoothConnect();
   };
   useEffect(() => {
     if (isFocused) {
@@ -60,7 +64,6 @@ const CustomerLandingPage = ({ route, navigation }) => {
         const name = await AsyncStorage.getItem("UserId");
         const totalRewards = await AsyncStorage.getItem("TotalRewards");
         setuserName(name);
-        searchAvailableAds(userName);
         if (totalRewards.length == 0)
           axios.then((server) =>
             server
@@ -82,14 +85,25 @@ const CustomerLandingPage = ({ route, navigation }) => {
   const bluetoothConnect = async () => {
     if (btData.status !== 200) {
       setBtScanning(true);
-      let res = await btConnection();
+      let res = await btConnection("raspberrypi", setTransmitterID);
       setBtData(res);
+      if (res.status === 200) {
+        let res2 = await sendData("_init;TID", userName);
+        setBtData(res2);
+        setTimeout(() => setShowBtIcon(false), 5000);
+      }
       setBtScanning(false);
     }
   };
+
   useEffect(() => {
     bluetoothConnect();
   }, []);
+
+  useEffect(() => {
+    console.log(transmitterID);
+    if (transmitterID) searchAvailableAds(transmitterID);
+  }, [transmitterID]);
 
   return (
     <ScrollView
@@ -98,11 +112,8 @@ const CustomerLandingPage = ({ route, navigation }) => {
       refreshControl={
         <RefreshControl
           refreshing={false}
-          onRefresh={() => {
-            searchAvailableAds(userName);
-            bluetoothConnect();
-          }}
-          enabled={searching}
+          onRefresh={() => searchAvailableAds(transmitterID)}
+          enabled={searching && !btScanning}
         />
       }
     >
@@ -117,10 +128,10 @@ const CustomerLandingPage = ({ route, navigation }) => {
         }}
       >
         <ProfileIconPage navigation={navigation} route={route} />
-        {searching ? (
+        {searching && !btScanning ? (
           <>
             <Text style={styles.heading}>Ads Near Me</Text>
-            {typeof adsList === "string" ? (
+            {typeof adsList === "string" || btData.status !== 200 ? (
               <View style={styles.errorTextContainer}>
                 <ErrorSVG
                   width="50"
@@ -129,10 +140,14 @@ const CustomerLandingPage = ({ route, navigation }) => {
                     tintColor: "yellow",
                   }}
                 />
-                <Text style={styles.errorText}>{adsList}</Text>
+                <Text style={styles.errorText}>
+                  {typeof adsList === "string" ? adsList : ""}
+                  {"\n"}
+                  {btData.status !== 200 ? btData.message : ""}
+                </Text>
                 <Text
                   style={styles.retryButton}
-                  onPress={() => searchAvailableAds(userName)}
+                  onPress={() => searchAvailableAds(transmitterID)}
                 >
                   Retry
                 </Text>
@@ -144,7 +159,8 @@ const CustomerLandingPage = ({ route, navigation }) => {
                     style={styles.adTableRow}
                     key={j}
                     onPress={async () => {
-                      let res = await sendData(i.VideoID);
+                      let res = await sendData(i.VideoID, userName);
+                      if (res.status !== 200) setShowBtIcon(true);
                       setBtData(res);
                     }}
                   >
@@ -178,15 +194,14 @@ const CustomerLandingPage = ({ route, navigation }) => {
         )}
       </View>
       <View style={styles.btIcon}>
-        {btScanning ? (
-          <ActivityIndicator size={50} color="#fff" />
-        ) : (
+        {btScanning ? null : (
           <BluetoothIcon
-            width="50"
-            height="50"
-            style={
-              btData.status !== 200 ? { color: "red" } : { color: "#0A3D91" }
-            }
+            width="40"
+            height="40"
+            style={[
+              btData.status !== 200 ? { color: "red" } : { color: "#0A3D91" },
+              showBtIcon ? { display: "flex" } : { display: "none" },
+            ]}
             onPress={async () => {
               await bluetoothConnect();
             }}

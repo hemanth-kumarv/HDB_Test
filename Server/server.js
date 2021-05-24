@@ -3,47 +3,72 @@ var fs = require("fs");
 var app = express();
 var cors = require("cors");
 var ip = require("ip");
-app.use(express.json({ limit: "50mb" }));
+var _ = require("lodash");
+app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 const conn = require("./mongoConnections");
 
 const CompanyListDBTest = conn.CompanyListDBTest;
+const ZonalAdsListTest = conn.ZonalAdsListTest;
+
 const CustomerLoginDBTest = conn.CustomerLoginDBTest;
 const CustomerRewardsDBTest = conn.CustomerRewardsDBTest;
 const CustomerDetailsDBTest = conn.CustomerDetailsDBTest;
 const TransactionHistoryTest = conn.TransactionHistoryTest;
 
+const findFromCustomerDb = async (arr) => {
+  let res = await CompanyListDBTest.find({ VideoID: { $in: arr } });
+  return res;
+};
+
 app.post("/getRewards", (req, res) => {
   try {
     if (req.body.name) {
-      CustomerRewardsDBTest.findOne({ Email: req.body.name }, (err, docs) => {
-        if (err) {
-          console.log(err);
-          res.send({ status: false, message: "Error connecting to database." });
-        } else {
-          // CustomerRewardsDBTest.aggregate([
-          //   {
-          //     $project: {
-          //       _id: 0,
-          //       Email: 1,
-          //       total: { $sum: "$RewardList.Reward" },
-          //       totalTime: { $sum: "$RewardList.Duration" },
-          //       size: { $size: "$RewardList" },
-          //     },
-          //   },
-          // ]).exec((err, docs) => {
-          //   if (err) console.log(err);
-          //   else console.log(docs);
-          // });
-          res.send({
-            Rewards: docs.RewardList,
-            Total: docs.Total,
-            status: true,
-          });
+      CustomerRewardsDBTest.findOne(
+        { Email: req.body.name },
+        async (err, docs) => {
+          if (err) {
+            console.log(err);
+            res.send({
+              status: false,
+              message: "Error connecting to database.",
+            });
+          } else {
+            let newDocs = docs;
+            if (newDocs.NewRewards.length > 0) {
+              let arr = [],
+                newRewards = [];
+              newDocs.NewRewards.forEach((i) => arr.push(i.Ad));
+              let result = await findFromCustomerDb(arr);
+              newDocs.NewRewards.forEach((i) => {
+                let x = result.find((obj) => obj.VideoID === i.Ad);
+                newDocs.Total.Time += Number(x.Duration);
+                newDocs.Total.Amount += Number(x.Reward);
+                newDocs.Total.Count += 1;
+                newRewards.push({
+                  AdName: x.Name,
+                  Duration: x.Duration,
+                  Reward: x.Reward,
+                  DateTime: i.Time,
+                });
+              });
+              newDocs.NewRewards = [];
+              newDocs.RewardList = [...newDocs.RewardList, ...newRewards];
+              await CustomerRewardsDBTest.updateOne(
+                { Email: req.body.name },
+                newDocs
+              );
+            }
+            res.send({
+              Rewards: newDocs.RewardList,
+              Total: newDocs.Total,
+              status: true,
+            });
+          }
         }
-      });
+      );
     }
   } catch (error) {
     console.log(error);
@@ -113,14 +138,18 @@ app.post("/registerPage3", (req, res) => {
 
 app.post("/getAvailableAds", (req, res) => {
   try {
-    CompanyListDBTest.find({}, (err, docs) => {
-      if (err) {
-        console.log(err);
-        res.send("Error connecting to database.");
-      } else {
-        res.send(docs);
+    ZonalAdsListTest.findOne(
+      { TransmitterID: req.body.tID },
+      async (err, docs) => {
+        if (err) {
+          console.log(err);
+          res.send("Error connecting to database.");
+        } else {
+          let newDocs = await findFromCustomerDb(docs.AdList);
+          res.send(newDocs);
+        }
       }
-    });
+    );
   } catch (error) {
     console.log(error);
   }
@@ -144,5 +173,5 @@ app.post("/getPreviousTransactions", (req, res) => {
 app.get("/", (req, res) => {
   res.send("Hello world!");
 });
-console.log("App running on",ip.address()+":3000");
+console.log("App running on", ip.address() + ":3000");
 app.listen(3000);

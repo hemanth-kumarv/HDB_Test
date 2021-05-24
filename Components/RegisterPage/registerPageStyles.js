@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     color: "#fff",
-    borderTopColor: "#000",
+    borderColor: "#11191C",
     borderBottomColor: "gray",
     borderWidth: 1,
     marginTop: 30,

@@ -19,19 +19,18 @@ import { useIsFocused } from "@react-navigation/core";
 import ProfileIconPage from "../ProfilePage/profileIcon";
 
 const timeFormatter = (time) => {
-  let timeFormat =
-    String(time.Time).slice(0, 2) + ":" + String(time.Time).slice(2);
-  let newtime =
-    time.Date + "/" + time.Month + "/" + time.Year + " | " + timeFormat;
-  return newtime;
-};
-
-const totalFinder = (arr, name) => {
-  let total = 0;
-  arr.forEach((i) => {
-    total += i[name];
-  });
-  return total;
+  let strArray = time.split(" ");
+  return "".concat(
+    strArray[2],
+    " ",
+    strArray[1],
+    " ",
+    strArray[4],
+    "\n(",
+    strArray[0],
+    ") ",
+    strArray[3]
+  );
 };
 
 const RewardHistory = ({ route, navigation }) => {
@@ -62,7 +61,10 @@ const RewardHistory = ({ route, navigation }) => {
           setSearching(true);
         })
         .catch((err) => {
-          setRewardsList("Error connecting to server.");
+          setRewardsList({
+            status: false,
+            message: "Error connecting to server.",
+          });
           setSearching(true);
           console.log(err);
         })
@@ -132,6 +134,7 @@ const RewardHistory = ({ route, navigation }) => {
                     {parseInt(rewardsList.Total.Time % 60)} sec)
                   </Text>
                 </Text>
+                {console.log(rewardsList)}
                 <ScrollView>
                   {rewardsList.Rewards.map((i, j) => (
                     <View style={styles.tableRow} key={j}>

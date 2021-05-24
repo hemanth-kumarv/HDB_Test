@@ -32,23 +32,23 @@ const SideDrawerContents = ({ route, navigation }) => {
       />
       <Text
         style={styles.drawerButtons}
+        onPress={() => navigation.navigate("CustomerLandingPage")}
+      >
+        New Ad
+      </Text>
+      <Text
+        style={styles.drawerButtons}
+        onPress={() => navigation.navigate("RewardHistory")}
+      >
+        Reward History
+      </Text>
+      <Text
+        style={styles.drawerButtons}
         onPress={() => {
           navigation.navigate("ProfilePage");
         }}
       >
         Profile
-      </Text>
-      <Text
-        style={styles.drawerButtons}
-        onPress={() => {
-          route.name === "CustomerLandingPage"
-            ? navigation.navigate("RewardHistory")
-            : navigation.navigate("CustomerLandingPage");
-        }}
-      >
-        {route.name === "CustomerLandingPage"
-          ? "Reward History"
-          : "Reward Description"}
       </Text>
       <Text
         style={styles.drawerButtons}

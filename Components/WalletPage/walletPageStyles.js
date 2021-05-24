@@ -77,9 +77,6 @@ export const txnTableStyles = {
   get Amount() {
     return { ...this.prop, fontSize: 30, right: 8, position: 'absolute', top: 10, color: '#38b000' };
   },
-  get Time() {
-    return { ...this.prop, fontSize: 15 };
-  },
   get Date() {
     return { ...this.prop, fontSize: 15 };
   },

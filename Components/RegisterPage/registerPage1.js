@@ -9,11 +9,13 @@ import {
 } from "react-native";
 import styles from "./registerPageStyles";
 import globalStyles from "../../globalStyles";
-import DatePicker from "react-native-datepicker";
+// import DatePicker from "react-native-datepicker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import RightIcon from "../../assets/chevron-right.svg";
 
 const RegisterPage1 = ({ navigation }) => {
   const [date, setDate] = useState(null);
+  const [showDate, setShowDate] = useState(false);
 
   const mobileNumber = useRef();
   const emailId = useRef();
@@ -129,33 +131,22 @@ const RegisterPage1 = ({ navigation }) => {
             )
           }
         />
-        <DatePicker
-          style={[styles.textInput]}
-          date={date}
-          mode="date"
-          placeholder="Date of Birth"
-          // maxDate=""
-          format="DD-MM-YYYY"
-          showIcon={false}
-          customStyles={{
-            // dateIcon: {
-            //   position: "absolute",
-            //   right: 0,
-            //   // top: 4,
-            //   marginRight: 0
-            // },
-            dateInput: {
-              position: "absolute",
-              left: 0,
-              borderWidth: 0,
-            },
-            placeholderText: { color: "#aaaa" },
-            dateText: { color: "#ffff" },
-          }}
-          onDateChange={(date) => {
-            setDate(date);
-          }}
-        />
+        <Text onPress={() => setShowDate(true)} style={styles.textInput}>
+          {date ? date : "Date of Birth"}
+        </Text>
+        {showDate && (
+          <DateTimePicker
+            style={[styles.textInput]}
+            value={new Date()}
+            mode="date"
+            onChange={(e, date) => {
+              let arr = String(date).split(" ");
+              let newDate = "".concat(arr[2], " ", arr[1], " ", arr[3])
+              setDate(newDate);
+              setShowDate(false);
+            }}
+          />
+        )}
       </View>
       <RightIcon
         width="25"

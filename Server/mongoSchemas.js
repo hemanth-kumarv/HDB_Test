@@ -10,19 +10,19 @@ const CompanyListDBTest = new Schema({
   VideoID: String,
 });
 
+const ZonalAdsListTest = new Schema({
+  TransmitterID: String,
+  AdList: [],
+});
+
 const CustomerRewardsDBTest = new Schema({
   Email: String,
   RewardList: [
     {
       AdName: String,
       Duration: Number,
-      Reward: { Number, default: 0.0 },
-      DateTime: {
-        Date: Number,
-        Month: Number,
-        Year: Number,
-        Time: Number,
-      },
+      Reward: Number,
+      DateTime: String,
     },
   ],
   Total: {
@@ -30,6 +30,7 @@ const CustomerRewardsDBTest = new Schema({
     Time: Number,
     Amount: Number,
   },
+  NewRewards: [{ Time: String, Ad: String }],
 });
 
 const CustomerLoginDBTest = new Schema({
@@ -55,8 +56,7 @@ const TransactionHistoryTest = new Schema({
   TotalAmount: Number,
   TransactionHistory: [
     {
-      Date: String,
-      Time: String,
+      DateTime: String,
       Amount: Number,
       TxnId: String,
     },
@@ -64,6 +64,7 @@ const TransactionHistoryTest = new Schema({
 });
 
 exports.CompanyListDBTest = CompanyListDBTest;
+exports.ZonalAdsListTest = ZonalAdsListTest;
 exports.CustomerRewardsDBTest = CustomerRewardsDBTest;
 exports.CustomerLoginDBTest = CustomerLoginDBTest;
 exports.CustomerDetailsDBTest = CustomerDetailsDBTest;

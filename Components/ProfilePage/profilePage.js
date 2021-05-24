@@ -138,7 +138,8 @@ const ProfilePage = ({ navigation, route }) => {
               <View style={styles.totalRewards}>
                 <Text style={profileDataStyles.total}>
                   Total Time{"\n"}
-                  {totalRewards.Time} min
+                  {parseInt(totalRewards.Time / 60)} min{" "}
+                  {parseInt(totalRewards.Time % 60)} sec
                 </Text>
                 <View style={globalStyles.verticalLine}></View>
                 <Text style={profileDataStyles.total}>
