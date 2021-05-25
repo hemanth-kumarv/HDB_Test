@@ -41,7 +41,7 @@ const CustomerLoginDBTest = new Schema({
 
 const CustomerDetailsDBTest = new Schema({
   Name: String,
-  DoB: String,
+  DateOfBirth: String,
   MobileNumber: Number,
   UPID: String,
   Gender: String,

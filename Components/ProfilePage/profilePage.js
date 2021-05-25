@@ -153,7 +153,7 @@ const ProfilePage = ({ navigation, route }) => {
                   style={{ tintColor: "white" }}
                 />
                 {"\t"}
-                <Text>{userData.DoB}</Text>
+                <Text>{userData.DateOfBirth}</Text>
               </Text>
               <Text style={profileDataStyles.addr1}>
                 <AddressIcon

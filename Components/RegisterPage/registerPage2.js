@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import styles from "./registerPageStyles";
 import globalStyles from "../../globalStyles";
+import { useSelector, useDispatch } from "react-redux";
+import { registration } from "../Redux/dispatchers";
 import LeftIcon from "../../assets/chevron-left.svg";
 import RightIcon from "../../assets/chevron-right.svg";
 import ScannerIcon from "../../assets/scanner.svg";
@@ -17,14 +19,20 @@ import Flash from "../../assets/lightning.svg";
 import X from "../../assets/x-circle.svg";
 
 const RegisterPage2 = ({ navigation }) => {
-  const [upid, setUpid] = useState({ data: "", active: true });
+  const [fields, setFields] = useState({
+    upid: { data: "", active: true },
+    referralCode: { data: "" },
+  });
   const [flash, setFlash] = useState(0);
   const [scanner, showScanner] = useState(false);
+
+  const registrationData = useSelector((state) => state.registrationData);
+  const dispatch = useDispatch();
 
   const TopContent = (
     <>
       <Flash
-        width="40"
+        width="35"
         height="40"
         style={[
           {
@@ -54,86 +62,130 @@ const RegisterPage2 = ({ navigation }) => {
     </>
   );
   return (
-    <ScrollView
-      style={globalStyles.container}
-      contentContainerStyle={globalStyles.containerContent}
-    >
-      {scanner ? (
-        <QRCodeScanner
-          cameraStyle={styles.cameraStyle}
-          onRead={(e) => {
-            showScanner(false);
-            setUpid({ data: e.data, active: false });
-          }}
-          flashMode={flash}
-          showMarker={true}
-          topContent={TopContent}
-        />
-      ) : (
-        <>
-          <Text style={styles.heading}>Register</Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={[
-                styles.textInput,
-                {
-                  borderBottomColor: upid.active
-                    ? "gray"
-                    : upid.data
-                    ? "gray"
-                    : "red",
-                },
-              ]}
-              placeholder="UPID"
-              placeholderTextColor="#aaaa"
-              onChangeText={(text) => setUpid({ data: text, active: false })}
-              onBlur={() => setUpid({ data: upid.data, active: false })}
-              value={upid.data}
+    <>
+    {console.log(registrationData)}
+      {Object.keys(registrationData).length ? (
+        <ScrollView
+          style={globalStyles.container}
+          contentContainerStyle={globalStyles.containerContent}
+        >
+          {scanner ? (
+            <QRCodeScanner
+              cameraStyle={styles.cameraStyle}
+              onRead={(e) => {
+                showScanner(false);
+                setFields({ ...fields, upid: { data: e.data, active: false } });
+              }}
+              flashMode={flash}
+              showMarker={true}
+              topContent={TopContent}
             />
-            <ScannerIcon
-              width="75"
-              height="75"
-              style={[
-                {
-                  tintColor: "white",
-                  bottom: 15,
-                  top: 50,
-                },
-              ]}
-              onPress={() => showScanner(true)}
-            />
+          ) : (
+            <>
+              <Text style={styles.heading}>Register</Text>
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={[
+                    styles.textInput,
+                    {
+                      borderBottomColor: fields.upid.active
+                        ? "gray"
+                        : fields.upid.data
+                        ? "gray"
+                        : "red",
+                    },
+                  ]}
+                  placeholder="UPID"
+                  placeholderTextColor="#aaaa"
+                  onChangeText={(text) =>
+                    setFields({
+                      ...fields,
+                      upid: { data: text, active: false },
+                    })
+                  }
+                  onBlur={() =>
+                    setFields({
+                      ...fields,
+                      upid: { data: fields.upid.data, active: false },
+                    })
+                  }
+                  value={fields.upid.data}
+                />
+                <ScannerIcon
+                  width="75"
+                  height="75"
+                  style={[
+                    {
+                      tintColor: "white",
+                      bottom: 15,
+                      top: 50,
+                    },
+                  ]}
+                  onPress={() => showScanner(true)}
+                />
 
-            <TextInput
-              style={[styles.textInput, { top: 40 }]}
-              placeholder="Referral Code (If any)"
-              placeholderTextColor="#aaaa"
-            />
-          </View>
-          <LeftIcon
-            width="25"
-            height="25"
-            style={{
-              ...styles.icon,
-              ...{
-                left: 15,
-              },
-            }}
-            onPress={() => navigation.navigate("RegisterPage1")}
-          />
-          <RightIcon
-            width="25"
-            height="25"
-            style={[
-              styles.icon,
-              {
-                right: 15,
-              },
-            ]}
-            onPress={() => navigation.navigate("RegisterPage3")}
-          />
-        </>
+                <TextInput
+                  style={[styles.textInput, { top: 40 }]}
+                  placeholder="Referral Code (If any)"
+                  placeholderTextColor="#aaaa"
+                  onChangeText={(text) =>
+                    setFields({
+                      ...fields,
+                      referralCode: { data: text },
+                    })
+                  }
+                  value={fields.referralCode.data}
+                />
+              </View>
+              <LeftIcon
+                width="25"
+                height="25"
+                style={{
+                  ...styles.icon,
+                  ...{
+                    left: 15,
+                  },
+                }}
+                onPress={() => navigation.navigate("RegisterPage1")}
+              />
+              <RightIcon
+                width="25"
+                height="25"
+                style={[
+                  styles.icon,
+                  {
+                    right: 15,
+                  },
+                ]}
+                onPress={() => {
+                  if (fields.upid.data) {
+                    dispatch(registration({ ...registrationData, Referral: fields.referralCode.data, UPID: fields.upid.data }));
+                    navigation.navigate("RegisterPage3");
+                  }
+                  else {
+                    setFields({
+                      ...fields,
+                      upid: { data: "", active: false },
+                    })
+                  }
+                }}
+              />
+            </>
+          )}
+        </ScrollView>
+      ) : (
+        <Text
+          style={{
+            color: "#fff",
+            fontSize: 25,
+            textAlign: "center",
+            textAlignVertical: "center",
+          }}
+        >
+          Registration Timed out. Please register again.
+        </Text>
       )}
-    </ScrollView>
+    </>
   );
 };
 

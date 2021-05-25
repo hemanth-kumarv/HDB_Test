@@ -1,1 +1,2 @@
 export const DRAWER_STATE = "DRAWER_STATE";
+export const REGISTRATION = "REGISTRATION";

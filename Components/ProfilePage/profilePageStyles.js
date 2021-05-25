@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
     borderColor: "white",
     borderWidth: 2,
     justifyContent: "space-evenly",
-    margin: 10,
+    alignSelf: "center",
     marginTop: 25,
     marginBottom: 25,
     width: vw * 0.85,

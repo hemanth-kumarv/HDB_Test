@@ -118,19 +118,51 @@ app.post("/login", (req, res) => {
 //   });
 // });
 
-app.post("/registerPage3", (req, res) => {
+// app.post("/editCustomerData", (req, res) => {
+//   try {
+//     CustomerDetailsDBTest.updateOne(
+//       { Email: req.body.email },
+//       { ProfilePicture: req.body.image },
+//       (err, result) => {
+//         if (err) {
+//           res.send("Error connecting to database.");
+//         } else {
+//           res.send({ status: true });
+//         }
+//       }
+//     );
+//   } catch (error) {
+//     console.log(error);
+//   }
+// });
+
+app.post("/registration", (req, res) => {
   try {
-    CustomerDetailsDBTest.updateOne(
-      { Email: req.body.email },
-      { ProfilePicture: req.body.image },
-      (err, result) => {
-        if (err) {
-          res.send("Error connecting to database.");
-        } else {
-          res.send({ status: true });
-        }
-      }
-    );
+    const newDetailsDoc = new CustomerDetailsDBTest(req.body);
+    newDetailsDoc.save();
+
+    const newLoginDoc = new CustomerLoginDBTest({
+      UserID: req.body.Email,
+      PasswordHash: req.body.Password,
+    });
+    newLoginDoc.save();
+
+    const newRewardsDoc = new CustomerRewardsDBTest({
+      Email: req.body.Email,
+      RewardList: [],
+      NewRewards: [],
+      Total: { Count: 0, Time: 0, Amount: 0.0 },
+    });
+    newRewardsDoc.save();
+
+    const newTransactionsDoc = new TransactionHistoryTest({
+      Email: req.body.Email,
+      TotalAmount: 0.0,
+      TransactionHistory: [],
+    });
+    newTransactionsDoc.save();
+
+    res.send({});
   } catch (error) {
     console.log(error);
   }
