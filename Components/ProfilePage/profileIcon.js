@@ -12,10 +12,10 @@ const ProfileIconPage = ({ navigation, route }) => {
   useEffect(() => {
     (async () => {
       var userData = await AsyncStorage.getItem("UserData");
+      console.log(userData);
       if (userData !== null) {
         userData = JSON.parse(userData);
-        if (userData.ProfilePicture.length > 0)
-          setImage(userData.ProfilePicture);
+        if (userData.ProfilePicture) setImage(userData.ProfilePicture);
       }
     })();
   }, []);

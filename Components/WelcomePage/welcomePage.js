@@ -15,18 +15,30 @@ const WelcomePage = ({ navigation }) => {
 
   const login = (userName, password) => {
     setloginError("");
+    let type = "Customer";
+    if (String(userName).startsWith("va@")) {
+      type = "Company";
+      userName = String(userName).substring(3);
+    }
     axios.then((server) =>
       server
-        .post("/login", { name: userName, pass: password })
+        .post("/login", { name: userName, pass: password, type: type })
         .then(async (res) => {
           // console.log(res.data);
           if (res.data.status) {
             await AsyncStorage.setItem("UserId", userName);
-            await AsyncStorage.setItem(
-              "UserData",
-              JSON.stringify(res.data.data)
+            await AsyncStorage.setItem("UserType", type);
+            let newData = { ...res.data.data };
+            if (type === "Company") {
+              // let logo, rest;
+              let { Logo: logo, ...rest } = newData;
+              rest.ProfilePicture = logo;
+              newData = { ...rest };
+            }
+            await AsyncStorage.setItem("UserData", JSON.stringify(newData));
+            navigation.replace(
+              type === "Customer" ? "CustomerLandingPage" : "CompanyLandingPage"
             );
-            navigation.replace("CustomerLandingPage");
           } else {
             setloginError(res.data.message);
           }

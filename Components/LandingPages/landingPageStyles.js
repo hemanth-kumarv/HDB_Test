@@ -23,6 +23,7 @@ export const styles = StyleSheet.create({
   table: {
     top: vh * 0.12,
     alignSelf: "stretch",
+    height: vh * 0.85
   },
   tableRow: {
     alignSelf: "stretch",
@@ -45,7 +46,8 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     borderRadius: 6,
     backgroundColor: "#2176FF",
-    marginBottom: 10,
+    marginBottom: 5,
+    marginTop: 5,
     height: 60,
     alignSelf: "center",
   },
@@ -90,11 +92,11 @@ export const styles = StyleSheet.create({
     fontSize: 25,
   },
   btIcon: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 10,
     right: 10,
-    zIndex: 10
-  }
+    zIndex: 10,
+  },
 });
 
 export const tdWidth = {

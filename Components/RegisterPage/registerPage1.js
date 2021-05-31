@@ -1,11 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Text,
   View,
   ScrollView,
-  Button,
+  Switch,
   TextInput,
-  Keyboard,
+  KeyboardAvoidingView,
 } from "react-native";
 import styles from "./registerPageStyles";
 import globalStyles from "../../globalStyles";
@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import RightIcon from "../../assets/chevron-right.svg";
 import sha256 from "crypto-js/sha256";
+import axios from "../axiosServer";
 
 const RegisterPage1 = ({ navigation }) => {
   const [showDate, setShowDate] = useState(false);
@@ -33,9 +34,25 @@ const RegisterPage1 = ({ navigation }) => {
     confirmPassword: { data: "", active: true, equal: false },
     DateOfBirth: { data: "", active: true },
   });
+  const [existingEmails, setExistingEmails] = useState({
+    companies: [],
+    customers: [],
+  });
+  const [errorText, setErrorText] = useState("");
+  const [userType, setUserType] = useState(false);
+
+  useEffect(() => {
+    axios.then((server) =>
+      server
+        .post("/getAvailableEmails")
+        .then((res) => setExistingEmails(res.data))
+        .catch((err) => console.log(err))
+    );
+  }, []);
 
   const nextPage = () => {
     let check = true,
+      existing = false,
       newFields = { ...fields };
     for (let i in fields) {
       if (!fields[i].data) {
@@ -44,17 +61,31 @@ const RegisterPage1 = ({ navigation }) => {
       }
     }
     if (!fields.confirmPassword.equal) check = false;
-    if (check) {
+    existing = userType
+      ? existingEmails.companies.includes(fields.Email.data)
+      : existingEmails.customers.includes(fields.Email.data);
+    if (check && !existing) {
       let data = {};
       for (let i in fields) {
         if (i === "password" || i === "confirmPassword")
           data["Password"] = sha256(fields[i].data).toString();
-        else if(i === "DateOfBirth") data[i] = dateFormatter(fields[i].data);
+        else if (i === "DateOfBirth")
+          data[i] = dateFormatter(fields[i].data.split(" "));
         else data[i] = fields[i].data;
       }
       dispatch(registration(data));
-      navigation.navigate("RegisterPage2");
-    } else setFields(newFields);
+      navigation.navigate(userType ? "CustomerRegisterPage" : "RegisterPage2");
+    } else {
+      if (!check) {
+        setFields(newFields);
+        setErrorText("Please fill the mandatory fields.");
+      } else {
+        Email.current.setNativeProps({
+          style: { borderBottomColor: "red" },
+        });
+        setErrorText("Email already exists!");
+      }
+    }
   };
 
   const dateFormatter = (date) =>
@@ -96,10 +127,6 @@ const RegisterPage1 = ({ navigation }) => {
         ...{ confirmPassword: { ...obj.confirmPassword, equal: equal } },
       };
     return obj;
-    // return {
-    //   ...fields,
-    //   ...{ [name]: { data: data, active: false } },
-    // };
   };
 
   return (
@@ -107,10 +134,10 @@ const RegisterPage1 = ({ navigation }) => {
       style={globalStyles.container}
       contentContainerStyle={[
         globalStyles.containerContent,
-        ,
         { justifyContent: "space-evenly" },
       ]}
     >
+      <Text style={styles.errorText}>{errorText}</Text>
       <Text style={styles.heading}>Register</Text>
       <View style={styles.inputContainer}>
         <TextInput
@@ -232,6 +259,18 @@ const RegisterPage1 = ({ navigation }) => {
         ]}
         onPress={() => nextPage()}
       />
+      <KeyboardAvoidingView style={[styles.switch]} behavior={"height"}>
+        <Text style={styles.switchText}>Customer</Text>
+        <Switch
+          trackColor={{ false: "#767577", true: "#2176FF" }}
+          thumbColor={"#f4f3f4"}
+          // ios_backgroundColor="#3e3e3e"
+          onValueChange={() => setUserType(!userType)}
+          value={userType}
+          style={{ transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }] }}
+        />
+        <Text style={styles.switchText}>Company</Text>
+      </KeyboardAvoidingView>
     </ScrollView>
   );
 };

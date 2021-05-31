@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  Text,
-  View,
-  ScrollView,
-  TextInput,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import { Text, View, ScrollView, TextInput, Switch } from "react-native";
 import styles from "./registerPageStyles";
 import globalStyles from "../../globalStyles";
 import { useSelector, useDispatch } from "react-redux";
@@ -25,10 +18,29 @@ const RegisterPage2 = ({ navigation }) => {
   });
   const [flash, setFlash] = useState(0);
   const [scanner, showScanner] = useState(false);
+  const [errorText, setErrorText] = useState("");
 
   const registrationData = useSelector((state) => state.registrationData);
   const dispatch = useDispatch();
 
+  const nextPage = () => {
+    if (fields.upid.data) {
+      dispatch(
+        registration({
+          ...registrationData,
+          Referral: fields.referralCode.data,
+          UPID: fields.upid.data,
+        })
+      );
+      navigation.navigate("RegisterPage3");
+    } else {
+      setFields({
+        ...fields,
+        upid: { data: "", active: false },
+      });
+      setErrorText("Please fill the mandatory fields.");
+    }
+  };
   const TopContent = (
     <>
       <Flash
@@ -63,7 +75,6 @@ const RegisterPage2 = ({ navigation }) => {
   );
   return (
     <>
-    {console.log(registrationData)}
       {Object.keys(registrationData).length ? (
         <ScrollView
           style={globalStyles.container}
@@ -82,6 +93,7 @@ const RegisterPage2 = ({ navigation }) => {
             />
           ) : (
             <>
+              <Text style={styles.errorText}>{errorText}</Text>
               <Text style={styles.heading}>Register</Text>
               <View style={styles.inputContainer}>
                 <TextInput
@@ -157,18 +169,7 @@ const RegisterPage2 = ({ navigation }) => {
                     right: 15,
                   },
                 ]}
-                onPress={() => {
-                  if (fields.upid.data) {
-                    dispatch(registration({ ...registrationData, Referral: fields.referralCode.data, UPID: fields.upid.data }));
-                    navigation.navigate("RegisterPage3");
-                  }
-                  else {
-                    setFields({
-                      ...fields,
-                      upid: { data: "", active: false },
-                    })
-                  }
-                }}
+                onPress={() => nextPage()}
               />
             </>
           )}

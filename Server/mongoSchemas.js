@@ -15,6 +15,22 @@ const ZonalAdsListTest = new Schema({
   AdList: [],
 });
 
+const CompanyDetailsDBTest = new Schema({
+  Name: String,
+  CompanyName: String,
+  Email: String,
+  Address1: String,
+  Address2: String,
+  Logo: String,
+  UploadedAds: [],
+});
+
+const CompanyLoginDBTest = new Schema({
+  UserID: String,
+  Password: String,
+  Preferences: {},
+});
+
 const CustomerRewardsDBTest = new Schema({
   Email: String,
   RewardList: [
@@ -35,7 +51,7 @@ const CustomerRewardsDBTest = new Schema({
 
 const CustomerLoginDBTest = new Schema({
   UserID: String,
-  PasswordHash: String,
+  Password: String,
   Preferences: {},
 });
 
@@ -65,6 +81,9 @@ const TransactionHistoryTest = new Schema({
 
 exports.CompanyListDBTest = CompanyListDBTest;
 exports.ZonalAdsListTest = ZonalAdsListTest;
+exports.CompanyDetailsDBTest = CompanyDetailsDBTest;
+exports.CompanyLoginDBTest = CompanyLoginDBTest;
+
 exports.CustomerRewardsDBTest = CustomerRewardsDBTest;
 exports.CustomerLoginDBTest = CustomerLoginDBTest;
 exports.CustomerDetailsDBTest = CustomerDetailsDBTest;

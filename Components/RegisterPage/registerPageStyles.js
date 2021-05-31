@@ -7,14 +7,15 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 30,
     alignItems: "center",
-    top: vh * 0.05
+    top: vh * 0.05,
   },
+  errorText: { top: 0, color: "red", fontSize: 18 },
   inputContainer: {
     top: vh * 0.1,
     width: "100%",
     display: "flex",
     alignItems: "center",
-    paddingBottom: "40%"
+    paddingBottom: "40%",
   },
   textInput: {
     color: "#fff",
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     borderRadius: 2,
     padding: 5,
-    width: "70%"
+    width: "70%",
   },
   button: {
     top: vh * 0.75,
@@ -34,20 +35,29 @@ const styles = StyleSheet.create({
     textAlign: "center",
     padding: 10,
     borderRadius: 10,
-    fontSize: 18
+    fontSize: 18,
   },
   icon: {
     position: "absolute",
     bottom: vh * 0.23,
-    tintColor: "white"
+    tintColor: "white",
   },
+  switch: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    width: vw,
+    backgroundColor: "#11191C",
+    paddingBottom: 10,
+  },
+  switchText: { color: "white", marginHorizontal: 12, fontSize: 18 },
   dropdownPicker: {
     borderRadius: 15,
     width: "70%",
     color: "#fff",
     borderBottomWidth: 1,
     borderBottomColor: "gray",
-    overflow: "hidden"
+    overflow: "hidden",
   },
   cameraStyle: {
     top: 0,
@@ -57,7 +67,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     // zIndex: 10,
     width: vw,
-    height: vh
+    height: vh,
   },
   chooserContainer: {
     // top: 0,
@@ -69,7 +79,7 @@ const styles = StyleSheet.create({
     zIndex: 5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
   },
   chooserButton: {
     width: 250,
@@ -78,13 +88,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 4,
-    marginBottom: 12
+    marginBottom: 12,
   },
   chooserButtonText: {
     textAlign: "center",
     fontSize: 15,
-    color: "#fff"
-  }
+    color: "#fff",
+  },
 });
 
 export default styles;

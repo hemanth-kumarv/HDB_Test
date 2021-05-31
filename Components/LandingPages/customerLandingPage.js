@@ -59,27 +59,25 @@ const CustomerLandingPage = ({ route, navigation }) => {
     if (isFocused) {
       if (drawerOpen) dispatch(changeDrawerStyle(false));
     }
-    if (adsList.length === 0 && !searching) {
-      (async () => {
-        const name = await AsyncStorage.getItem("UserId");
-        const totalRewards = await AsyncStorage.getItem("TotalRewards");
-        setuserName(name);
-        if (totalRewards.length == 0)
-          axios.then((server) =>
-            server
-              .post("/getRewards", { name: userDataJSON.Email })
-              .then(async (res) => {
-                await AsyncStorage.setItem(
-                  "TotalRewards",
-                  JSON.stringify(res.data.Total)
-                );
-              })
-              .catch((err) => {
-                console.log(err);
-              })
-          );
-      })();
-    }
+    (async () => {
+      const name = await AsyncStorage.getItem("UserId");
+      const totalRewards = await AsyncStorage.getItem("TotalRewards");
+      setuserName(name);
+      if (!totalRewards)
+        axios.then((server) =>
+          server
+            .post("/getRewards", { name: name })
+            .then(async (res) => {
+              await AsyncStorage.setItem(
+                "TotalRewards",
+                JSON.stringify(res.data.Total)
+              );
+            })
+            .catch((err) => {
+              console.log(err);
+            })
+        );
+    })();
   }, [isFocused]);
 
   const bluetoothConnect = async () => {

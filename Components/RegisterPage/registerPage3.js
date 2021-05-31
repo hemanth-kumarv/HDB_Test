@@ -125,6 +125,7 @@ const RegisterPage3 = ({ navigation }) => {
               // console.log(pickedImage);
               let data = {
                 ...registrationData,
+                type: "Customer",
                 Gender: gender === "Gender" ? "" : gender,
                 Address1: address.addrLine1,
                 Address2: address.addrLine2,

@@ -31,6 +31,17 @@ const CompanyListDBTest = CompanyConn.model(
   schemas.CompanyListDBTest,
   "CompanyListDBTest"
 );
+const CompanyDetailsDBTest = CompanyConn.model(
+  "Company",
+  schemas.CompanyDetailsDBTest,
+  "CompanyDetailsDBTest"
+);
+const CompanyLoginDBTest = CompanyConn.model(
+  "Company",
+  schemas.CompanyLoginDBTest,
+  "CompanyLoginDBTest"
+);
+
 const ZonalAdsListTest = CompanyConn.model(
   "Company",
   schemas.ZonalAdsListTest,
@@ -61,6 +72,8 @@ const TransactionHistoryTest = CustomerConn.model(
 
 exports.CompanyListDBTest = CompanyListDBTest;
 exports.ZonalAdsListTest = ZonalAdsListTest;
+exports.CompanyDetailsDBTest = CompanyDetailsDBTest;
+exports.CompanyLoginDBTest = CompanyLoginDBTest;
 exports.CustomerLoginDBTest = CustomerLoginDBTest;
 exports.CustomerRewardsDBTest = CustomerRewardsDBTest;
 exports.CustomerDetailsDBTest = CustomerDetailsDBTest;
