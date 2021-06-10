@@ -4,6 +4,16 @@ var app = express();
 var cors = require("cors");
 var ip = require("ip");
 var _ = require("lodash");
+var multer = require("multer");
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./newAds/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+var upload = multer({ storage: storage });
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
@@ -246,7 +256,6 @@ app.post("/getPreviousTransactions", (req, res) => {
 
 app.post("/getPreviouslyUploadedAds", (req, res) => {
   try {
-    console.log(req.body);
     CompanyDetailsDBTest.findOne(
       { Email: req.body.emailID },
       async (err, docs) => {
@@ -254,7 +263,6 @@ app.post("/getPreviouslyUploadedAds", (req, res) => {
           console.log(err);
           res.send("Error connecting to database.");
         } else {
-          console.log(docs);
           let newRes;
           if (docs.UploadedAds)
             newRes = await findFromCompanyList(docs.UploadedAds);
@@ -263,6 +271,20 @@ app.post("/getPreviouslyUploadedAds", (req, res) => {
       }
     );
   } catch (error) {
+    console.log(error);
+  }
+});
+
+app.post("/uploadNewAd", upload.single("MyNewVideo"), (req, res) => {
+  console.log("Hehe", req.body);
+  try {
+    res.send({
+      status: 200,
+      message:
+        "Uploaded successfully. You shall be notified if the ad uploaded is suitable to be displayed or not.",
+    });
+  } catch (error) {
+    res.send({ status: 400, message: "Error while uploading. Please retry." });
     console.log(error);
   }
 });

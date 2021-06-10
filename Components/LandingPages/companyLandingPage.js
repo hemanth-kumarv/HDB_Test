@@ -10,19 +10,21 @@ import {
   ActivityIndicator,
   RefreshControl,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import globalStyles from "../../globalStyles";
 import SideDrawer from "../../Components/SideDrawer/sideDrawer";
 import ProfileIconPage from "../ProfilePage/profileIcon";
 import { styles } from "./companyLandingStyles";
+import { styles as landingStyles } from "./landingPageStyles";
 import { adsTdWidth } from "./landingPageStyles";
 import { changeDrawerStyle } from "../Redux/dispatchers";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ErrorSVG from "../../assets/exclamation-triangle.svg";
 
 const CompanyLandingPage = ({ route, navigation }) => {
-  const [searching, setSearching] = useState(true);
+  const [searching, setSearching] = useState(false);
   const [userName, setuserName] = useState(null);
   const [adsList, setAdsList] = useState([]);
 
@@ -59,6 +61,27 @@ const CompanyLandingPage = ({ route, navigation }) => {
     })();
   }, [isFocused]);
 
+  useEffect(() => {
+    if (route.params?.adUploadMessage) {
+      Alert.alert(
+        "Note",
+        route.params.adUploadMessage,
+        [
+          {
+            text: "Okay",
+            style: "cancel",
+          },
+        ],
+        {
+          cancelable: true,
+        }
+      );
+      navigation.setParams({
+        adUploadMessage: "",
+      });
+    }
+  }, [route.params?.adUploadMessage]);
+
   return (
     <ScrollView
       style={globalStyles.container}
@@ -74,7 +97,7 @@ const CompanyLandingPage = ({ route, navigation }) => {
       <SideDrawer navigation={navigation} route={route} />
       <View
         style={[
-          styles.container,
+          landingStyles.container,
           drawerOpen ? { opacity: 0.2 } : { opacity: 1 },
         ]}
         onStartShouldSetResponder={() => {
@@ -84,53 +107,88 @@ const CompanyLandingPage = ({ route, navigation }) => {
         <ProfileIconPage navigation={navigation} route={route} />
         {searching ? (
           <>
-            <Text style={styles.heading}>Upload Ad</Text>
-            <View style={styles.table}>
-              <Text style={styles.button}>Upload New Ad</Text>
-              <View style={{ padding: 15, top: 15 }}>
-                <Text style={{ color: "#fff", fontSize: 24 }}>
-                  Previously Uploaded Ads
+            {typeof adsList === "string" ? (
+              <View style={landingStyles.errorTextContainer}>
+                <ErrorSVG
+                  width="50"
+                  height="50"
+                  style={{
+                    tintColor: "yellow",
+                  }}
+                />
+                <Text style={landingStyles.errorText}>{adsList}</Text>
+                <Text
+                  style={landingStyles.retryButton}
+                  onPress={() => searchPreviousAds(userName)}
+                >
+                  Retry
                 </Text>
-                <ScrollView style={styles.prevAds}>
-                  {adsList.length ? (
-                    adsList.map((i, j) => (
-                      <TouchableOpacity
-                        style={styles.adTableRow}
-                        key={j}
-                        onPress={async () =>
-                          await Linking.openURL(
-                            "https://drive.google.com/file/d/"+i.VideoID+"/view?usp=sharing"
-                          )
-                        }
-                      >
-                        {/* <Text style={[styles.adTableData, adsTdWidth.no]}>{j + 1}</Text> */}
-                        <Image
-                          style={{ width: 60, height: 60 }}
-                          source={{ uri: i.Icon }}
-                        />
-                        <Text style={[styles.adTableData, adsTdWidth.ad]}>
-                          {i.Name}
-                        </Text>
-                        <Text style={[styles.adTableData, adsTdWidth.reward]}>
-                          Rs. {i.Reward}
-                          {"\n"}
-                          <Text style={{ fontSize: 18, color: "white" }}>
-                            For {i.Duration} s
-                          </Text>
-                        </Text>
-                        {/* <Text style={[styles.adTableData, adsTdWidth.select, {backgroundColor: 'dodgerblue', color: 'black'}]}>
+              </View>
+            ) : (
+              <>
+                <Text style={landingStyles.heading}>Upload Ad</Text>
+                <View style={landingStyles.table}>
+                  <Text
+                    style={styles.button}
+                    onPress={() => navigation.navigate("NewAdPage")}
+                  >
+                    Upload New Ad
+                  </Text>
+                  <View style={{ padding: 15, top: 15 }}>
+                    <Text style={{ color: "#fff", fontSize: 24 }}>
+                      Previously Uploaded Ads
+                    </Text>
+                    <ScrollView style={styles.prevAds}>
+                      {adsList.length ? (
+                        adsList.map((i, j) => (
+                          <TouchableOpacity
+                            style={landingStyles.adTableRow}
+                            key={j}
+                            onPress={async () =>
+                              await Linking.openURL(
+                                "https://drive.google.com/file/d/" +
+                                  i.VideoID +
+                                  "/view?usp=sharing"
+                              )
+                            }
+                          >
+                            {/* <Text style={[styles.adTableData, adsTdWidth.no]}>{j + 1}</Text> */}
+                            <Image
+                              style={{ width: 60, height: 60 }}
+                              source={{ uri: i.Icon }}
+                            />
+                            <Text
+                              style={[landingStyles.adTableData, adsTdWidth.ad]}
+                            >
+                              {i.Name}
+                            </Text>
+                            <Text
+                              style={[
+                                landingStyles.adTableData,
+                                adsTdWidth.reward,
+                              ]}
+                            >
+                              Rs. {i.Reward}
+                              {"\n"}
+                              <Text style={{ fontSize: 18, color: "white" }}>
+                                For {i.Duration} s
+                              </Text>
+                            </Text>
+                            {/* <Text style={[styles.adTableData, adsTdWidth.select, {backgroundColor: 'dodgerblue', color: 'black'}]}>
                       Select
                     </Text> */}
-                      </TouchableOpacity>
-                    ))
-                  ) : (
-                    <Text style={styles.errorText}>
-                      Please upload a New Ad first.
-                    </Text>
-                  )}
-                </ScrollView>
-              </View>
-            </View>
+                          </TouchableOpacity>
+                        ))
+                      ) : (
+                        <Text style={styles.errorText}>
+                          Please upload a New Ad first.
+                        </Text>
+                      )}
+                    </ScrollView>
+                  </View>
+                </View>
+              </>
+            )}
           </>
         ) : (
           <View style={{ top: 250 }}>

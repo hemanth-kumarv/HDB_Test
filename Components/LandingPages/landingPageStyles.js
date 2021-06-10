@@ -53,7 +53,7 @@ export const styles = StyleSheet.create({
   },
   adTableData: {
     color: "#fff",
-    fontSize: 23,
+    fontSize: 22,
     textAlign: "center",
     textAlignVertical: "center",
   },

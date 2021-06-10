@@ -14,6 +14,8 @@ import CompanyLandingPage from "./Components/LandingPages/companyLandingPage";
 import RewardHistory from "./Components/LandingPages/rewardHistory";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ProfilePage from "./Components/ProfilePage/profilePage";
+import NewAdPage from "./Components/UploadNewAdPage/newAdPage";
+import CompanyProfilePage from "./Components/ProfilePage/companyProfilePage";
 import WalletPage from "./Components/WalletPage/walletPage";
 import SettingsPage from "./Components/SettingsPage/settings";
 
@@ -66,6 +68,11 @@ const App = () => {
             />
             <Stack.Screen name="RewardHistory" component={RewardHistory} />
             <Stack.Screen name="ProfilePage" component={ProfilePage} />
+            <Stack.Screen
+              name="CompanyProfilePage"
+              component={CompanyProfilePage}
+            />
+            <Stack.Screen name="NewAdPage" component={NewAdPage} />
             <Stack.Screen name="WalletPage" component={WalletPage} />
             <Stack.Screen name="SettingsPage" component={SettingsPage} />
           </Stack.Navigator>
