@@ -5,15 +5,6 @@ var cors = require("cors");
 var ip = require("ip");
 var _ = require("lodash");
 var multer = require("multer");
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "./newAds/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-var upload = multer({ storage: storage });
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
@@ -24,6 +15,7 @@ const CompanyListDBTest = conn.CompanyListDBTest;
 const ZonalAdsListTest = conn.ZonalAdsListTest;
 const CompanyLoginDBTest = conn.CompanyLoginDBTest;
 const CompanyDetailsDBTest = conn.CompanyDetailsDBTest;
+const UnreviewedAdsList = conn.UnreviewedAdsList;
 
 const CustomerLoginDBTest = conn.CustomerLoginDBTest;
 const CustomerRewardsDBTest = conn.CustomerRewardsDBTest;
@@ -263,9 +255,15 @@ app.post("/getPreviouslyUploadedAds", (req, res) => {
           console.log(err);
           res.send("Error connecting to database.");
         } else {
-          let newRes;
-          if (docs.UploadedAds)
-            newRes = await findFromCompanyList(docs.UploadedAds);
+          let newRes = [],
+            adsList = docs.UploadedAds.map((obj) => obj.Video);
+          if (docs.UploadedAds) {
+            let Res = await findFromCompanyList(adsList);
+            Res.forEach((i) => {
+              let j = docs.UploadedAds.find((k) => k.Video === i.VideoID);
+              newRes.push({ ...i.toObject(), ...j.toObject() });
+            });
+          }
           res.send(newRes);
         }
       }
@@ -275,9 +273,32 @@ app.post("/getPreviouslyUploadedAds", (req, res) => {
   }
 });
 
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./newAds/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+var upload = multer({ storage: storage });
+
 app.post("/uploadNewAd", upload.single("MyNewVideo"), (req, res) => {
   console.log("Hehe", req.body);
   try {
+    let reqData = {
+      DisplayDate: req.body.displayDate,
+      FromTime: req.body.fromTime,
+      ToTime: req.body.toTime,
+      Location: req.body.AdLocation,
+      Title: req.body.AdTitle,
+      DisplayCount: req.body.DisplayCount,
+      UserID: req.body.userID,
+      UploadType: req.body.video ? "Server" : "Email",
+    };
+
+    let newAd = new UnreviewedAdsList(reqData);
+    newAd.save();
     res.send({
       status: 200,
       message:

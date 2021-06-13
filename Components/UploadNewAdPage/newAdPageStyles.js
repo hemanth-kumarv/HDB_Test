@@ -12,6 +12,7 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     position: "absolute",
   },
+  errorText: { top: 0, color: "red", fontSize: 18, textAlign: "center" },
   container: {
     width: vw,
     height: vh,

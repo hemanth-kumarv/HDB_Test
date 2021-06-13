@@ -19,6 +19,8 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import SideDrawer from "../SideDrawer/sideDrawer";
 import ProfileIconPage from "../ProfilePage/profileIcon";
 import { changeDrawerStyle } from "../Redux/dispatchers";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "../axiosServer";
 
 const NewAdPage = ({ navigation, route }) => {
   const drawerOpen = useSelector((state) => state.drawerOpen);
@@ -40,13 +42,50 @@ const NewAdPage = ({ navigation, route }) => {
     setFormData({ ...formData, [name]: { data: data, active: false } });
   };
 
-  const validateStyle = (field, name, defaultName) => ({
-    borderBottomColor: field[name].active
-      ? "gray"
-      : field[name].data !== defaultName
-      ? "gray"
-      : "red",
-  });
+  const validateStyle = (field, name, defaultName) => {
+    return {
+      borderBottomColor: field[name].active
+        ? "gray"
+        : field[name].data !== defaultName
+        ? "gray"
+        : "red",
+    };
+  };
+
+  const checkFormData = () => {
+    let valid = true;
+    let newPickerData = {};
+    for (let x in pickerData) {
+      if (pickerData[x].active) {
+        valid = false;
+        newPickerData = {
+          ...newPickerData,
+          [x]: { ...pickerData[x], active: false },
+        };
+      } else newPickerData = { ...newPickerData, [x]: pickerData[x] };
+    }
+    setPickerData(newPickerData);
+    if (pickerData.fromTime.data === "From Time") valid = false;
+    if (pickerData.toTime.data === "To Time") valid = false;
+    if (pickerData.displayDate.data === "Select Date") valid = false;
+
+    let newFormData = {};
+    for (let x in formData) {
+      if (formData[x].active) {
+        valid = false;
+        newFormData = {
+          ...newFormData,
+          [x]: { ...formData[x], active: false },
+        };
+      } else newFormData = { ...newFormData, [x]: formData[x] };
+      if (!formData[x].data) valid = false;
+    }
+    setFormData(newFormData);
+    if (formData.AdLocation === "Choose") valid = false;
+    // if(!videoDetails.data) {setErrorText("Please choose a video to upload."); return false;}
+    if (!valid) setErrorText("Please fill the mandatory fields.");
+    return valid;
+  };
 
   const uploadToServer = async (data) => {
     // console.log(data);
@@ -55,6 +94,10 @@ const NewAdPage = ({ navigation, route }) => {
     );
     Object.keys(data).map((i) => data[i].data);
     // console.log(fieldsData);
+    let fileName = Date.now() + "-" + fieldsData.AdTitle + ".mp4";
+    let name = await AsyncStorage.getItem("UserId");
+    fieldsData["fileName"] = fileName;
+    fieldsData["userID"] = name;
     let uploadUrl =
       config.ExpressServer.ServerIP +
       ":" +
@@ -63,32 +106,51 @@ const NewAdPage = ({ navigation, route }) => {
     let files = [
       {
         name: "MyNewVideo",
-        filename: "MyNewVideo2.mp4",
+        filename: fileName,
         filepath: data.video.data,
       },
     ];
-    await RNFS.uploadFiles({
-      toUrl: uploadUrl,
-      files: files,
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        Connection: "close",
-      },
-      fields: fieldsData,
-    })
-      .promise.then((response) => {
-        let res = JSON.parse(response.body);
-        if (res.status === 200) {
-          navigation.navigate("CompanyLandingPage", {
-            adUploadMessage: res.message,
-          });
-        } else {
-          console.log("SERVER ERROR");
-          setErrorText("SERVER ERROR");
-        }
-      })
-      .catch((err) => console.log(err));
+    let valid = checkFormData();
+    if (valid) {
+      if (videoDetails.data)
+        await RNFS.uploadFiles({
+          toUrl: uploadUrl,
+          files: files,
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            Connection: "close",
+          },
+          fields: fieldsData,
+        })
+          .promise.then((response) => {
+            let res = JSON.parse(response.body);
+            if (res.status === 200) {
+              navigation.navigate("CompanyLandingPage", {
+                adUploadMessage: res.message,
+              });
+            } else {
+              console.log("SERVER ERROR");
+              setErrorText("SERVER ERROR");
+            }
+          })
+          .catch((err) => console.log(err));
+      else {
+        axios.then((server) =>
+          server
+            .post("/uploadNewAd", fieldsData)
+            .then(async (res) => {
+              navigation.navigate("CompanyLandingPage", {
+                adUploadMessage:
+                  "If you wish to upload the ad through email, please do mention the Ad Title, as well as the registered Email ID and send within 48 hours.",
+              });
+            })
+            .catch((err) => {
+              setErrorText("Error connecting to server.");
+            })
+        );
+      }
+    }
   };
 
   const PickerUI = (params) => (
@@ -120,6 +182,7 @@ const NewAdPage = ({ navigation, route }) => {
       {pickerData[params.fieldName].show ? (
         <DateTimePicker
           style={[styles.textInput]}
+          minimumDate={new Date()}
           value={new Date()}
           mode={params.pickerType}
           onChange={(e, date) => {
@@ -157,9 +220,14 @@ const NewAdPage = ({ navigation, route }) => {
       >
         <Text style={styles.heading}>Upload Ad</Text>
         <ProfileIconPage navigation={navigation} route={route} />
-        {errorText ? <Text style={styles.errorText}>{errorText}</Text> : null}
         <View style={styles.form}>
-          <View style={styles.dropdownPicker}>
+          {errorText ? <Text style={styles.errorText}>{errorText}</Text> : null}
+          <View
+            style={[
+              styles.dropdownPicker,
+              validateStyle(formData, "AdLocation", "Choose"),
+            ]}
+          >
             <Picker
               selectedValue={formData.AdLocation.data}
               style={{ color: "#fff" }}
@@ -180,11 +248,12 @@ const NewAdPage = ({ navigation, route }) => {
             </Picker>
           </View>
           <TextInput
-            style={styles.textInput}
+            style={[styles.textInput, validateStyle(formData, "AdTitle", "")]}
             placeholder="Ad Title"
             placeholderTextColor="#aaaa"
             value={formData.AdTitle.data}
             onChangeText={(text) => updateFields("AdTitle", text)}
+            onBlur={() => updateFields("AdTitle", formData.AdTitle.data)}
           />
           {PickerUI({
             fieldName: "displayDate",
@@ -219,12 +288,18 @@ const NewAdPage = ({ navigation, route }) => {
             })}
           </View>
           <TextInput
-            style={styles.textInput}
+            style={[
+              styles.textInput,
+              validateStyle(formData, "DisplayCount", ""),
+            ]}
             placeholder="Displays per Day"
             keyboardType="number-pad"
             placeholderTextColor="#aaaa"
             value={formData.DisplayCount.data}
             onChangeText={(text) => updateFields("DisplayCount", text)}
+            onBlur={() =>
+              updateFields("DisplayCount", formData.DisplayCount.data)
+            }
           />
           <Text
             style={styles.selectAdButton}

@@ -40,24 +40,24 @@ const CompanyProfilePage = ({ navigation, route }) => {
         userDataJSON.ProfilePicture = userDataJSON.ProfilePicture;
         setUserData(userDataJSON);
       }
-      var totalRewardsJSON = await AsyncStorage.getItem("TotalRewards");
-      if (totalRewardsJSON === null && userDataJSON !== null) {
-        axios.then((server) =>
-          server
-            .post("/getRewards", { name: userDataJSON.Email })
-            .then(async (res) => {
-              await AsyncStorage.setItem(
-                "TotalRewards",
-                JSON.stringify(res.data.Total)
-              );
-              setTotalRewards(res.data.Total);
-            })
-            .catch((err) => {
-              setTotalRewards({ Error: "Error connecting to server." });
-              console.log(err);
-            })
-        );
-      } else setTotalRewards(JSON.parse(totalRewardsJSON));
+      // var totalRewardsJSON = await AsyncStorage.getItem("TotalRewards");
+      // if (totalRewardsJSON === null && userDataJSON !== null) {
+      // axios.then((server) =>
+      //   server
+      //     .post("/getRewards", { name: userDataJSON.Email })
+      //     .then(async (res) => {
+      //       await AsyncStorage.setItem(
+      //         "TotalRewards",
+      //         JSON.stringify(res.data.Total)
+      //       );
+      //       setTotalRewards(res.data.Total);
+      //     })
+      //     .catch((err) => {
+      //       setTotalRewards({ Error: "Error connecting to server." });
+      //       console.log(err);
+      //     })
+      // );
+      // } else setTotalRewards(JSON.parse(totalRewardsJSON));
     })();
   }, [isFocused]);
   return (

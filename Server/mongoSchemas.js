@@ -22,13 +22,31 @@ const CompanyDetailsDBTest = new Schema({
   Address1: String,
   Address2: String,
   Logo: String,
-  UploadedAds: [],
+  UploadedAds: [
+    {
+      Video: String,
+      Count: Number,
+      Date: String,
+      TimeSlot: String,
+    },
+  ],
 });
 
 const CompanyLoginDBTest = new Schema({
   UserID: String,
   Password: String,
   Preferences: {},
+});
+
+const UnreviewedAdsList = new Schema({
+  DisplayDate: String,
+  FromTime: String,
+  ToTime: String,
+  Location: String,
+  Title: String,
+  DisplayCount: String,
+  UserID: String,
+  UploadType: String,
 });
 
 const CustomerRewardsDBTest = new Schema({
@@ -83,6 +101,7 @@ exports.CompanyListDBTest = CompanyListDBTest;
 exports.ZonalAdsListTest = ZonalAdsListTest;
 exports.CompanyDetailsDBTest = CompanyDetailsDBTest;
 exports.CompanyLoginDBTest = CompanyLoginDBTest;
+exports.UnreviewedAdsList = UnreviewedAdsList;
 
 exports.CustomerRewardsDBTest = CustomerRewardsDBTest;
 exports.CustomerLoginDBTest = CustomerLoginDBTest;

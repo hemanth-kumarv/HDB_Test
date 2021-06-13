@@ -9,10 +9,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProfileIconPage = ({ navigation, route }) => {
   const [image, setImage] = useState(null);
+  const [userType, setUserType] = useState("Customer");
   useEffect(() => {
     (async () => {
       var userData = await AsyncStorage.getItem("UserData");
-      console.log(userData);
+      let userType = await AsyncStorage.getItem("UserType");
+      setUserType(userType);
+      // console.log(userData);
       if (userData !== null) {
         userData = JSON.parse(userData);
         if (userData.ProfilePicture) setImage(userData.ProfilePicture);
@@ -24,7 +27,11 @@ const ProfileIconPage = ({ navigation, route }) => {
       {image ? (
         <TouchableOpacity
           style={styles.icon}
-          onPress={() => navigation.navigate("ProfilePage")}
+          onPress={() =>
+            userType === "Customer"
+              ? navigation.navigate("ProfilePage")
+              : navigation.navigate("CompanyProfilePage")
+          }
         >
           <Image
             style={{ width: 50, height: 50, borderRadius: 50 }}
@@ -43,7 +50,11 @@ const ProfileIconPage = ({ navigation, route }) => {
               marginTop: 5,
             },
           ]}
-          onPress={() => navigation.navigate("ProfilePage")}
+          onPress={() =>
+            userType === "Customer"
+              ? navigation.navigate("ProfilePage")
+              : navigation.navigate("CompanyProfilePage")
+          }
         />
       )}
     </View>
