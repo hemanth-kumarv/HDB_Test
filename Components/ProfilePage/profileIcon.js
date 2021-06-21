@@ -5,23 +5,20 @@ import globalStyles from "../../globalStyles";
 import { useSelector, useDispatch } from "react-redux";
 import { changeDrawerStyle } from "../Redux/dispatchers";
 import ProfileIcon from "../../assets/person-circle.svg";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProfileIconPage = ({ navigation, route }) => {
   const [image, setImage] = useState(null);
-  const [userType, setUserType] = useState("Customer");
+  // const [userType, setUserType] = useState("Customer");
+  const userData = useSelector((state) => state.UserData);
+  const userType = useSelector((state) => state.UserType);
+
   useEffect(() => {
-    (async () => {
-      var userData = await AsyncStorage.getItem("UserData");
-      let userType = await AsyncStorage.getItem("UserType");
-      setUserType(userType);
-      // console.log(userData);
-      if (userData !== null) {
-        userData = JSON.parse(userData);
-        if (userData.ProfilePicture) setImage(userData.ProfilePicture);
-      }
-    })();
+    if (userData !== null) {
+      if (userData.ProfilePicture) setImage(userData.ProfilePicture);
+    }
   }, []);
+
   return (
     <View>
       {image ? (

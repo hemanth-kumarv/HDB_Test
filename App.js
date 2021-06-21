@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { Text } from "react-native";
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Provider } from "react-redux";
-import store from "./Components/Redux/store";
+import { Provider, useSelector, useDispatch } from "react-redux";
+import { getInitStateStorage } from "./Components/Redux/dispatchers";
+// import store from "./Components/Redux/store";
 import WelcomePage from "./Components/WelcomePage/welcomePage";
 import RegisterPage1 from "./Components/RegisterPage/registerPage1";
 import CustomerRegisterPage from "./Components/RegisterPage/customerRegisterPage";
@@ -12,7 +14,7 @@ import RegisterPage3 from "./Components/RegisterPage/registerPage3";
 import CustomerLandingPage from "./Components/LandingPages/customerLandingPage";
 import CompanyLandingPage from "./Components/LandingPages/companyLandingPage";
 import RewardHistory from "./Components/LandingPages/rewardHistory";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 import ProfilePage from "./Components/ProfilePage/profilePage";
 import NewAdPage from "./Components/UploadNewAdPage/newAdPage";
 import CompanyProfilePage from "./Components/ProfilePage/companyProfilePage";
@@ -22,30 +24,48 @@ import SettingsPage from "./Components/SettingsPage/settings";
 const Stack = createStackNavigator();
 
 const App = () => {
-  const [userId, setUserId] = useState({});
-  const [searching, setsearching] = useState(false);
-  const findUserId = async () => {
-    const userID = await AsyncStorage.getItem("UserId");
-    const userType = await AsyncStorage.getItem("UserType");
-    const user = { ID: userID, Type: userType };
-    setUserId(user);
-    setsearching(true);
-  };
+  // const [userId, setUserId] = useState({});
+  // const [searching, setsearching] = useState(false);
+  const dispatch = useDispatch();
+  const userName = useSelector((state) => state.UserId);
+  const userType = useSelector((state) => state.UserType);
+  const loaded = useSelector((state) => state.loaded);
+
+  // const findUserId = async () => {
+  //   const userID = await AsyncStorage.getItem("UserId");
+  //   const userType = await AsyncStorage.getItem("UserType");
+  //   const user = { ID: userID, Type: userType };
+  //   setUserId(user);
+  //   setsearching(true);
+  // };
+
   useEffect(() => {
-    findUserId();
+    dispatch(getInitStateStorage());
   }, []);
+
+  // useEffect(() => {
+  //   console.log(userName);
+  //   if (userName) {
+  //     let user = { ID: userName, Type: userType };
+  //     console.log(userName);
+  //     setUserId(user);
+  //     setsearching(true);
+  //   }
+  // }, [userName]);
+
   return (
-    <Provider store={store}>
-      {searching ? (
+    // <Provider store={store}>
+    <>
+      {loaded ? (
         <NavigationContainer>
           <Stack.Navigator
             screenOptions={{
               headerShown: false,
             }}
             initialRouteName={
-              !Object.keys(userId).length
+              !userName
                 ? "WelcomePage"
-                : userId.Type === "Customer"
+                : userType === "Customer"
                 ? "CustomerLandingPage"
                 : "CompanyLandingPage"
             }
@@ -77,8 +97,11 @@ const App = () => {
             <Stack.Screen name="SettingsPage" component={SettingsPage} />
           </Stack.Navigator>
         </NavigationContainer>
-      ) : null}
-    </Provider>
+      ) : (
+        <Text style={{fontSize: 60, textAlign: 'center', top: '40%'}}>LOGO</Text>
+      )}
+      {/* </Provider> */}
+    </>
   );
 };
 

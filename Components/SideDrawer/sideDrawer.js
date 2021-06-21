@@ -6,20 +6,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { changeDrawerStyle } from "../Redux/dispatchers";
 import SideDrawerContents from "./sideDrawerContents";
 import CompanySideDrawerContents from "./companySideDrawerContents";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 import HamIcon from "../../assets/hamburger.svg";
 
 const SideDrawer = ({ navigation, route }) => {
   const open = useSelector((state) => state.drawerOpen);
   const dispatch = useDispatch();
 
-  const [userType, setUserType] = useState("Customer");
-  useEffect(() => {
-    (async () => {
-      let userType = await AsyncStorage.getItem("UserType");
-      setUserType(userType);
-    })();
-  }, []);
+  const userType = useSelector((state) => state.UserType);
+
   return (
     <View style={styles.drawerContainer}>
       {open ? (

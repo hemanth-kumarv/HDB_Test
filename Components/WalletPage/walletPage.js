@@ -12,7 +12,6 @@ import { styles, txnTableStyles } from "./walletPageStyles";
 import { changeDrawerStyle } from "../Redux/dispatchers";
 import globalStyles from "../../globalStyles";
 import { useSelector, useDispatch } from "react-redux";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import SideDrawer from "../SideDrawer/sideDrawer";
 import { useIsFocused } from "@react-navigation/core";
 import axios from "../axiosServer";
@@ -21,11 +20,12 @@ import ProfileIcon from "../../assets/person-circle.svg";
 
 const WalletPage = ({ navigation, route }) => {
   const isFocused = useIsFocused();
-  const drawerOpen = useSelector((state) => state.drawerOpen);
   const [transactions, setTransactions] = useState([]);
-  const [totalRewards, setTotalRewards] = useState({});
-  const [userID, setUserID] = useState({});
+
   const dispatch = useDispatch();
+  const drawerOpen = useSelector((state) => state.drawerOpen);
+  const userID = useSelector((state) => state.UserId);
+  const totalRewards = useSelector((state) => state.TotalRewards);
 
   const timeFormatter = (time) => {
     let strArray = time.split(" ");
@@ -56,32 +56,7 @@ const WalletPage = ({ navigation, route }) => {
     if (isFocused) {
       if (drawerOpen) dispatch(changeDrawerStyle(false));
     }
-    (async () => {
-      var userData = await AsyncStorage.getItem("UserData");
-      var totalRewardsJSON = await AsyncStorage.getItem("TotalRewards");
-      var userDataJSON = JSON.parse(userData);
-      if (totalRewardsJSON === null && userDataJSON !== null) {
-        axios.then((server) =>
-          server
-            .post("/getRewards", { name: userDataJSON.Email })
-            .then(async (res) => {
-              await AsyncStorage.setItem(
-                "TotalRewards",
-                JSON.stringify(res.data.Total)
-              );
-              setTotalRewards(res.data.Total);
-            })
-            .catch((err) => {
-              setTotalRewards({ Error: "Error connecting to server." });
-              console.log(err);
-            })
-        );
-      } else setTotalRewards(JSON.parse(totalRewardsJSON));
-
-      var userId = await AsyncStorage.getItem("UserId");
-      setUserID(userId);
-      getTransactions(userId);
-    })();
+    getTransactions(userID);
   }, [isFocused]);
   return (
     <View

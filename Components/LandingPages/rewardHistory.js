@@ -12,8 +12,8 @@ import {
 import globalStyles from "../../globalStyles";
 import SideDrawer from "../../Components/SideDrawer/sideDrawer";
 import { styles, tdWidth } from "./landingPageStyles";
-import { changeDrawerStyle } from "../Redux/dispatchers";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { changeDrawerStyle, setAsyncStorage } from "../Redux/dispatchers";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 import ErrorSVG from "../../assets/exclamation-triangle.svg";
 import { useIsFocused } from "@react-navigation/core";
 import ProfileIconPage from "../ProfilePage/profileIcon";
@@ -36,8 +36,9 @@ const timeFormatter = (time) => {
 const RewardHistory = ({ route, navigation }) => {
   const [rewardsList, setRewardsList] = useState({});
   const [searching, setSearching] = useState(false);
-  const [userName, setuserName] = useState(null);
+  const userName = useSelector((state) => state.UserId);
 
+  const totalRewards = useSelector((state) => state.TotalRewards);
   const drawerOpen = useSelector((state) => state.drawerOpen);
   // const name = useSelector((state) => state.loggedIn);
 
@@ -45,7 +46,7 @@ const RewardHistory = ({ route, navigation }) => {
   const isFocused = useIsFocused();
 
   const retrieveRewards = (userName) => {
-    // console.log("searching...", userName);
+    console.log("searching...", userName);
 
     setSearching(false);
     axios.then((server) =>
@@ -54,17 +55,21 @@ const RewardHistory = ({ route, navigation }) => {
         .then(async (res) => {
           // console.log("NEW USER: ", await AsyncStorage.getItem("UserId"));
           setRewardsList(res.data);
-          await AsyncStorage.setItem(
-            "TotalRewards",
-            JSON.stringify(res.data.Total)
+
+          dispatch(
+            setAsyncStorage([["TotalRewards", JSON.stringify(res.data.Total)]])
           );
+          // await AsyncStorage.setItem(
+          //   "TotalRewards",
+          //   JSON.stringify(res.data.Total)
+          // );
           setSearching(true);
         })
         .catch((err) => {
-          setRewardsList({
-            status: false,
-            message: "Error connecting to server.",
-          });
+          // setRewardsList({
+          //   status: false,
+          //   message: "Error connecting to server.",
+          // });
           setSearching(true);
           console.log(err);
         })
@@ -75,11 +80,7 @@ const RewardHistory = ({ route, navigation }) => {
       if (drawerOpen) dispatch(changeDrawerStyle(false));
     }
     if (Object.keys(rewardsList).length === 0 && !searching) {
-      (async () => {
-        const name = await AsyncStorage.getItem("UserId");
-        setuserName(name);
-        retrieveRewards(name);
-      })();
+      (async () => retrieveRewards(userName))();
     }
   }, [isFocused]);
   return (
@@ -134,7 +135,7 @@ const RewardHistory = ({ route, navigation }) => {
                     {parseInt(rewardsList.Total.Time % 60)} sec)
                   </Text>
                 </Text>
-                <ScrollView style={{height: "72%"}}>
+                <ScrollView style={{ maxHeight: "87%" }}>
                   {rewardsList.Rewards.map((i, j) => (
                     <View style={styles.tableRow} key={j}>
                       <Text style={[styles.tableData, tdWidth.ad]}>
@@ -166,13 +167,13 @@ const RewardHistory = ({ route, navigation }) => {
             <ActivityIndicator size={75} color="#fff" />
           </View>
         )}
-        <Text
-          style={styles.newAd}
-          onPress={() => navigation.navigate("CustomerLandingPage")}
-        >
-          New Ad
-        </Text>
       </View>
+      <Text
+        style={styles.newAd}
+        onPress={() => navigation.navigate("CustomerLandingPage")}
+      >
+        New Ad
+      </Text>
     </ScrollView>
   );
 };

@@ -4,14 +4,17 @@ import styles from "./welcomePageStyles";
 import globalStyles from "../../globalStyles";
 import axios from "../axiosServer";
 import sha256 from "crypto-js/sha256";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setAsyncStorage } from "../Redux/dispatchers";
 import ErrorSVG from "../../assets/exclamation-triangle.svg";
+import { useDispatch, useSelector } from "react-redux";
 
 const WelcomePage = ({ navigation }) => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setloginError] = useState("");
   const passwordBox = useRef();
+
+  const dispatch = useDispatch();
 
   const login = (userName, password) => {
     setloginError("");
@@ -26,8 +29,6 @@ const WelcomePage = ({ navigation }) => {
         .then(async (res) => {
           // console.log(res.data);
           if (res.data.status) {
-            await AsyncStorage.setItem("UserId", userName);
-            await AsyncStorage.setItem("UserType", type);
             let newData = { ...res.data.data };
             if (type === "Company") {
               // let logo, rest;
@@ -35,7 +36,13 @@ const WelcomePage = ({ navigation }) => {
               rest.ProfilePicture = logo;
               newData = { ...rest };
             }
-            await AsyncStorage.setItem("UserData", JSON.stringify(newData));
+            dispatch(
+              setAsyncStorage([
+                ["UserData", JSON.stringify(newData)],
+                ["UserType", type],
+                ["UserId", userName],
+              ])
+            );
             navigation.replace(
               type === "Customer" ? "CustomerLandingPage" : "CompanyLandingPage"
             );

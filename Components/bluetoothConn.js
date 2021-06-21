@@ -2,7 +2,7 @@ import RNBluetoothClassic from "react-native-bluetooth-classic";
 
 var device;
 const performRead = async (setTID) => {
-  console.log(setTID);
+  // console.log(setTID);
   // setTID("KML8-560095")
   let ret = device.onDataReceived(async (res) => {
     console.log(res);

@@ -1,8 +1,18 @@
-import { DRAWER_STATE, REGISTRATION } from "./actions";
-const initialState = { drawerOpen: false, registrationData: {} };
+import { DRAWER_STATE, REGISTRATION, INIT_STATE_STORAGE } from "./actions";
+const initialState = {
+  userId: "",
+  totalRewards: {},
+  userData: {},
+  userType: "",
+  drawerOpen: false,
+  registrationData: {},
+  loaded: false,
+};
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
+    case INIT_STATE_STORAGE:
+      return { ...state, ...action.payload };
     case DRAWER_STATE:
       return {
         ...state,

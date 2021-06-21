@@ -8,10 +8,10 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { styles, profileDataStyles } from "./profilePageStyles";
-import { changeDrawerStyle } from "../Redux/dispatchers";
+import { changeDrawerStyle, logout } from "../Redux/dispatchers";
 import globalStyles from "../../globalStyles";
 import { useSelector, useDispatch } from "react-redux";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 import SideDrawer from "../SideDrawer/sideDrawer";
 import { useIsFocused } from "@react-navigation/core";
 import axios from "../axiosServer";
@@ -33,32 +33,32 @@ const CompanyProfilePage = ({ navigation, route }) => {
       if (drawerOpen) dispatch(changeDrawerStyle(false));
     }
 
-    (async () => {
-      var userDataJSON = await AsyncStorage.getItem("UserData");
-      if (userDataJSON !== null) {
-        userDataJSON = JSON.parse(userDataJSON);
-        userDataJSON.ProfilePicture = userDataJSON.ProfilePicture;
-        setUserData(userDataJSON);
-      }
-      // var totalRewardsJSON = await AsyncStorage.getItem("TotalRewards");
-      // if (totalRewardsJSON === null && userDataJSON !== null) {
-      // axios.then((server) =>
-      //   server
-      //     .post("/getRewards", { name: userDataJSON.Email })
-      //     .then(async (res) => {
-      //       await AsyncStorage.setItem(
-      //         "TotalRewards",
-      //         JSON.stringify(res.data.Total)
-      //       );
-      //       setTotalRewards(res.data.Total);
-      //     })
-      //     .catch((err) => {
-      //       setTotalRewards({ Error: "Error connecting to server." });
-      //       console.log(err);
-      //     })
-      // );
-      // } else setTotalRewards(JSON.parse(totalRewardsJSON));
-    })();
+    // (async () => {
+    //   var userDataJSON = await AsyncStorage.getItem("UserData");
+    //   if (userDataJSON !== null) {
+    //     userDataJSON = JSON.parse(userDataJSON);
+    //     userDataJSON.ProfilePicture = userDataJSON.ProfilePicture;
+    //     setUserData(userDataJSON);
+    //   }
+    //   // var totalRewardsJSON = await AsyncStorage.getItem("TotalRewards");
+    //   // if (totalRewardsJSON === null && userDataJSON !== null) {
+    //   // axios.then((server) =>
+    //   //   server
+    //   //     .post("/getRewards", { name: userDataJSON.Email })
+    //   //     .then(async (res) => {
+    //   //       await AsyncStorage.setItem(
+    //   //         "TotalRewards",
+    //   //         JSON.stringify(res.data.Total)
+    //   //       );
+    //   //       setTotalRewards(res.data.Total);
+    //   //     })
+    //   //     .catch((err) => {
+    //   //       setTotalRewards({ Error: "Error connecting to server." });
+    //   //       console.log(err);
+    //   //     })
+    //   // );
+    //   // } else setTotalRewards(JSON.parse(totalRewardsJSON));
+    // })();
   }, [isFocused]);
   return (
     <ScrollView
@@ -178,10 +178,7 @@ const CompanyProfilePage = ({ navigation, route }) => {
         <Text
           style={styles.logout}
           onPress={async () => {
-            await AsyncStorage.removeItem("UserId");
-            await AsyncStorage.removeItem("UserData");
-            await AsyncStorage.removeItem("TotalRewards");
-
+            dispatch(logout());
             navigation.replace("WelcomePage");
           }}
         >

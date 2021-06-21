@@ -14,16 +14,22 @@ export const styles = StyleSheet.create({
   },
   container: {
     width: vw,
-    height: vh,
+    // height: vh,
     position: "absolute",
     zIndex: 4,
     top: 0,
     left: 0,
+    display: "flex",
   },
   table: {
     top: vh * 0.12,
-    alignSelf: "stretch",
-    height: vh * 0.85
+    maxHeight: vh * 0.84,
+    width: vw * 0.96,
+    alignSelf: "center",
+    borderColor: "white",
+    borderWidth: 2,
+    borderRadius: 7,
+    padding: 5,
   },
   tableRow: {
     alignSelf: "stretch",
@@ -32,8 +38,7 @@ export const styles = StyleSheet.create({
     borderWidth: 2,
     margin: 5,
     borderRadius: 10,
-    // padding: 3,
-    paddingVertical: 8,
+    padding: 3,
   },
   tableData: {
     textAlignVertical: "center",
@@ -87,6 +92,7 @@ export const styles = StyleSheet.create({
     bottom: 0,
     textAlign: "center",
     position: "absolute",
+    zIndex: 10,
     height: 45,
     textAlignVertical: "center",
     fontSize: 25,
@@ -102,16 +108,16 @@ export const styles = StyleSheet.create({
 export const tdWidth = {
   prop: { fontSize: 23 },
   get ad() {
-    return { ...this.prop, width: vw * 0.5, fontSize: 25 };
+    return { ...this.prop, flex: 2, fontSize: 25 };
   },
   get date() {
     return { ...this.prop, fontSize: 15 };
   },
   get reward() {
-    return { ...this.prop, width: vw * 0.23, color: "lime" };
+    return { ...this.prop, flex: 1, color: "lime" };
   },
   get duration() {
-    return { ...this.prop, width: vw * 0.2 };
+    return { ...this.prop, flex: 1 };
   },
   get total() {
     return { ...this.prop, fontSize: 27 };

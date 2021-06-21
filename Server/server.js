@@ -57,7 +57,6 @@ app.post("/getRewards", (req, res) => {
             });
           } else {
             let newDocs = docs;
-            console.log(newDocs);
             if (docs.NewRewards.length > 0) {
               let arr = [],
                 newRewards = [];
@@ -214,16 +213,20 @@ app.post("/registration", (req, res) => {
 
 app.post("/getAvailableAds", (req, res) => {
   try {
-    ZonalAdsListTest.findOne(
-      { TransmitterID: req.body.tID },
+    let reqArray = req.body.tID.split(",");
+    ZonalAdsListTest.find(
+      { TransmitterID: { $in: reqArray } },
       async (err, docs) => {
         if (err) {
           console.log(err);
           res.send("Error connecting to database.");
-        } else {
-          let newDocs = await findFromCompanyList(docs.AdList);
+        } else if (docs.length) {
+          let adsListArr = [
+            ...new Set([].concat(...docs.map((i) => i.AdList))),
+          ];
+          let newDocs = await findFromCompanyList(adsListArr);
           res.send(newDocs);
-        }
+        } else res.send("No Ads Found in the vicinity.");
       }
     );
   } catch (error) {

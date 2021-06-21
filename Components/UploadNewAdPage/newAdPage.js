@@ -19,11 +19,11 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import SideDrawer from "../SideDrawer/sideDrawer";
 import ProfileIconPage from "../ProfilePage/profileIcon";
 import { changeDrawerStyle } from "../Redux/dispatchers";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "../axiosServer";
 
 const NewAdPage = ({ navigation, route }) => {
   const drawerOpen = useSelector((state) => state.drawerOpen);
+  const userName = useSelector((state) => state.UserId);
   const dispatch = useDispatch();
   const [pickerData, setPickerData] = useState({
     fromTime: { show: false, data: "From Time", active: true },
@@ -95,9 +95,8 @@ const NewAdPage = ({ navigation, route }) => {
     Object.keys(data).map((i) => data[i].data);
     // console.log(fieldsData);
     let fileName = Date.now() + "-" + fieldsData.AdTitle + ".mp4";
-    let name = await AsyncStorage.getItem("UserId");
     fieldsData["fileName"] = fileName;
-    fieldsData["userID"] = name;
+    fieldsData["userID"] = userName;
     let uploadUrl =
       config.ExpressServer.ServerIP +
       ":" +

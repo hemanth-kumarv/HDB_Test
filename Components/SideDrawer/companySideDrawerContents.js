@@ -3,11 +3,11 @@ import { Text, View, Button } from "react-native";
 import styles from "./sideDrawerStyles";
 
 import { useSelector, useDispatch } from "react-redux";
-import { changeDrawerStyle } from "../Redux/dispatchers";
+import { changeDrawerStyle, logout } from "../Redux/dispatchers";
 // import globalStyles from "../../globalStyles";
 // import Drawer from "react-native-drawer";
 import RightLeft from "../../assets/chevron-left.svg";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SideDrawerContents = ({ route, navigation }) => {
   // const navigation = useNavigation();
@@ -89,9 +89,7 @@ const SideDrawerContents = ({ route, navigation }) => {
       <Text
         style={styles.drawerButtons}
         onPress={async () => {
-          await AsyncStorage.removeItem("UserId");
-          await AsyncStorage.removeItem("UserData");
-          await AsyncStorage.removeItem("TotalRewards");
+          dispatch(logout());
           navigation.replace("WelcomePage");
         }}
       >

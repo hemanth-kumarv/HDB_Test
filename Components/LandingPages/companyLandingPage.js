@@ -20,15 +20,16 @@ import { styles } from "./companyLandingStyles";
 import { styles as landingStyles } from "./landingPageStyles";
 import { adsTdWidth } from "./landingPageStyles";
 import { changeDrawerStyle } from "../Redux/dispatchers";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 import ErrorSVG from "../../assets/exclamation-triangle.svg";
 
 const CompanyLandingPage = ({ route, navigation }) => {
   const [searching, setSearching] = useState(false);
-  const [userName, setuserName] = useState(null);
+  // const [userName, setuserName] = useState(null);
   const [adsList, setAdsList] = useState([]);
 
   const drawerOpen = useSelector((state) => state.drawerOpen);
+  const userName = useSelector((state) => state.UserId);
   // const name = useSelector((state) => state.loggedIn);
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
@@ -55,9 +56,9 @@ const CompanyLandingPage = ({ route, navigation }) => {
       if (drawerOpen) dispatch(changeDrawerStyle(false));
     }
     (async () => {
-      const name = await AsyncStorage.getItem("UserId");
-      setuserName(name);
-      if (name) searchPreviousAds(name);
+      // const name = await AsyncStorage.getItem("UserId");
+      // setuserName(name);
+      searchPreviousAds(userName);
     })();
   }, [isFocused]);
 

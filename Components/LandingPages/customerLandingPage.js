@@ -15,8 +15,8 @@ import globalStyles from "../../globalStyles";
 import SideDrawer from "../../Components/SideDrawer/sideDrawer";
 import ProfileIconPage from "../ProfilePage/profileIcon";
 import { styles, adsTdWidth } from "./landingPageStyles";
-import { changeDrawerStyle } from "../Redux/dispatchers";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { changeDrawerStyle, setAsyncStorage } from "../Redux/dispatchers";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 import ErrorSVG from "../../assets/exclamation-triangle.svg";
 import BluetoothIcon from "../../assets/bluetooth.svg";
 import { btConnection, sendData } from "../bluetoothConn";
@@ -24,35 +24,30 @@ import { btConnection, sendData } from "../bluetoothConn";
 const CustomerLandingPage = ({ route, navigation }) => {
   const [adsList, setAdsList] = useState([]);
   const [searching, setSearching] = useState(true);
-  const [userName, setuserName] = useState(null);
   const [btData, setBtData] = useState({ status: 0, message: "" });
   const [btScanning, setBtScanning] = useState(true);
   const [showBtIcon, setShowBtIcon] = useState(true);
   const [transmitterID, setTransmitterID] = useState("");
 
+  const userName = useSelector((state) => state.UserId);
+  const totalRewards = useSelector((state) => state.TotalRewards);
   const drawerOpen = useSelector((state) => state.drawerOpen);
   // const name = useSelector((state) => state.loggedIn);
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
 
-  const searchAvailableAds = (TransmitterID) => {
-    // console.log("searching...");
-
+  const searchAvailableAds = async (TransmitterID) => {
     if (btData.status === 200) {
       setSearching(false);
-      axios.then((server) =>
-        server
-          .post("/getAvailableAds", { tID: TransmitterID })
-          .then(async (res) => {
-            // console.log("NEW USER: ", await AsyncStorage.getItem("UserId"));
-            setAdsList(res.data);
-            setSearching(true);
-          })
-          .catch((err) => {
-            setAdsList("Error connecting to server.");
-            setSearching(true);
-          })
-      );
+      let server = await axios;
+      try {
+        let res = await server.post("/getAvailableAds", { tID: TransmitterID });
+        setAdsList(res.data);
+        setSearching(true);
+      } catch (err) {
+        setAdsList("Error connecting to server.");
+        setSearching(true);
+      }
     } else bluetoothConnect();
   };
   useEffect(() => {
@@ -60,18 +55,23 @@ const CustomerLandingPage = ({ route, navigation }) => {
       if (drawerOpen) dispatch(changeDrawerStyle(false));
     }
     (async () => {
-      const name = await AsyncStorage.getItem("UserId");
-      const totalRewards = await AsyncStorage.getItem("TotalRewards");
-      setuserName(name);
+      // const name = await AsyncStorage.getItem("UserId");
+      // const totalRewards = await AsyncStorage.getItem("TotalRewards");
+      // setuserName(name);
       if (!totalRewards)
         axios.then((server) =>
           server
-            .post("/getRewards", { name: name })
+            .post("/getRewards", { name: userName })
             .then(async (res) => {
-              await AsyncStorage.setItem(
-                "TotalRewards",
-                JSON.stringify(res.data.Total)
+              dispatch(
+                setAsyncStorage([
+                  ["TotalRewards", JSON.stringify(res.data.Total)],
+                ])
               );
+              // await AsyncStorage.setItem(
+              //   "TotalRewards",
+              //   JSON.stringify(res.data.Total)
+              // );
             })
             .catch((err) => {
               console.log(err);
@@ -91,16 +91,22 @@ const CustomerLandingPage = ({ route, navigation }) => {
         setTimeout(() => setShowBtIcon(false), 5000);
       }
       setBtScanning(false);
+    } else {
+      setBtScanning(true);
+      let res = await sendData("_init;TID", userName);
+      if (res.status !== 200) setShowBtIcon(true);
+      setBtData(res);
+      setBtScanning(false);
     }
   };
 
-  useEffect(() => {
-    bluetoothConnect();
-  }, []);
+  // useEffect(() => {
+  //   bluetoothConnect();
+  // }, []);
 
   useEffect(() => {
     console.log(transmitterID);
-    if (transmitterID) searchAvailableAds(transmitterID);
+    (async () => await searchAvailableAds(transmitterID))();
   }, [transmitterID]);
 
   return (
@@ -110,7 +116,7 @@ const CustomerLandingPage = ({ route, navigation }) => {
       refreshControl={
         <RefreshControl
           refreshing={false}
-          onRefresh={() => searchAvailableAds(transmitterID)}
+          onRefresh={async () => bluetoothConnect()}
           enabled={searching && !btScanning}
         />
       }
@@ -145,7 +151,7 @@ const CustomerLandingPage = ({ route, navigation }) => {
                 </Text>
                 <Text
                   style={styles.retryButton}
-                  onPress={() => searchAvailableAds(transmitterID)}
+                  onPress={async () => await searchAvailableAds(transmitterID)}
                 >
                   Retry
                 </Text>

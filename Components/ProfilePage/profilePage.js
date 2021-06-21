@@ -8,10 +8,14 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { styles, profileDataStyles } from "./profilePageStyles";
-import { changeDrawerStyle } from "../Redux/dispatchers";
+import {
+  changeDrawerStyle,
+  logout,
+  setAsyncStorage,
+} from "../Redux/dispatchers";
 import globalStyles from "../../globalStyles";
 import { useSelector, useDispatch } from "react-redux";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 import SideDrawer from "../SideDrawer/sideDrawer";
 import { useIsFocused } from "@react-navigation/core";
 import axios from "../axiosServer";
@@ -24,41 +28,34 @@ import EditIcon from "../../assets/pencil.svg";
 
 const ProfilePage = ({ navigation, route }) => {
   const isFocused = useIsFocused();
-  const drawerOpen = useSelector((state) => state.drawerOpen);
-  const [userData, setUserData] = useState({});
-  const [totalRewards, setTotalRewards] = useState({});
+  // const [errorText, setErrorText] = useState("");
   const dispatch = useDispatch();
+
+  const userData = useSelector((state) => state.UserData);
+  const totalRewards = useSelector((state) => state.TotalRewards);
+  const drawerOpen = useSelector((state) => state.drawerOpen);
+
   useEffect(() => {
     if (isFocused) {
       if (drawerOpen) dispatch(changeDrawerStyle(false));
     }
-
-    (async () => {
-      var userDataJSON = await AsyncStorage.getItem("UserData");
-      if (userDataJSON !== null) {
-        userDataJSON = JSON.parse(userDataJSON);
-        userDataJSON.ProfilePicture = userDataJSON.ProfilePicture;
-        setUserData(userDataJSON);
-      }
-      var totalRewardsJSON = await AsyncStorage.getItem("TotalRewards");
-      if (totalRewardsJSON === null && userDataJSON !== null) {
-        axios.then((server) =>
-          server
-            .post("/getRewards", { name: userDataJSON.Email })
-            .then(async (res) => {
-              await AsyncStorage.setItem(
-                "TotalRewards",
-                JSON.stringify(res.data.Total)
-              );
-              setTotalRewards(res.data.Total);
-            })
-            .catch((err) => {
-              setTotalRewards({ Error: "Error connecting to server." });
-              console.log(err);
-            })
-        );
-      } else setTotalRewards(JSON.parse(totalRewardsJSON));
-    })();
+    if (totalRewards === null && userData !== null) {
+      axios.then((server) =>
+        server
+          .post("/getRewards", { name: userData.Email })
+          .then(async (res) => {
+            dispatch(
+              setAsyncStorage([
+                ["TotalRewards", JSON.stringify(res.data.Total)],
+              ])
+            );
+          })
+          .catch((err) => {
+            // setErrorText("Error connecting to server.");
+            console.log(err);
+          })
+      );
+    }
   }, [isFocused]);
   return (
     <ScrollView
@@ -178,10 +175,7 @@ const ProfilePage = ({ navigation, route }) => {
         <Text
           style={styles.logout}
           onPress={async () => {
-            await AsyncStorage.removeItem("UserId");
-            await AsyncStorage.removeItem("UserData");
-            await AsyncStorage.removeItem("TotalRewards");
-
+            dispatch(logout());
             navigation.replace("WelcomePage");
           }}
         >
