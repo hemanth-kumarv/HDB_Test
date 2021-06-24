@@ -8,7 +8,10 @@ const performRead = async (setTID) => {
     console.log(res);
     let data = String(res.data);
     if (data.startsWith("_init;TID:"))
-      setTID(data.substring(10).replace(/[\r\n]+/gm, ""));
+      setTID({
+        data: data.substring(10).replace(/[\r\n]+/gm, ""),
+        searching: false,
+      });
   });
 };
 

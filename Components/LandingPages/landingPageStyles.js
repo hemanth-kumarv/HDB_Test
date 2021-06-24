@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
   },
   container: {
     width: vw,
-    // height: vh,
+    height: vh,
     position: "absolute",
     zIndex: 4,
     top: 0,
@@ -23,7 +23,6 @@ export const styles = StyleSheet.create({
   },
   table: {
     top: vh * 0.12,
-    maxHeight: vh * 0.84,
     width: vw * 0.96,
     alignSelf: "center",
     borderColor: "white",
@@ -47,14 +46,14 @@ export const styles = StyleSheet.create({
     textAlign: "center",
   },
   adTableRow: {
-    alignSelf: "stretch",
     flexDirection: "row",
     borderRadius: 6,
     backgroundColor: "#2176FF",
     marginBottom: 5,
     marginTop: 5,
     height: 60,
-    alignSelf: "center",
+    alignSelf: "flex-end",
+    // width: vw * 0.75,
   },
   adTableData: {
     color: "#fff",
@@ -103,6 +102,20 @@ export const styles = StyleSheet.create({
     right: 10,
     zIndex: 10,
   },
+  adQueueBar: {
+    position: "absolute",
+    bottom: 0,
+    width: vw,
+    height: vh * 0.07,
+    borderRadius: 10,
+    justifyContent: "space-evenly",
+    zIndex: 15,
+    backgroundColor: "lime",
+  },
+  adQueueText: {
+    fontSize: 25,
+    textAlign: "center",
+  },
 });
 
 export const tdWidth = {
@@ -130,9 +143,9 @@ export const adsTdWidth = {
   //   return {...this.prop, width: vw * 0.1}
   // },
   get ad() {
-    return { ...this.prop, width: vw * 0.45 };
+    return { ...this.prop, flex: 1.75 };
   },
   get reward() {
-    return { ...this.prop, width: vw * 0.25, color: "#7bfb26" };
+    return { ...this.prop, flex: 1, color: "#7bfb26" };
   },
 };

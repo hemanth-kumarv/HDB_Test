@@ -18,6 +18,8 @@ import { styles, adsTdWidth } from "./landingPageStyles";
 import { changeDrawerStyle, setAsyncStorage } from "../Redux/dispatchers";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 import ErrorSVG from "../../assets/exclamation-triangle.svg";
+import CheckSVG from "../../assets/check2-circle.svg";
+import UncheckSVG from "../../assets/circle.svg";
 import BluetoothIcon from "../../assets/bluetooth.svg";
 import { btConnection, sendData } from "../bluetoothConn";
 
@@ -27,7 +29,16 @@ const CustomerLandingPage = ({ route, navigation }) => {
   const [btData, setBtData] = useState({ status: 0, message: "" });
   const [btScanning, setBtScanning] = useState(true);
   const [showBtIcon, setShowBtIcon] = useState(true);
-  const [transmitterID, setTransmitterID] = useState("");
+  const [transmitterID, setTransmitterID] = useState({
+    data: "",
+    searching: false,
+  });
+  const [adQueue, updateAdQueue] = useState({
+    Amount: 0,
+    Time: 0,
+    Count: 0,
+    List: [],
+  });
 
   const userName = useSelector((state) => state.UserId);
   const totalRewards = useSelector((state) => state.TotalRewards);
@@ -38,16 +49,24 @@ const CustomerLandingPage = ({ route, navigation }) => {
 
   const searchAvailableAds = async (TransmitterID) => {
     if (btData.status === 200) {
-      setSearching(false);
-      let server = await axios;
-      try {
-        let res = await server.post("/getAvailableAds", { tID: TransmitterID });
-        setAdsList(res.data);
-        setSearching(true);
-      } catch (err) {
-        setAdsList("Error connecting to server.");
-        setSearching(true);
-      }
+      // setSearching(false);
+      axios.then((server) =>
+        server
+          .post("/getAvailableAds", {
+            tID: TransmitterID.data,
+          })
+          .then((res) => {
+            setAdsList(res.data);
+            setSearching(true);
+          })
+          // setSearching(true);
+          .catch((err) => {
+            console.log(err);
+            setAdsList("Error connecting to server.");
+            setSearching(true);
+            // setSearching(true);
+          })
+      );
     } else bluetoothConnect();
   };
   useEffect(() => {
@@ -81,6 +100,7 @@ const CustomerLandingPage = ({ route, navigation }) => {
   }, [isFocused]);
 
   const bluetoothConnect = async () => {
+    updateAdQueue({ Amount: 0, Time: 0, Count: 0, List: [] });
     if (btData.status !== 200) {
       setBtScanning(true);
       let res = await btConnection("raspberrypi", setTransmitterID);
@@ -93,6 +113,7 @@ const CustomerLandingPage = ({ route, navigation }) => {
       setBtScanning(false);
     } else {
       setBtScanning(true);
+      setTransmitterID({ ...transmitterID, searching: true });
       let res = await sendData("_init;TID", userName);
       if (res.status !== 200) setShowBtIcon(true);
       setBtData(res);
@@ -100,13 +121,29 @@ const CustomerLandingPage = ({ route, navigation }) => {
     }
   };
 
-  // useEffect(() => {
-  //   bluetoothConnect();
-  // }, []);
-
+  const updateAdQueueData = (data, add) => {
+    let newAdQueue = add
+      ? {
+          Amount: Number(adQueue.Amount + data.Reward),
+          Time: Number(adQueue.Time + data.Duration),
+          Count: adQueue.Count + 1,
+          List: [
+            ...adQueue.List,
+            { VideoID: data.VideoID, TransmitterID: data.Transmitters },
+          ],
+        }
+      : {
+          Amount: Number(adQueue.Amount - data.Reward),
+          Time: Number(adQueue.Time - data.Duration),
+          Count: adQueue.Count - 1,
+          List: [...adQueue.List].filter((i) => i.VideoID !== data.VideoID),
+        };
+    updateAdQueue(newAdQueue);
+  };
   useEffect(() => {
     console.log(transmitterID);
-    (async () => await searchAvailableAds(transmitterID))();
+    if (transmitterID.searching) setSearching(!transmitterID.searching);
+    else (async () => await searchAvailableAds(transmitterID))();
   }, [transmitterID]);
 
   return (
@@ -123,6 +160,7 @@ const CustomerLandingPage = ({ route, navigation }) => {
     >
       <SideDrawer navigation={navigation} route={route} />
       <View
+        // pointerEvents={drawerOpen ? "none" : "auto"}
         style={[
           styles.container,
           drawerOpen ? { opacity: 0.2 } : { opacity: 1 },
@@ -151,44 +189,103 @@ const CustomerLandingPage = ({ route, navigation }) => {
                 </Text>
                 <Text
                   style={styles.retryButton}
-                  onPress={async () => await searchAvailableAds(transmitterID)}
+                  onPress={async () => await bluetoothConnect()}
                 >
                   Retry
                 </Text>
               </View>
             ) : (
-              <ScrollView style={styles.table}>
-                {adsList.map((i, j) => (
-                  <TouchableOpacity
-                    style={styles.adTableRow}
-                    key={j}
-                    onPress={async () => {
-                      let res = await sendData(i.VideoID, userName);
-                      if (res.status !== 200) setShowBtIcon(true);
-                      setBtData(res);
-                    }}
-                  >
-                    {/* <Text style={[styles.adTableData, adsTdWidth.no]}>{j + 1}</Text> */}
-                    <Image
-                      style={{ width: 60, height: 60 }}
-                      source={{ uri: i.Icon }}
-                    />
-                    <Text style={[styles.adTableData, adsTdWidth.ad]}>
-                      {i.Name}
-                    </Text>
-                    <Text style={[styles.adTableData, adsTdWidth.reward]}>
-                      Rs. {i.Reward}
-                      {"\n"}
-                      <Text style={{ fontSize: 18, color: "white" }}>
-                        For {i.Duration} s
-                      </Text>
-                    </Text>
-                    {/* <Text style={[styles.adTableData, adsTdWidth.select, {backgroundColor: 'dodgerblue', color: 'black'}]}>
+              <>
+                <ScrollView
+                  style={[
+                    styles.table,
+                    adQueue.Count
+                      ? {
+                          maxHeight: "78%",
+                        }
+                      : {
+                          maxHeight: "86%",
+                        },
+                  ]}
+                >
+                  {adsList.map((i, j) => (
+                    <View
+                      key={j}
+                      style={[
+                        styles.adTableRow,
+                        { backgroundColor: "transparent" },
+                      ]}
+                    >
+                      {adQueue.Count ? (
+                        adQueue.List.some((e) => e.VideoID === i.VideoID) ? (
+                          <CheckSVG
+                            height="30"
+                            width="30"
+                            style={{ tintColor: "lime", marginRight: 10 }}
+                            onPress={() => updateAdQueueData(i, false)}
+                          />
+                        ) : (
+                          <UncheckSVG
+                            height="30"
+                            width="30"
+                            style={{ tintColor: "green", marginRight: 10 }}
+                            onPress={() => updateAdQueueData(i, true)}
+                          />
+                        )
+                      ) : null}
+                      <TouchableOpacity
+                        style={[
+                          styles.adTableRow,
+                          adQueue.Count ? { width: "85%" } : { width: "100%" },
+                        ]}
+                        onPress={async () => {
+                          // let res = await sendData(i.VideoID, userName);
+                          // if (res.status !== 200) setShowBtIcon(true);
+                          // setBtData(res);
+                          updateAdQueueData(
+                            i,
+                            !adQueue.List.some((e) => e.VideoID === i.VideoID)
+                          );
+                        }}
+                      >
+                        {/* <Text style={[styles.adTableData, adsTdWidth.no]}>{j + 1}</Text> */}
+                        <Image
+                          style={{ width: 60, height: 60 }}
+                          source={{ uri: i.Icon }}
+                        />
+                        <Text
+                          style={[styles.adTableData, adsTdWidth.ad]}
+                          numberOfLines={1}
+                          ellipsizeMode="middle"
+                        >
+                          {i.Name}
+                        </Text>
+                        <Text style={[styles.adTableData, adsTdWidth.reward]}>
+                          Rs. {i.Reward}
+                          {"\n"}
+                          <Text style={{ fontSize: 18, color: "white" }}>
+                            For {i.Duration} s
+                          </Text>
+                        </Text>
+                        {/* <Text style={[styles.adTableData, adsTdWidth.select, {backgroundColor: 'dodgerblue', color: 'black'}]}>
                       Select
                     </Text> */}
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </ScrollView>
+                {adQueue.Count ? (
+                  <TouchableOpacity style={styles.adQueueBar} onPress={() => navigation.navigate("AdQueuePage")}>
+                    <Text style={styles.adQueueText}>
+                      {adQueue.Count} ads queued.
+                    </Text>
+                    <Text style={styles.adQueueText}>
+                      Rs. {adQueue.Amount} for {parseInt(adQueue.Time / 60)} min{" "}
+                      {parseInt(adQueue.Time % 60)} sec
+                    </Text>
                   </TouchableOpacity>
-                ))}
-              </ScrollView>
+                ) : null}
+              </>
             )}
           </>
         ) : (

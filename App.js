@@ -20,6 +20,7 @@ import NewAdPage from "./Components/UploadNewAdPage/newAdPage";
 import CompanyProfilePage from "./Components/ProfilePage/companyProfilePage";
 import WalletPage from "./Components/WalletPage/walletPage";
 import SettingsPage from "./Components/SettingsPage/settings";
+import AdQueuePage from "./Components/AdQueuePage/adQueue";
 
 const Stack = createStackNavigator();
 
@@ -95,10 +96,13 @@ const App = () => {
             <Stack.Screen name="NewAdPage" component={NewAdPage} />
             <Stack.Screen name="WalletPage" component={WalletPage} />
             <Stack.Screen name="SettingsPage" component={SettingsPage} />
+            <Stack.Screen name="AdQueuePage" component={AdQueuePage} />
           </Stack.Navigator>
         </NavigationContainer>
       ) : (
-        <Text style={{fontSize: 60, textAlign: 'center', top: '40%'}}>LOGO</Text>
+        <Text style={{ fontSize: 60, textAlign: "center", top: "40%" }}>
+          LOGO
+        </Text>
       )}
       {/* </Provider> */}
     </>

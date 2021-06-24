@@ -46,7 +46,7 @@ const RewardHistory = ({ route, navigation }) => {
   const isFocused = useIsFocused();
 
   const retrieveRewards = (userName) => {
-    console.log("searching...", userName);
+    // console.log("searching...", userName);
 
     setSearching(false);
     axios.then((server) =>

@@ -225,6 +225,12 @@ app.post("/getAvailableAds", (req, res) => {
             ...new Set([].concat(...docs.map((i) => i.AdList))),
           ];
           let newDocs = await findFromCompanyList(adsListArr);
+          newDocs = newDocs.map((e) => ({
+            ...e.toObject(),
+            Transmitters: docs
+              .filter((elem) => elem.AdList.includes(e.VideoID))
+              .map((elem) => elem.TransmitterID),
+          }));
           res.send(newDocs);
         } else res.send("No Ads Found in the vicinity.");
       }
