@@ -1,4 +1,9 @@
-import { DRAWER_STATE, REGISTRATION, INIT_STATE_STORAGE } from "./actions";
+import {
+  DRAWER_STATE,
+  REGISTRATION,
+  INIT_STATE_STORAGE,
+  BLUETOOTH_DATA,
+} from "./actions";
 const initialState = {
   userId: "",
   totalRewards: {},
@@ -7,6 +12,7 @@ const initialState = {
   drawerOpen: false,
   registrationData: {},
   loaded: false,
+  receivedBTData: "",
 };
 
 const reducer = (state = initialState, action) => {
@@ -23,6 +29,12 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         registrationData: action.payload,
+      };
+
+    case BLUETOOTH_DATA:
+      return {
+        ...state,
+        receivedBTData: action.payload,
       };
 
     default:

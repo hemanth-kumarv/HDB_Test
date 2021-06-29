@@ -1,5 +1,8 @@
 import RNBluetoothClassic from "react-native-bluetooth-classic";
 
+import { setReceivedBTData } from "./Redux/dispatchers";
+import ReduxStore from "./Redux/store";
+
 var device;
 const performRead = async (setTID) => {
   // console.log(setTID);
@@ -12,6 +15,7 @@ const performRead = async (setTID) => {
         data: data.substring(10).replace(/[\r\n]+/gm, ""),
         searching: false,
       });
+    ReduxStore.dispatch(setReceivedBTData(res.data));
   });
 };
 

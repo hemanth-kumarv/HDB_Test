@@ -1,4 +1,9 @@
-import { INIT_STATE_STORAGE, DRAWER_STATE, REGISTRATION } from "./actions";
+import {
+  INIT_STATE_STORAGE,
+  DRAWER_STATE,
+  REGISTRATION,
+  BLUETOOTH_DATA,
+} from "./actions";
 import { getStorage, saveStorage, logoutStorage } from "./asyncStorageRedux";
 
 export const getInitStateStorage = () => (dispatch) => {
@@ -33,5 +38,10 @@ export const changeDrawerStyle = (type) => ({
 
 export const registration = (data) => ({
   type: REGISTRATION,
+  payload: data,
+});
+
+export const setReceivedBTData = (data) => ({
+  type: BLUETOOTH_DATA,
   payload: data,
 });

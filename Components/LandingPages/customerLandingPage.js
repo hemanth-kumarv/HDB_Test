@@ -275,7 +275,15 @@ const CustomerLandingPage = ({ route, navigation }) => {
                   ))}
                 </ScrollView>
                 {adQueue.Count ? (
-                  <TouchableOpacity style={styles.adQueueBar} onPress={() => navigation.navigate("AdQueuePage")}>
+                  <TouchableOpacity
+                    style={styles.adQueueBar}
+                    onPress={() =>
+                      navigation.navigate("AdQueuePage", {
+                        adQueue: adQueue,
+                        adsList: adsList,
+                      })
+                    }
+                  >
                     <Text style={styles.adQueueText}>
                       {adQueue.Count} ads queued.
                     </Text>
