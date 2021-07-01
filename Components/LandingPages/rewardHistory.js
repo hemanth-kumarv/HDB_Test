@@ -135,7 +135,7 @@ const RewardHistory = ({ route, navigation }) => {
                     {parseInt(rewardsList.Total.Time % 60)} sec)
                   </Text>
                 </Text>
-                <ScrollView style={{ maxHeight: "87%" }}>
+                <ScrollView style={{ height: "72%" }}>
                   {rewardsList.Rewards.map((i, j) => (
                     <View style={styles.tableRow} key={j}>
                       <Text style={[styles.tableData, tdWidth.ad]}>

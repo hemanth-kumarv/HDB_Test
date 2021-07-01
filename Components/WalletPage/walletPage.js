@@ -125,23 +125,19 @@ const WalletPage = ({ navigation, route }) => {
             <View style={styles.transactions}>
               <Text style={styles.prevTransactions}>Previous Transactions</Text>
               <ScrollView style={{ height: "52%" }}>
-                {[0, 1, 2].map((k) =>
-                  transactions.TransactionHistory.map((i, j) => {
-                    return (
-                      <View style={txnTableStyles.Row} key={j}>
-                        <Text style={txnTableStyles.TxnId}>ID: {i.TxnId}</Text>
-                        <Text style={txnTableStyles.Amount}>
-                          Rs. {i.Amount}
+                {transactions.TransactionHistory.map((i, j) => {
+                  return (
+                    <View style={txnTableStyles.Row} key={j}>
+                      <Text style={txnTableStyles.TxnId}>ID: {i.TxnId}</Text>
+                      <Text style={txnTableStyles.Amount}>Rs. {i.Amount}</Text>
+                      <View style={{ flexDirection: "row" }}>
+                        <Text style={txnTableStyles.Date}>
+                          {timeFormatter(i.DateTime)}
                         </Text>
-                        <View style={{ flexDirection: "row" }}>
-                          <Text style={txnTableStyles.Date}>
-                            {timeFormatter(i.DateTime)}
-                          </Text>
-                        </View>
                       </View>
-                    );
-                  })
-                )}
+                    </View>
+                  );
+                })}
               </ScrollView>
             </View>
           </View>

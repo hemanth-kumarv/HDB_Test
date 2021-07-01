@@ -13,6 +13,8 @@ const SideDrawerContents = ({ route, navigation }) => {
   // const open = useSelector(state => state.drawerOpen);
   const dispatch = useDispatch();
 
+  const activeStyle = (pageName) =>
+    route.name === pageName ? { backgroundColor: "lime", color: "black" } : {};
   const Menu = () => (
     <View style={styles.drawer}>
       <RightLeft
@@ -30,19 +32,19 @@ const SideDrawerContents = ({ route, navigation }) => {
         onPress={() => dispatch(changeDrawerStyle(false))}
       />
       <Text
-        style={styles.drawerButtons}
+        style={[styles.drawerButtons, activeStyle("CustomerLandingPage")]}
         onPress={() => navigation.navigate("CustomerLandingPage")}
       >
         New Ad
       </Text>
       <Text
-        style={styles.drawerButtons}
+        style={[styles.drawerButtons, activeStyle("RewardHistory")]}
         onPress={() => navigation.navigate("RewardHistory")}
       >
         Reward History
       </Text>
       <Text
-        style={styles.drawerButtons}
+        style={[styles.drawerButtons, activeStyle("ProfilePage")]}
         onPress={() => {
           navigation.navigate("ProfilePage");
         }}
@@ -50,46 +52,46 @@ const SideDrawerContents = ({ route, navigation }) => {
         Profile
       </Text>
       <Text
-        style={styles.drawerButtons}
+        style={[styles.drawerButtons, activeStyle("WalletPage")]}
         onPress={() => navigation.navigate("WalletPage")}
       >
         Wallet
       </Text>
       <Text
-        style={styles.drawerButtons}
-        onPress={() => navigation.navigate("WalletPage")}
+        style={[styles.drawerButtons, activeStyle("")]}
+        onPress={() => navigation.navigate("")}
       >
         Custom Display
       </Text>
       <Text
-        style={styles.drawerButtons}
+        style={[styles.drawerButtons, activeStyle("")]}
         onPress={() => navigation.navigate("")}
       >
         Bank Details
       </Text>
       <Text
-        style={styles.drawerButtons}
+        style={[styles.drawerButtons, activeStyle("")]}
         onPress={() => navigation.navigate("")}
       >
         Refer and Earn
       </Text>
       <Text
-        style={styles.drawerButtons}
+        style={[styles.drawerButtons, activeStyle("SettingsPage")]}
         onPress={() => navigation.navigate("SettingsPage")}
       >
         Settings
       </Text>
       <Text
-        style={styles.drawerButtons}
+        style={[styles.drawerButtons, activeStyle("")]}
         onPress={() => navigation.navigate("")}
       >
         Legal
       </Text>
       <Text
-        style={styles.drawerButtons}
+        style={[styles.drawerButtons, activeStyle("")]}
         onPress={() => navigation.navigate("")}
       >
-        Terms and Conditions
+        Terms {"&"} Conditions
       </Text>
       <Text
         style={styles.drawerButtons}

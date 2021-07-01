@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
   drawer: {
     top: 0,
     width: vw * 0.6,
+    marginTop: 20,
     left: 0,
     height: vh,
     alignItems: "flex-end",
@@ -28,7 +29,10 @@ const styles = StyleSheet.create({
     right: 5,
     color: "#fff",
     fontSize: 20,
-    marginTop: 18,
+    textAlign: "right",
+    width: "100%",
+    paddingVertical: 8,
+    paddingRight: 5,
     // overflow: "visible",
   },
   icon: {

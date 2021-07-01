@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import globalStyles from "../../globalStyles";
@@ -25,7 +26,7 @@ import { btConnection, sendData } from "../bluetoothConn";
 
 const CustomerLandingPage = ({ route, navigation }) => {
   const [adsList, setAdsList] = useState([]);
-  const [searching, setSearching] = useState(true);
+  const [searching, setSearching] = useState(false);
   const [btData, setBtData] = useState({ status: 0, message: "" });
   const [btScanning, setBtScanning] = useState(true);
   const [showBtIcon, setShowBtIcon] = useState(true);
@@ -49,7 +50,6 @@ const CustomerLandingPage = ({ route, navigation }) => {
 
   const searchAvailableAds = async (TransmitterID) => {
     if (btData.status === 200) {
-      // setSearching(false);
       axios.then((server) =>
         server
           .post("/getAvailableAds", {
@@ -59,12 +59,10 @@ const CustomerLandingPage = ({ route, navigation }) => {
             setAdsList(res.data);
             setSearching(true);
           })
-          // setSearching(true);
           .catch((err) => {
             console.log(err);
             setAdsList("Error connecting to server.");
             setSearching(true);
-            // setSearching(true);
           })
       );
     } else bluetoothConnect();
@@ -72,31 +70,43 @@ const CustomerLandingPage = ({ route, navigation }) => {
   useEffect(() => {
     if (isFocused) {
       if (drawerOpen) dispatch(changeDrawerStyle(false));
-    }
-    (async () => {
-      // const name = await AsyncStorage.getItem("UserId");
-      // const totalRewards = await AsyncStorage.getItem("TotalRewards");
-      // setuserName(name);
-      if (!totalRewards)
-        axios.then((server) =>
-          server
-            .post("/getRewards", { name: userName })
-            .then(async (res) => {
-              dispatch(
-                setAsyncStorage([
-                  ["TotalRewards", JSON.stringify(res.data.Total)],
-                ])
-              );
-              // await AsyncStorage.setItem(
-              //   "TotalRewards",
-              //   JSON.stringify(res.data.Total)
-              // );
-            })
-            .catch((err) => {
-              console.log(err);
-            })
+      if (transmitterID.data) {
+        setSearching(false);
+        bluetoothConnect();
+      }
+      if (route.params?.displayCount) {
+        Alert.alert(
+          "Successfully displayed ads",
+          "Successfully displayed " +
+            route.params?.displayCount +
+            " ads, from which you earned Rs. " +
+            route.params?.reward +
+            ".",
+          [
+            {
+              text: "OK",
+              onPress: () => null,
+            },
+          ]
         );
-    })();
+      }
+      navigation.setParams({ displayCount: 0, reward: 0 });
+    }
+    if (!totalRewards)
+      axios.then((server) =>
+        server
+          .post("/getRewards", { name: userName })
+          .then(async (res) => {
+            dispatch(
+              setAsyncStorage([
+                ["TotalRewards", JSON.stringify(res.data.Total)],
+              ])
+            );
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+      );
   }, [isFocused]);
 
   const bluetoothConnect = async () => {
@@ -111,11 +121,15 @@ const CustomerLandingPage = ({ route, navigation }) => {
         setTimeout(() => setShowBtIcon(false), 5000);
       }
       setBtScanning(false);
+      setSearching(true);
     } else {
       setBtScanning(true);
       setTransmitterID({ ...transmitterID, searching: true });
       let res = await sendData("_init;TID", userName);
-      if (res.status !== 200) setShowBtIcon(true);
+      if (res.status !== 200) {
+        setShowBtIcon(true);
+        setSearching(true);
+      }
       setBtData(res);
       setBtScanning(false);
     }
@@ -142,8 +156,8 @@ const CustomerLandingPage = ({ route, navigation }) => {
   };
   useEffect(() => {
     console.log(transmitterID);
-    if (transmitterID.searching) setSearching(!transmitterID.searching);
-    else (async () => await searchAvailableAds(transmitterID))();
+    if (!transmitterID.searching)
+      (async () => await searchAvailableAds(transmitterID))();
   }, [transmitterID]);
 
   return (
@@ -170,6 +184,7 @@ const CustomerLandingPage = ({ route, navigation }) => {
         }}
       >
         <ProfileIconPage navigation={navigation} route={route} />
+        {console.log(searching, !btScanning)}
         {searching && !btScanning ? (
           <>
             <Text style={styles.heading}>Ads Near Me</Text>

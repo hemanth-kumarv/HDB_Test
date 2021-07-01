@@ -1,5 +1,5 @@
 import axios from "../axiosServer";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   Text,
@@ -7,8 +7,8 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  ActivityIndicator,
-  Animated,
+  Alert,
+  BackHandler,
   RefreshControl,
 } from "react-native";
 import globalStyles from "../../globalStyles";
@@ -24,6 +24,8 @@ import ArrowIcon from "../../assets/chevron-right.svg";
 const AdQueuePage = ({ route, navigation }) => {
   const drawerOpen = useSelector((state) => state.drawerOpen);
   // const name = useSelector((state) => state.loggedIn);
+  const isFocused = useIsFocused();
+
   const [adList, updateList] = useState([]);
   const [btData, setBtData] = useState({ status: 200, message: "" });
   const [intervals, createInterval] = useState({});
@@ -31,8 +33,11 @@ const AdQueuePage = ({ route, navigation }) => {
     Started: false,
     Sent: 0,
     Completed: 0,
+    Time: [],
   });
+  const sentDataRef = useRef(sentData);
   const [widthStyle, setWidthStyle] = useState({});
+  const [stopQueue, setStopQueue] = useState({ stop: false, showAlert: false });
 
   const userName = useSelector((state) => state.UserId);
   const receivedBTData = useSelector((state) => state.receivedBTData);
@@ -64,21 +69,35 @@ const AdQueuePage = ({ route, navigation }) => {
     // console.log(receivedBTData, sentData, adList[sentData.Completed]);
     if (receivedBTData.includes("displayed")) {
       clearInterval(intervals[sentData.Completed]);
-      updateSentData((obj) => ({ ...obj, Completed: obj.Completed + 1 }));
-    }
-    if (receivedBTData.includes("starting"))
-      createInterval({
-        [sentData.Completed]: setInterval(() => {
-          setWidthStyle((obj) => ({
-            ...obj,
-            [sentData.Completed]: Math.min(
-              (obj[sentData.Completed] || 0) +
-                100 / Number(adList[sentData.Completed].Duration),
-              100
-            ),
-          }));
-        }, 1000),
+      setWidthStyle((obj) => ({
+        ...obj,
+        [sentData.Completed]: 100,
+      }));
+      updateSentData((obj) => {
+        sentDataRef.current = { ...obj, Completed: obj.Completed + 1 };
+        return { ...obj, Completed: obj.Completed + 1 };
       });
+    }
+    if (receivedBTData.includes("starting")) {
+      updateSentData((obj) => {
+        let now = Number(Date.now());
+        sentDataRef.current = { ...obj, Time: [].concat([...obj.Time], [now]) };
+        createInterval({
+          [sentData.Completed]: setInterval(() => {
+            let percent = Math.min(
+              (Number(Date.now()) - Number(now)) /
+                (Number(adList[sentData.Completed].Duration) * 10),
+              100
+            );
+            setWidthStyle((obj) => ({
+              ...obj,
+              [sentData.Completed]: percent,
+            }));
+          }, 500),
+        });
+        return { ...obj, Time: [].concat([...obj.Time], [now]) };
+      });
+    }
   }, [receivedBTData]);
 
   useEffect(() => {
@@ -91,13 +110,63 @@ const AdQueuePage = ({ route, navigation }) => {
   }, []);
 
   useEffect(() => {
-    if (sentData.Started && sentData.Sent < adList.length)
+    if (sentData.Started && !stopQueue.stop && sentData.Sent < adList.length)
       sendData(adList[sentData.Sent].VideoID, userName).then((res) => {
-        console.log(res);
         setBtData(res);
-        updateSentData({ ...sentData, Sent: sentData.Sent + 1 });
+        updateSentData((obj) => {
+          sentDataRef.current = { ...obj, Sent: obj.Sent + 1 };
+          return { ...obj, Sent: obj.Sent + 1 };
+        });
       });
+    else {
+      if (sentData.Started) {
+        setStopQueue((obj) => ({ ...obj, stop: true }));
+        navigation.navigate("CustomerLandingPage", {
+          displayCount: sentData.Completed,
+          reward: adList
+            .filter((ob, i) => i < sentData.Completed)
+            .reduce((acc, obj) => Number(acc + Number(obj.Reward)), 0),
+        });
+      }
+      updateSentData((obj) => {
+        sentDataRef.current = { ...obj, Started: false };
+        return { ...obj, Started: false };
+      });
+    }
   }, [sentData.Started, sentData.Completed]);
+
+  useEffect(() => {
+    if (stopQueue.showAlert)
+      Alert.alert(
+        "Stop Display",
+        "Are you sure you want to stop displaying? The display will stop after the current ad has completed, and you will receive the rewards only for the ads displayed.",
+        [
+          {
+            text: "Cancel",
+            // onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          {
+            text: "OK",
+            onPress: () => setStopQueue({ showAlert: false, stop: true }),
+          },
+        ]
+      );
+  }, [stopQueue.showAlert]);
+
+  const backhandler = () => {
+    if (!sentDataRef.current.Started) return false;
+    else {
+      setStopQueue((obj) => ({ ...obj, showAlert: true }));
+      return true;
+    }
+  };
+  useEffect(() => {
+    sentDataRef.current = { Started: false, Sent: 0, Completed: 0, Time: [] };
+    BackHandler.addEventListener("hardwareBackPress", backhandler);
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backhandler);
+  }, [isFocused]);
 
   return (
     <View
@@ -126,20 +195,19 @@ const AdQueuePage = ({ route, navigation }) => {
           {adList.length
             ? adList.map((item, j) => (
                 <View key={j} style={{ width: "100%" }}>
-                  {console.log(widthStyle)}
-                  {sentData.Started ? (
-                    <View
-                      style={{
-                        position: "absolute",
-                        maxWidth: "76%",
-                        width: widthStyle[j] ? widthStyle[j] + "%" : 0,
-                        height: 10,
-                        backgroundColor: "lime",
-                        left: 40,
-                        top: 45,
-                      }}
-                    />
-                  ) : null}
+                  {/* {sentData.Started ? ( */}
+                  <View
+                    style={{
+                      position: "absolute",
+                      maxWidth: "76%",
+                      width: widthStyle[j] ? widthStyle[j] + "%" : 0,
+                      height: 10,
+                      backgroundColor: "lime",
+                      left: 40,
+                      top: 45,
+                    }}
+                  />
+                  {/* ) : null} */}
                   <View
                     style={{
                       flexDirection: "row",
@@ -221,10 +289,20 @@ const AdQueuePage = ({ route, navigation }) => {
           styles.adQueueBar,
           sentData.Started ? { backgroundColor: "red" } : {},
         ]}
-        onPress={async () => updateSentData({ ...sentData, Started: true })}
+        onPress={async () =>
+          updateSentData((obj) => {
+            sentDataRef.current = { ...obj, Started: true };
+            return { ...obj, Started: true };
+          })
+        }
       >
         {sentData.Started ? (
-          <Text style={styles.adQueueText}>Stop Displaying</Text>
+          <Text
+            style={styles.adQueueText}
+            onPress={() => setStopQueue((obj) => ({ ...obj, showAlert: true }))}
+          >
+            Stop Displaying
+          </Text>
         ) : (
           <>
             <Text style={styles.adQueueText}>
