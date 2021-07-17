@@ -128,7 +128,7 @@ const CompanyLandingPage = ({ route, navigation }) => {
             ) : (
               <>
                 <Text style={landingStyles.heading}>Upload Ad</Text>
-                <View style={landingStyles.table}>
+                <View style={styles.table}>
                   <Text
                     style={styles.button}
                     onPress={() => navigation.navigate("NewAdPage")}
