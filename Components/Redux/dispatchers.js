@@ -17,13 +17,18 @@ export const getInitStateStorage = () => (dispatch) => {
   );
 };
 
-export const setAsyncStorage = (data) => (dispatch) =>
-  saveStorage(data).then((e) =>
+export const setAsyncStorage = (data, isLogin, navigation) => (dispatch) => {
+  saveStorage(data).then((e) => {
     dispatch({
       type: INIT_STATE_STORAGE,
       payload: e,
-    })
-  );
+    });
+    if (isLogin)
+      navigation.replace(
+        data[1][1] === "Customer" ? "CustomerLandingPage" : "CompanyLandingPage" // welcomePage.js - line 40, UserType
+      );
+  });
+};
 
 export const logout = () => (dispatch) =>
   logoutStorage().then((e) =>

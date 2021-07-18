@@ -14,7 +14,7 @@ import {
 import globalStyles from "../../globalStyles";
 import SideDrawer from "../SideDrawer/sideDrawer";
 import { styles, adsTdWidth } from "./adQueueStyles";
-import { changeDrawerStyle, setAsyncStorage } from "../Redux/dispatchers";
+import { changeDrawerStyle } from "../Redux/dispatchers";
 import ErrorSVG from "../../assets/exclamation-triangle.svg";
 import { useIsFocused } from "@react-navigation/core";
 import ProfileIconPage from "../ProfilePage/profileIcon";

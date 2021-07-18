@@ -37,14 +37,15 @@ const WelcomePage = ({ navigation }) => {
               newData = { ...rest };
             }
             dispatch(
-              setAsyncStorage([
-                ["UserData", JSON.stringify(newData)],
-                ["UserType", type],
-                ["UserId", userName],
-              ])
-            );
-            navigation.replace(
-              type === "Customer" ? "CustomerLandingPage" : "CompanyLandingPage"
+              setAsyncStorage(
+                [
+                  ["UserData", JSON.stringify(newData)],
+                  ["UserType", type],
+                  ["UserId", userName],
+                ],
+                true,
+                navigation
+              )
             );
           } else {
             setloginError(res.data.message);
