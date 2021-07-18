@@ -2,17 +2,29 @@ import React, { useState, useEffect } from "react";
 import { Dimensions, Text } from "react-native";
 import { View } from "react-native";
 import { LineChart } from "react-native-chart-kit";
+import { styles } from "./AnalyticsStyles";
 
 export default (props) => {
+  const chartConfig = {
+    backgroundColor: "#e26a00",
+    backgroundGradientFrom: "#fb8c00",
+    backgroundGradientTo: "#ffa726",
+    decimalPlaces: 1, // optional, defaults to 2dp
+    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+    style: {
+      borderRadius: 16,
+    },
+    propsForDots: {
+      r: "6",
+      strokeWidth: "2",
+      stroke: "#ffa726",
+    },
+  };
   return (
     <View>
       <Text
-        style={{
-          color: "#fff",
-          marginBottom: 5,
-          marginLeft: 15,
-          fontSize: 25,
-        }}
+        style={styles.lineChartContainer}
       >
         Statistics
       </Text>
@@ -30,22 +42,7 @@ export default (props) => {
         yAxisLabel="Rs. "
         // yAxisSuffix="k"
         yAxisInterval={2} // optional, defaults to 1
-        chartConfig={{
-          backgroundColor: "#e26a00",
-          backgroundGradientFrom: "#fb8c00",
-          backgroundGradientTo: "#ffa726",
-          decimalPlaces: 1, // optional, defaults to 2dp
-          color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-          style: {
-            borderRadius: 16,
-          },
-          propsForDots: {
-            r: "6",
-            strokeWidth: "2",
-            stroke: "#ffa726",
-          },
-        }}
+        chartConfig={chartConfig}
         bezier
         style={{
           //   margin: 8,

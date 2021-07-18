@@ -24,6 +24,7 @@ export const styles = StyleSheet.create({
   content: {
     top: vh * 0.12,
     width: vw * 0.96,
+    height: vh * 0.85,
     alignSelf: "center",
     borderColor: "white",
     borderWidth: 2,
@@ -40,6 +41,25 @@ export const styles = StyleSheet.create({
     alignSelf: "flex-end",
     textAlign: "center",
     padding: 3,
+  },
+  dropdownPicker: {
+    top: 10,
+    borderRadius: 15,
+    width: vw * 0.5,
+    color: "#fff",
+    overflow: "hidden",
+  },
+  chartsContainer: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    height: "88%",
+    paddingVertical: 20,
+  },
+  horizontalLine: {
+    width: vw * 0.85,
+    borderWidth: 0.5,
+    alignSelf: "center",
+    borderColor: "lightgray",
   },
   errorTextContainer: {
     alignItems: "center",
@@ -63,5 +83,11 @@ export const styles = StyleSheet.create({
     flex: 2,
     // borderColor: 'red',
     // borderWidth: 2,
+  },
+  filterErrorText: {
+    color: "#fff",
+    fontSize: 25,
+    textAlign: "center",
+    top: "32%",
   },
 });

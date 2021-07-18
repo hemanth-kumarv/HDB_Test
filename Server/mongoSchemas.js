@@ -53,7 +53,7 @@ const UnreviewedAdsList = new Schema({
 const CompanyAnalyticsTest = new Schema({
   CompanyID: String,
   Data: {
-    Data: [
+    DailyData: [
       {
         Date: String,
         Details: [
@@ -64,8 +64,9 @@ const CompanyAnalyticsTest = new Schema({
               {
                 Location: String,
                 TransmitterID: Number,
-                Count: Number,
+                TotalCount: Number,
                 Revenue: Number,
+                TimeSlots: [],
               },
             ],
           },
