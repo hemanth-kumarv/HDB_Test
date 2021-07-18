@@ -16,6 +16,7 @@ const ZonalAdsListTest = conn.ZonalAdsListTest;
 const CompanyLoginDBTest = conn.CompanyLoginDBTest;
 const CompanyDetailsDBTest = conn.CompanyDetailsDBTest;
 const UnreviewedAdsList = conn.UnreviewedAdsList;
+const CompanyAnalyticsTest = conn.CompanyAnalyticsTest;
 
 const CustomerLoginDBTest = conn.CustomerLoginDBTest;
 const CustomerRewardsDBTest = conn.CustomerRewardsDBTest;

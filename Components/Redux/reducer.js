@@ -5,10 +5,10 @@ import {
   BLUETOOTH_DATA,
 } from "./actions";
 const initialState = {
-  userId: "",
-  totalRewards: {},
-  userData: {},
-  userType: "",
+  UserId: "",
+  TotalRewards: {},
+  UserData: {},
+  UserType: "",
   drawerOpen: false,
   registrationData: {},
   loaded: false,

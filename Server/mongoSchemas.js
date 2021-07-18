@@ -12,6 +12,7 @@ const CompanyListDBTest = new Schema({
 
 const ZonalAdsListTest = new Schema({
   TransmitterID: String,
+  ZoneName: String,
   AdList: [],
 });
 
@@ -48,6 +49,8 @@ const UnreviewedAdsList = new Schema({
   UserID: String,
   UploadType: String,
 });
+
+const CompanyAnalyticsTest = new Schema({});
 
 const CustomerRewardsDBTest = new Schema({
   Email: String,
@@ -102,6 +105,7 @@ exports.ZonalAdsListTest = ZonalAdsListTest;
 exports.CompanyDetailsDBTest = CompanyDetailsDBTest;
 exports.CompanyLoginDBTest = CompanyLoginDBTest;
 exports.UnreviewedAdsList = UnreviewedAdsList;
+exports.CompanyAnalyticsTest = CompanyAnalyticsTest;
 
 exports.CustomerRewardsDBTest = CustomerRewardsDBTest;
 exports.CustomerLoginDBTest = CustomerLoginDBTest;

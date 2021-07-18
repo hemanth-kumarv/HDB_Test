@@ -52,6 +52,11 @@ const UnreviewedAdsList = CompanyConn.model(
   schemas.UnreviewedAdsList,
   "UnreviewedAdsList"
 );
+const CompanyAnalyticsTest = CompanyConn.model(
+  "Company",
+  schemas.CompanyAnalyticsTest,
+  "CompanyAnalyticsTest"
+);
 
 // Model of Customer Collections
 const CustomerRewardsDBTest = CustomerConn.model(
@@ -80,6 +85,7 @@ exports.ZonalAdsListTest = ZonalAdsListTest;
 exports.CompanyDetailsDBTest = CompanyDetailsDBTest;
 exports.CompanyLoginDBTest = CompanyLoginDBTest;
 exports.UnreviewedAdsList = UnreviewedAdsList;
+exports.CompanyAnalyticsTest = CompanyAnalyticsTest;
 
 exports.CustomerLoginDBTest = CustomerLoginDBTest;
 exports.CustomerRewardsDBTest = CustomerRewardsDBTest;

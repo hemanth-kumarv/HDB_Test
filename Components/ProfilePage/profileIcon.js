@@ -8,20 +8,14 @@ import ProfileIcon from "../../assets/person-circle.svg";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProfileIconPage = ({ navigation, route }) => {
-  const [image, setImage] = useState(null);
+  // const [image, setImage] = useState(null);
   // const [userType, setUserType] = useState("Customer");
   const userData = useSelector((state) => state.UserData);
   const userType = useSelector((state) => state.UserType);
 
-  useEffect(() => {
-    if (userData !== null) {
-      if (userData.ProfilePicture) setImage(userData.ProfilePicture);
-    }
-  }, []);
-
   return (
     <View>
-      {image ? (
+      {Object.keys(userData || {}).length ? (
         <TouchableOpacity
           style={styles.icon}
           onPress={() =>
@@ -32,7 +26,7 @@ const ProfileIconPage = ({ navigation, route }) => {
         >
           <Image
             style={{ width: 50, height: 50, borderRadius: 50 }}
-            source={{ uri: image }}
+            source={{ uri: userData.ProfilePicture }}
             resizeMode="cover"
           />
         </TouchableOpacity>
