@@ -3,6 +3,7 @@ import {
   REGISTRATION,
   INIT_STATE_STORAGE,
   BLUETOOTH_DATA,
+  ANALYTICS_DATA,
 } from "./actions";
 const initialState = {
   UserId: "",
@@ -13,6 +14,7 @@ const initialState = {
   registrationData: {},
   loaded: false,
   receivedBTData: "",
+  AnalyticsData: {},
 };
 
 const reducer = (state = initialState, action) => {
@@ -35,6 +37,12 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         receivedBTData: action.payload,
+      };
+
+    case ANALYTICS_DATA:
+      return {
+        ...state,
+        AnalyticsData: action.payload,
       };
 
     default:

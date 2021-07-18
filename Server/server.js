@@ -264,10 +264,10 @@ app.post("/getPreviouslyUploadedAds", (req, res) => {
         if (err) {
           console.log(err);
           res.send("Error connecting to database.");
-        } else {
-          let newRes = [],
-            adsList = docs.UploadedAds.map((obj) => obj.Video);
+        } else if (docs) {
+          let newRes = [];
           if (docs.UploadedAds) {
+            let adsList = docs.UploadedAds.map((obj) => obj.Video);
             let Res = await findFromCompanyList(adsList);
             Res.forEach((i) => {
               let j = docs.UploadedAds.find((k) => k.Video === i.VideoID);
@@ -275,11 +275,12 @@ app.post("/getPreviouslyUploadedAds", (req, res) => {
             });
           }
           res.send(newRes);
-        }
+        } else res.send("No data exists.");
       }
     );
   } catch (error) {
     console.log(error);
+    res.send("Error connecting to database.");
   }
 });
 
@@ -317,6 +318,22 @@ app.post("/uploadNewAd", upload.single("MyNewVideo"), (req, res) => {
   } catch (error) {
     res.send({ status: 400, message: "Error while uploading. Please retry." });
     console.log(error);
+  }
+});
+
+app.post("/getAnalyticsData", (req, res) => {
+  try {
+    CompanyAnalyticsTest.findOne({ CompanyID: req.body.email }, (err, docs) => {
+      if (err) {
+        console.log(err);
+        res.send({ message: "Error connecting to database", status: 400 });
+      } else {
+        res.send({ ...docs.toObject(), status: 200 });
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({ message: "Error connecting to database", status: 400 });
   }
 });
 

@@ -15,7 +15,7 @@ const ProfileIconPage = ({ navigation, route }) => {
 
   return (
     <View>
-      {Object.keys(userData || {}).length ? (
+      {Object.keys(userData || {}).length && userData.ProfilePicture ? (
         <TouchableOpacity
           style={styles.icon}
           onPress={() =>

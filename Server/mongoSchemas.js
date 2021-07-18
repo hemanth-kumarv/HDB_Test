@@ -50,7 +50,32 @@ const UnreviewedAdsList = new Schema({
   UploadType: String,
 });
 
-const CompanyAnalyticsTest = new Schema({});
+const CompanyAnalyticsTest = new Schema({
+  CompanyID: String,
+  Data: {
+    Data: [
+      {
+        Date: String,
+        Details: [
+          {
+            AdCode: String,
+            Count: [
+              {
+                Location: String,
+                TransmitterID: Number,
+                Count: Number,
+                Revenue: Number,
+              },
+            ],
+          },
+        ],
+        TotalPerDay: Number,
+        TotalRevenue: Number,
+      },
+    ],
+    MonthlySummary: [{ Month: String, Revenue: Number, Count: Number }],
+  },
+});
 
 const CustomerRewardsDBTest = new Schema({
   Email: String,

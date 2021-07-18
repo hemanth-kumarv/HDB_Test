@@ -19,9 +19,10 @@ import ProfileIconPage from "../ProfilePage/profileIcon";
 import { styles } from "./companyLandingStyles";
 import { styles as landingStyles } from "./landingPageStyles";
 import { adsTdWidth } from "./landingPageStyles";
-import { changeDrawerStyle } from "../Redux/dispatchers";
+import { changeDrawerStyle, getAnalyticsData } from "../Redux/dispatchers";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 import ErrorSVG from "../../assets/exclamation-triangle.svg";
+import CompanyAnalyticsGraph from "../CompanyAnalytics/CompanyAnalyticsGraph";
 
 const CompanyLandingPage = ({ route, navigation }) => {
   const [searching, setSearching] = useState(false);
@@ -30,6 +31,7 @@ const CompanyLandingPage = ({ route, navigation }) => {
 
   const drawerOpen = useSelector((state) => state.drawerOpen);
   const userName = useSelector((state) => state.UserId);
+  const userAnalytics = useSelector((state) => state.AnalyticsData);
   // const name = useSelector((state) => state.loggedIn);
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
@@ -40,7 +42,6 @@ const CompanyLandingPage = ({ route, navigation }) => {
       server
         .post("/getPreviouslyUploadedAds", { emailID: name })
         .then(async (res) => {
-          // console.log("NEW USER: ", await AsyncStorage.getItem("UserId"));
           setAdsList(res.data);
           setSearching(true);
         })
@@ -58,6 +59,7 @@ const CompanyLandingPage = ({ route, navigation }) => {
     (async () => {
       // const name = await AsyncStorage.getItem("UserId");
       // setuserName(name);
+      dispatch(getAnalyticsData(userName));
       searchPreviousAds(userName);
     })();
   }, [isFocused]);
@@ -141,45 +143,49 @@ const CompanyLandingPage = ({ route, navigation }) => {
                     </Text>
                     <ScrollView style={styles.prevAds}>
                       {adsList.length ? (
-                        adsList.map((i, j) => (
-                          <TouchableOpacity
-                            style={landingStyles.adTableRow}
-                            key={j}
-                            onPress={async () =>
-                              await Linking.openURL(
-                                "https://drive.google.com/file/d/" +
-                                  i.VideoID +
-                                  "/view?usp=sharing"
-                              )
-                            }
-                          >
-                            {/* <Text style={[styles.adTableData, adsTdWidth.no]}>{j + 1}</Text> */}
-                            <Image
-                              style={{ width: 60, height: 60 }}
-                              source={{ uri: i.Icon }}
-                            />
-                            <Text
-                              style={[landingStyles.adTableData, adsTdWidth.ad]}
+                        [...adsList, ...adsList, ...adsList, ...adsList].map(
+                          (i, j) => (
+                            <TouchableOpacity
+                              style={landingStyles.adTableRow}
+                              key={j}
+                              onPress={async () =>
+                                await Linking.openURL(
+                                  "https://drive.google.com/file/d/" +
+                                    i.VideoID +
+                                    "/view?usp=sharing"
+                                )
+                              }
                             >
-                              {i.Name}
-                            </Text>
-                            <Text
-                              style={[
-                                landingStyles.adTableData,
-                                adsTdWidth.reward,
-                              ]}
-                            >
-                              Rs. {i.Reward}
-                              {"\n"}
-                              <Text style={{ fontSize: 18, color: "white" }}>
-                                For {i.Duration} s
+                              <Image
+                                style={{ width: 60, height: 60 }}
+                                source={{ uri: i.Icon }}
+                              />
+                              <Text
+                                style={[
+                                  landingStyles.adTableData,
+                                  adsTdWidth.ad,
+                                ]}
+                              >
+                                {i.Name}
                               </Text>
-                            </Text>
-                            {/* <Text style={[styles.adTableData, adsTdWidth.select, {backgroundColor: 'dodgerblue', color: 'black'}]}>
+                              <Text
+                                style={[
+                                  landingStyles.adTableData,
+                                  adsTdWidth.reward,
+                                ]}
+                              >
+                                Rs. {i.Reward}
+                                {"\n"}
+                                <Text style={{ fontSize: 18, color: "white" }}>
+                                  For {i.Duration} s
+                                </Text>
+                              </Text>
+                              {/* <Text style={[styles.adTableData, adsTdWidth.select, {backgroundColor: 'dodgerblue', color: 'black'}]}>
                       Select
-                    </Text> */}
-                          </TouchableOpacity>
-                        ))
+                            </Text> */}
+                            </TouchableOpacity>
+                          )
+                        )
                       ) : (
                         <Text style={styles.errorText}>
                           Please upload a New Ad first.
@@ -188,6 +194,12 @@ const CompanyLandingPage = ({ route, navigation }) => {
                     </ScrollView>
                   </View>
                 </View>
+                <TouchableOpacity
+                  style={styles.analyticsGraph}
+                  onPress={() => navigation.navigate("AnalyticsDetails")}
+                >
+                  <CompanyAnalyticsGraph data={userAnalytics} />
+                </TouchableOpacity>
               </>
             )}
           </>

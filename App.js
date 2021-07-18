@@ -21,6 +21,7 @@ import CompanyProfilePage from "./Components/ProfilePage/companyProfilePage";
 import WalletPage from "./Components/WalletPage/walletPage";
 import SettingsPage from "./Components/SettingsPage/settings";
 import AdQueuePage from "./Components/AdQueuePage/adQueue";
+import AnalyticsDetails from "./Components/AnalyticsDetails/AnalyticsDetails";
 
 const Stack = createStackNavigator();
 
@@ -97,6 +98,10 @@ const App = () => {
             <Stack.Screen name="WalletPage" component={WalletPage} />
             <Stack.Screen name="SettingsPage" component={SettingsPage} />
             <Stack.Screen name="AdQueuePage" component={AdQueuePage} />
+            <Stack.Screen
+              name="AnalyticsDetails"
+              component={AnalyticsDetails}
+            />
           </Stack.Navigator>
         </NavigationContainer>
       ) : (
