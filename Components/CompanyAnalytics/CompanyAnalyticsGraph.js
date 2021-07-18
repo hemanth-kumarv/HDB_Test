@@ -4,7 +4,6 @@ import { View } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 
 export default (props) => {
-  console.log(props.data.Data.MonthlySummary);
   return (
     <View>
       <Text

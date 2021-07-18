@@ -198,7 +198,11 @@ const CompanyLandingPage = ({ route, navigation }) => {
                   style={styles.analyticsGraph}
                   onPress={() => navigation.navigate("AnalyticsDetails")}
                 >
-                  <CompanyAnalyticsGraph data={userAnalytics} />
+                  <CompanyAnalyticsGraph
+                    data={userAnalytics}
+                    navigation={navigation}
+                    route={route}
+                  />
                 </TouchableOpacity>
               </>
             )}

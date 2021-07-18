@@ -58,6 +58,7 @@ const CompanyAnalyticsTest = new Schema({
         Date: String,
         Details: [
           {
+            AdTitle: String,
             AdCode: String,
             Count: [
               {

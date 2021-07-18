@@ -1,0 +1,67 @@
+import { StyleSheet, Dimensions } from "react-native";
+const vw = Dimensions.get("window").width,
+  vh = Dimensions.get("window").height;
+
+export const styles = StyleSheet.create({
+  heading: {
+    color: "#fff",
+    fontSize: 25,
+    top: vh * 0.04,
+    width: vw * 0.6,
+    left: 0.2 * vw,
+    textAlign: "center",
+    position: "absolute",
+  },
+  container: {
+    width: vw,
+    height: vh,
+    position: "absolute",
+    zIndex: 4,
+    top: 0,
+    left: 0,
+    display: "flex",
+  },
+  content: {
+    top: vh * 0.12,
+    width: vw * 0.96,
+    alignSelf: "center",
+    borderColor: "white",
+    borderWidth: 2,
+    borderRadius: 7,
+    padding: 5,
+  },
+  date: {
+    color: "white",
+    borderColor: "lime",
+    borderWidth: 2,
+    borderRadius: 7,
+    right: 10,
+    width: vw * 0.3,
+    alignSelf: "flex-end",
+    textAlign: "center",
+    padding: 3,
+  },
+  errorTextContainer: {
+    alignItems: "center",
+    flexDirection: "column",
+    justifyContent: "center",
+    top: "30%",
+    height: vh * 0.8,
+  },
+  errorText: {
+    color: "red",
+    width: 0.7 * vw,
+    top: 20,
+    flex: 3,
+    textAlign: "center",
+    fontSize: 30,
+  },
+  retryButton: {
+    top: 10,
+    color: "blue",
+    fontSize: 40,
+    flex: 2,
+    // borderColor: 'red',
+    // borderWidth: 2,
+  },
+});
