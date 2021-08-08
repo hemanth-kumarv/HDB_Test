@@ -200,10 +200,18 @@ app.post("/registration", (req, res) => {
       newDetailsDocs.save();
       const newLoginDocs = new CompanyLoginDBTest({
         ...req.body,
-        UserID: re.body.Email,
+        UserID: req.body.Email,
         Preferences: {},
       });
       newLoginDocs.save();
+      const newAnalyticsDocs = new CompanyAnalyticsTest({
+        CompanyID: req.body.Email,
+        Data: {
+          DailyData: [],
+          MonthlySummary: [{ Month: "Aug-21", Revenue: 0, Count: 0 }],
+        },
+      });
+      newAnalyticsDocs.save();
     }
 
     res.send({});

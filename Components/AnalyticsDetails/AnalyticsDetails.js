@@ -13,7 +13,7 @@ import globalStyles from "../../globalStyles";
 import SideDrawer from "../../Components/SideDrawer/sideDrawer";
 import { styles } from "./AnalyticsDetailsStyles";
 import ProfileIconPage from "../ProfilePage/profileIcon";
-import { getAnalyticsData } from "../Redux/dispatchers";
+import { changeDrawerStyle, getAnalyticsData } from "../Redux/dispatchers";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import CompanyDailyAnalytics from "../CompanyAnalytics/CompanyDailyAnalytics";
 import { Picker } from "@react-native-picker/picker";

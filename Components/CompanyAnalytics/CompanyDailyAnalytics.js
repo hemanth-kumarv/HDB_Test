@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { View, Dimensions, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  Dimensions,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { PieChart } from "react-native-chart-kit";
 import { styles } from "./AnalyticsStyles";
 
@@ -52,11 +58,11 @@ export default (props) => {
         absolute
         hasLegend={false}
       />
-      <View style={styles.labels}>
+      <ScrollView style={styles.labels}>
         {props.chartData.map((obj) =>
           label(obj.color, obj.name, obj.count, obj.index)
         )}
-      </View>
+      </ScrollView>
     </View>
   );
 };

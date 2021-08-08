@@ -74,7 +74,7 @@ const RegisterPage1 = ({ navigation }) => {
         else data[i] = fields[i].data;
       }
       dispatch(registration(data));
-      navigation.navigate(userType ? "CustomerRegisterPage" : "RegisterPage2");
+      navigation.navigate(userType ? "CompanyRegisterPage" : "RegisterPage2");
     } else {
       if (!check) {
         setFields(newFields);

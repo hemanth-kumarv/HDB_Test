@@ -143,49 +143,44 @@ const CompanyLandingPage = ({ route, navigation }) => {
                     </Text>
                     <ScrollView style={styles.prevAds}>
                       {adsList.length ? (
-                        [...adsList, ...adsList, ...adsList, ...adsList].map(
-                          (i, j) => (
-                            <TouchableOpacity
-                              style={landingStyles.adTableRow}
-                              key={j}
-                              onPress={async () =>
-                                await Linking.openURL(
-                                  "https://drive.google.com/file/d/" +
-                                    i.VideoID +
-                                    "/view?usp=sharing"
-                                )
-                              }
+                        adsList.map((i, j) => (
+                          <TouchableOpacity
+                            style={landingStyles.adTableRow}
+                            key={j}
+                            onPress={async () =>
+                              await Linking.openURL(
+                                "https://drive.google.com/file/d/" +
+                                  i.VideoID +
+                                  "/view?usp=sharing"
+                              )
+                            }
+                          >
+                            <Image
+                              style={{ width: 60, height: 60 }}
+                              source={{ uri: i.Icon }}
+                            />
+                            <Text
+                              style={[landingStyles.adTableData, adsTdWidth.ad]}
                             >
-                              <Image
-                                style={{ width: 60, height: 60 }}
-                                source={{ uri: i.Icon }}
-                              />
-                              <Text
-                                style={[
-                                  landingStyles.adTableData,
-                                  adsTdWidth.ad,
-                                ]}
-                              >
-                                {i.Name}
+                              {i.Name}
+                            </Text>
+                            <Text
+                              style={[
+                                landingStyles.adTableData,
+                                adsTdWidth.reward,
+                              ]}
+                            >
+                              Rs. {i.Reward}
+                              {"\n"}
+                              <Text style={{ fontSize: 18, color: "white" }}>
+                                For {i.Duration} s
                               </Text>
-                              <Text
-                                style={[
-                                  landingStyles.adTableData,
-                                  adsTdWidth.reward,
-                                ]}
-                              >
-                                Rs. {i.Reward}
-                                {"\n"}
-                                <Text style={{ fontSize: 18, color: "white" }}>
-                                  For {i.Duration} s
-                                </Text>
-                              </Text>
-                              {/* <Text style={[styles.adTableData, adsTdWidth.select, {backgroundColor: 'dodgerblue', color: 'black'}]}>
+                            </Text>
+                            {/* <Text style={[styles.adTableData, adsTdWidth.select, {backgroundColor: 'dodgerblue', color: 'black'}]}>
                       Select
                             </Text> */}
-                            </TouchableOpacity>
-                          )
-                        )
+                          </TouchableOpacity>
+                        ))
                       ) : (
                         <Text style={styles.errorText}>
                           Please upload a New Ad first.

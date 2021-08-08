@@ -8,6 +8,7 @@ const CompanyListDBTest = new Schema({
   Duration: Number,
   Icon: String,
   VideoID: String,
+  Email: String
 });
 
 const ZonalAdsListTest = new Schema({

@@ -33,6 +33,12 @@ const SideDrawerContents = ({ route, navigation }) => {
         onPress={() => dispatch(changeDrawerStyle(false))}
       />
       <Text
+        style={[styles.drawerButtons, activeStyle("CompanyLandingPage")]}
+        onPress={() => navigation.navigate("CompanyLandingPage")}
+      >
+        Home
+      </Text>
+      <Text
         style={[styles.drawerButtons, activeStyle("AnalyticsDetails")]}
         onPress={() => navigation.navigate("AnalyticsDetails")}
       >
@@ -64,12 +70,12 @@ const SideDrawerContents = ({ route, navigation }) => {
       >
         Bank Details
       </Text>
-      <Text
+      {/* <Text
         style={[styles.drawerButtons, activeStyle("")]}
         onPress={() => navigation.navigate("")}
       >
         Refer and Earn
-      </Text>
+      </Text> */}
       <Text
         style={[styles.drawerButtons, activeStyle("")]}
         onPress={() => navigation.navigate("SettingsPage")}

@@ -9,7 +9,12 @@ export const styles = StyleSheet.create({
     marginLeft: 15,
     fontSize: 25,
   },
-  labels: { flexDirection: "column", position: "absolute", right: 10 },
+  labels: {
+    flexDirection: "column",
+    position: "absolute",
+    right: 10,
+    height: 0.25 * vh,
+  },
   labelContainer: {
     flexDirection: "row",
     justifyContent: "flex-start",

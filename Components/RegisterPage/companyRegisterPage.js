@@ -10,14 +10,14 @@ import LeftIcon from "../../assets/chevron-left.svg";
 import RightIcon from "../../assets/chevron-right.svg";
 
 // {userType ? (
-//   <CustomerRegisterPage
+//   <CompanyRegisterPage
 //     setData={(name, value) =>
 //       setCustomerData({ ...customerData, [name]: value })
 //     }
 //     getData={customerData}
 //   />
 // ) : (
-const CustomerRegisterPage = ({ navigation }) => {
+const CompanyRegisterPage = ({ navigation }) => {
   const [pickedImage, setPickedImage] = useState("");
   const [customerData, setCustomerData] = useState({
     companyName: { data: "", active: true },
@@ -176,4 +176,4 @@ const CustomerRegisterPage = ({ navigation }) => {
   );
 };
 
-export default CustomerRegisterPage;
+export default CompanyRegisterPage;

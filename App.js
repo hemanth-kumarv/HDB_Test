@@ -8,7 +8,7 @@ import { getInitStateStorage } from "./Components/Redux/dispatchers";
 // import store from "./Components/Redux/store";
 import WelcomePage from "./Components/WelcomePage/welcomePage";
 import RegisterPage1 from "./Components/RegisterPage/registerPage1";
-import CustomerRegisterPage from "./Components/RegisterPage/customerRegisterPage";
+import CompanyRegisterPage from "./Components/RegisterPage/companyRegisterPage";
 import RegisterPage2 from "./Components/RegisterPage/registerPage2";
 import RegisterPage3 from "./Components/RegisterPage/registerPage3";
 import CustomerLandingPage from "./Components/LandingPages/customerLandingPage";
@@ -76,8 +76,8 @@ const App = () => {
             <Stack.Screen name="RegisterPage1" component={RegisterPage1} />
             <Stack.Screen name="RegisterPage2" component={RegisterPage2} />
             <Stack.Screen
-              name="CustomerRegisterPage"
-              component={CustomerRegisterPage}
+              name="CompanyRegisterPage"
+              component={CompanyRegisterPage}
             />
             <Stack.Screen name="RegisterPage3" component={RegisterPage3} />
             <Stack.Screen

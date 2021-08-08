@@ -110,14 +110,17 @@ const AdQueuePage = ({ route, navigation }) => {
   }, []);
 
   useEffect(() => {
-    if (sentData.Started && !stopQueue.stop && sentData.Sent < adList.length)
-      sendData(adList[sentData.Sent].VideoID, userName).then((res) => {
+    if (sentData.Started && !stopQueue.stop && sentData.Sent < adList.length) {
+      let adDetails = adList[sentData.Sent].Transmitters.join() + ".."+ adList[sentData.Sent].VideoID;
+      let userDetails = userName + ".." + adList[sentData.Sent].Email
+      sendData(adDetails, userDetails).then((res) => {
         setBtData(res);
         updateSentData((obj) => {
           sentDataRef.current = { ...obj, Sent: obj.Sent + 1 };
           return { ...obj, Sent: obj.Sent + 1 };
         });
       });
+    }
     else {
       if (sentData.Started) {
         setStopQueue((obj) => ({ ...obj, stop: true }));
