@@ -106,7 +106,7 @@ const App = () => {
         </NavigationContainer>
       ) : (
         <Text style={{ fontSize: 60, textAlign: "center", top: "40%" }}>
-          LOGO
+          VAUNTED
         </Text>
       )}
       {/* </Provider> */}

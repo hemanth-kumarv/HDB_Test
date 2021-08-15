@@ -18,6 +18,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import CompanyDailyAnalytics from "../CompanyAnalytics/CompanyDailyAnalytics";
 import { Picker } from "@react-native-picker/picker";
 import TimeSlotAnalytics from "../CompanyAnalytics/TimeSlotAnalytics";
+import axios from "../axiosServer";
 
 export default ({ route, navigation }) => {
   const dispatch = useDispatch();
@@ -30,6 +31,7 @@ export default ({ route, navigation }) => {
     selected: new Date(),
   });
   const [location, setLocation] = useState("All");
+  const [availableLocations, setAvailableLocations] = useState([]);
   const [currentAd, setCurrentAd] = useState(0);
 
   const dateFormatter = (date) =>
@@ -64,7 +66,7 @@ export default ({ route, navigation }) => {
                 index: index,
                 name: ad.AdTitle + "\n" + zone.Location,
                 count: zone.TotalCount,
-                color: colors[index++],
+                color: colors[index++ % 9],
                 legendFontColor: "#9F9F9F",
                 legendFontSize: 15,
                 timeSlots: zone.TimeSlots,
@@ -76,6 +78,16 @@ export default ({ route, navigation }) => {
       setChartData(newChartData);
     }
   }, [location, dateDetails.selected]);
+  useEffect(() => {
+    axios.then((server) =>
+      server
+        .post("/getAvailableTransmittersList")
+        .then((res) =>
+          res.data.status === 200 ? setAvailableLocations(res.data.data) : null
+        )
+        .catch((err) => console.log(err))
+    );
+  }, []);
   return (
     <ScrollView
       style={globalStyles.container}
@@ -136,8 +148,9 @@ export default ({ route, navigation }) => {
                     dropdownIconColor="white"
                   >
                     <Picker.Item label="All Locations" value="All" />
-                    <Picker.Item label="Koramangala" value="Koramangala" />
-                    <Picker.Item label="Adugodi" value="Adugodi" />
+                    {availableLocations.map((obj) => (
+                      <Picker.Item label={obj} value={obj} />
+                    ))}
                   </Picker>
                 </View>
                 <Text

@@ -345,6 +345,23 @@ app.post("/getAnalyticsData", (req, res) => {
   }
 });
 
+app.post("/getAvailableTransmittersList", (req, res) => {
+  try {
+    ZonalAdsListTest.find({}, (err, docs) => {
+      if (err) {
+        console.log(err);
+        res.send({ message: "Error connecting to database", status: 400 });
+      } else {
+        console.log(docs);
+        res.send({ data: docs.map(obj => obj.ZoneName), status: 200 });
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.send({ message: "Error connecting to database", status: 400 });
+  }
+});
+
 app.get("/", (req, res) => {
   res.send("Hello world!");
 });

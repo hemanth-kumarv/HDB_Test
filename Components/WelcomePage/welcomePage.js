@@ -90,7 +90,7 @@ const WelcomePage = ({ navigation }) => {
           {loginError}
         </Text>
       ) : null}
-      <Text style={styles.logo}>XXX</Text>
+      <Text style={styles.logo}>Vaunted</Text>
       <View style={styles.inputContainer}>
         <Text style={styles.loginText}>Login</Text>
         <TextInput
